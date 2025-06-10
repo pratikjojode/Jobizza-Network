@@ -1,12 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import Header from "./Header";
+import Footer from "./Footer";
 import "../styles/HomePage.css"; 
 
 function HomePage() {
   const { user } = useAuth();
 
   return (
+    <>
+   <Header />
     <div className="home-container">
       <header className="hero-section">
         <h1 className="hero-heading">
@@ -27,7 +31,7 @@ function HomePage() {
         )}
       </header>
 
-      <section className="why-join-section">
+      <section className="why-join-section animated-section">
         <div className="section-header">
           <h2>Why Join Jobizza Network?</h2>
           <p className="section-subtitle">
@@ -162,7 +166,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="features-section">
+      <section className="features-section animated-section">
         <div className="section-header">
           <h2>Powerful Features for Executive Networking</h2>
           <p className="section-subtitle">
@@ -234,6 +238,8 @@ function HomePage() {
         </section>
       )}
     </div>
+    <Footer />
+     </>
   );
 }
 

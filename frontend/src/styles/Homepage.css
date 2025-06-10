@@ -18,6 +18,12 @@
   padding: 0;
 }
 
+body {
+  background: linear-gradient(135deg, #f8fafc 0%, #e6f3ff 30%, #f0f8ff 70%, #f8fafc 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
 .home-container {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--text-medium);
@@ -37,6 +43,17 @@ a {
   text-decoration: none;
 }
 
+/* Blue border animation for cards */
+@keyframes borderGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(49, 130, 206, 0.3), 0 0 40px rgba(49, 130, 206, 0.1);
+    border: 2px solid rgba(49, 130, 206, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(49, 130, 206, 0.5), 0 0 60px rgba(49, 130, 206, 0.2);
+    border: 2px solid rgba(49, 130, 206, 0.6);
+  }
+}
 
 .hero-section {
   text-align: center;
@@ -75,7 +92,6 @@ a {
   font-size: 1.1rem;
 }
 
-
 .why-join-section {
   margin: 5rem 0;
 }
@@ -94,6 +110,7 @@ a {
   box-shadow: var(--box-shadow);
   transition: var(--transition);
   text-align: center;
+  animation: borderGlow 3s ease-in-out infinite;
 }
 
 .benefit-card:hover {
@@ -123,7 +140,6 @@ a {
   margin-bottom: 1rem;
   color: var(--text-dark);
 }
-
 
 .executive-roles {
   margin: 5rem 0;
@@ -226,6 +242,7 @@ a {
   padding: 2rem;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
+  animation: borderGlow 3s ease-in-out infinite;
 }
 
 .feature-card h3 {
@@ -393,6 +410,11 @@ a {
     width: 100%;
     max-width: 300px;
   }
+
+  .animated-section {
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
 }
 
 @media (max-width: 480px) {
@@ -417,5 +439,10 @@ a {
   
   .final-cta h2 {
     font-size: 1.5rem;
+  }
+
+  .animated-section {
+    padding: 1rem;
+    margin: 1rem 0;
   }
 }
