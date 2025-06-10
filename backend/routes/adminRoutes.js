@@ -4,15 +4,13 @@ import {
   getUserDetails,
   getAllUsers,
   deleteUser,
-  getDashboardStats, // Added
-  approveUser, // Added
-  getUnapprovedUsers, // Added
+  getDashboardStats,
+  approveUser,
+  getUnapprovedUsers,
 } from "../controllers/adminController.js";
 import { protect, admin } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
-
-// All routes here will require both `protect` (logged in) and `admin` (admin role) middleware
 
 // User Management Routes
 router.put("/users/update-role", protect, admin, updateUserRole);

@@ -6,19 +6,21 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const storedToken = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
 
-    if (token && storedUser) {
+    if (storedToken && storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
         setUser(parsedUser);
+        setToken(storedToken);
       } catch (e) {
-        console.error("Failed to parse user from localStorage", e);
+        console.error("Failed to parse user or token from localStorage:", e);
         localStorage.removeItem("token");
         localStorage.removeItem("user");
       }
@@ -33,11 +35,19 @@ export const AuthProvider = ({ children }) => {
         otp: otp,
       });
 
-      const { token, user: userData } = verifyOtpRes.data;
-      localStorage.setItem("token", token);
+      const { token: receivedToken, user: userData } = verifyOtpRes.data;
+
+      localStorage.setItem("token", receivedToken);
       localStorage.setItem("user", JSON.stringify(userData));
+
+      setToken(receivedToken);
       setUser(userData);
-      return { success: true, user: userData };
+
+      return {
+        success: true,
+        user: userData,
+        message: "OTP verified successfully!",
+      };
     } catch (error) {
       console.error(
         "OTP verification failed:",
@@ -85,13 +95,23 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    setToken(null);
     setUser(null);
     navigate("/login");
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, register, logout, verifyOtp }}
+      value={{
+        user,
+        token,
+        isAuthenticated: !!user && !!token,
+        loading,
+        login,
+        register,
+        logout,
+        verifyOtp,
+      }}
     >
       {!loading && children}
     </AuthContext.Provider>
