@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import Header from "./components/Header";
 import HomePage from "./components/HomePage";
 import AuthForm from "./components/AuthForm";
 import AdminDashboard from "./components/AdminDashboard"; // Your AdminDashboard layout component
