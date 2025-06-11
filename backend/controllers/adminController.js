@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import cloudinary from "../utils/cloudinaryConfig.js";
 
 export const updateUserRole = async (req, res) => {
   const { userId, email, newRole } = req.body;
@@ -162,5 +163,104 @@ export const getUnapprovedUsers = async (req, res) => {
     res
       .status(500)
       .json({ message: "Server error fetching unapproved users." });
+  }
+};
+
+export const updateUserProfileByAdmin = async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    const allowedUpdates = [
+      "fullName",
+      "email",
+      "role",
+      "company",
+      "designation",
+      "linkedin",
+      "profilePic",
+      "financialCertifications",
+      "yearsOfFinanceExperience",
+      "industrySpecializations",
+      "keyFinancialSkills",
+      "connections",
+      "budgetManaged",
+      "isVerified",
+      "isApproved",
+    ];
+
+    for (const key in updates) {
+      if (allowedUpdates.includes(key)) {
+        // Special handling for array fields if they are sent as comma-separated strings
+        if (
+          [
+            "financialCertifications",
+            "industrySpecializations",
+            "keyFinancialSkills",
+            "connections",
+          ].includes(key) &&
+          typeof updates[key] === "string"
+        ) {
+          user[key] = updates[key]
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean);
+        } else if (key === "yearsOfFinanceExperience") {
+          user[key] = Number(updates[key]) || 0;
+        } else {
+          user[key] = updates[key];
+        }
+      }
+    }
+
+    await user.save();
+
+    res.status(200).json({ message: "User updated successfully.", data: user });
+  } catch (error) {
+    console.error("Error updating user by admin:", error);
+    res.status(500).json({ message: "Server error during user update." });
+  }
+};
+
+export const uploadProfilePic = async (req, res) => {
+  const { id } = req.params;
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded." });
+  }
+
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    const result = await cloudinary.uploader.upload(
+      `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
+      {
+        folder: "profile_pics",
+        public_id: `user-${id}-profile`,
+        overwrite: true,
+      }
+    );
+
+    user.profilePic = result.secure_url;
+    await user.save();
+
+    res.status(200).json({
+      message: "Profile picture uploaded successfully.",
+      profilePicUrl: user.profilePic,
+      data: user,
+    });
+  } catch (error) {
+    console.error("Error uploading profile picture:", error);
+    res
+      .status(500)
+      .json({ message: "Server error during profile picture upload." });
   }
 };

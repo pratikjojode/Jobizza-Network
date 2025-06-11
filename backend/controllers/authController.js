@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 
+import cloudinary from "../utils/cloudinaryConfig.js";
+
 export const registerUser = async (req, res) => {
   try {
     const {
@@ -19,18 +21,51 @@ export const registerUser = async (req, res) => {
       industrySpecializations,
       keyFinancialSkills,
       budgetManaged,
-      profilePic,
     } = req.body;
 
     if (!email || !password || !fullName || !company || !designation) {
-      return res
-        .status(400)
-        .json({ message: "All required fields must be filled" });
+      return res.status(400).json({
+        message:
+          "All required fields (email, password, full name, company, designation) must be filled.",
+      });
     }
 
     const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(400).json({ message: "User already exists" });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ message: "User with this email already exists." });
+    }
+
+    let profilePicUrl = "";
+    if (req.file) {
+      try {
+        const result = await cloudinary.uploader.upload(
+          `data:${req.file.mimetype};base64,${req.file.buffer.toString(
+            "base64"
+          )}`,
+          {
+            folder: "profile_pics",
+            public_id: `jobizaaa-user-${email.split("@")[0]}-${Date.now()}`,
+            overwrite: true,
+          }
+        );
+        profilePicUrl = result.secure_url;
+      } catch (cloudinaryError) {
+        console.error("Cloudinary upload error:", cloudinaryError);
+        profilePicUrl = "";
+      }
+    }
+
+    const parsedFinancialCertifications = financialCertifications
+      ? JSON.parse(financialCertifications)
+      : [];
+    const parsedIndustrySpecializations = industrySpecializations
+      ? JSON.parse(industrySpecializations)
+      : [];
+    const parsedKeyFinancialSkills = keyFinancialSkills
+      ? JSON.parse(keyFinancialSkills)
+      : [];
 
     const newUser = new User({
       email,
@@ -40,12 +75,12 @@ export const registerUser = async (req, res) => {
       designation,
       role: role || "CXO",
       linkedin,
-      financialCertifications,
-      yearsOfFinanceExperience,
-      industrySpecializations,
-      keyFinancialSkills,
+      financialCertifications: parsedFinancialCertifications,
+      yearsOfFinanceExperience: parseInt(yearsOfFinanceExperience, 10) || 0,
+      industrySpecializations: parsedIndustrySpecializations,
+      keyFinancialSkills: parsedKeyFinancialSkills,
       budgetManaged,
-      profilePic: profilePic || "",
+      profilePic: profilePicUrl,
       isVerified: false,
       isApproved: false,
     });
@@ -57,41 +92,41 @@ export const registerUser = async (req, res) => {
         email: newUser.email,
         subject: "Welcome to Jobizaa Network!",
         html: `
-                        <!DOCTYPE html>
-                        <html lang="en">
-                        <head>
-                            <meta charset="UTF-8">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                            <title>Welcome to Jobizaa Network</title>
-                            <style>
-                                body { font-family: sans-serif; background-color: #f4f4f4; color: #333; }
-                                .container { max-width: 600px; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-                                .header { background-color: #007bff; color: #ffffff; padding: 15px; text-align: center; border-radius: 8px 8px 0 0; }
-                                .content { padding: 20px; line-height: 1.6; }
-                                .footer { text-align: center; padding: 15px; font-size: 12px; color: #777; border-top: 1px solid #eee; margin-top: 20px; }
-                            </style>
-                        </head>
-                        <body>
-                            <div class="container">
-                                <div class="header">
-                                    <h2>Welcome to Jobizaa Network!</h2>
-                                </div>
-                                <div class="content">
-                                    <p>Dear ${newUser.fullName},</p>
-                                    <p>Thank you for registering with Jobizaaa Network. We're excited to have you on board!</p>
-                                    <p>Your account has been created successfully. Please note that your account requires OTP verification upon login.</p>
-                                    <p>We look forward to helping you connect with financial leaders and opportunities.</p>
-                                    <p>Best regards,</p>
-                                    <p>The Jobizaa Team</p>
-                                </div>
-                                <div class="footer">
-                                    <p>&copy; ${new Date().getFullYear()} Jobizaaa Network. All rights reserved.</p>
-                                </div>
-                            </div>
-                        </body>
-                        </html>
-                    `,
-        text: `Dear ${newUser.fullName},\n\nThank you for registering with Jobizaaa Network. Your account has been created successfully.\n\nBest regards,\nThe Jobizaa Team`,
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Welcome to Jobizaa Network</title>
+            <style>
+              body { font-family: sans-serif; background-color: #f4f4f4; color: #333; }
+              .container { max-width: 600px; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+              .header { background-color: #007bff; color: #ffffff; padding: 15px; text-align: center; border-radius: 8px 8px 0 0; }
+              .content { padding: 20px; line-height: 1.6; }
+              .footer { text-align: center; padding: 15px; font-size: 12px; color: #777; border-top: 1px solid #eee; margin-top: 20px; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h2>Welcome to Jobizaa Network!</h2>
+              </div>
+              <div class="content">
+                <p>Dear ${newUser.fullName},</p>
+                <p>Thank you for registering with Jobizaaa Network. We're excited to have you on board!</p>
+                <p>Your account has been created successfully. Please note that your account requires verification upon login and admin approval for full access.</p>
+                <p>We look forward to helping you connect with financial leaders and opportunities.</p>
+                <p>Best regards,</p>
+                <p>The Jobizaa Team</p>
+              </div>
+              <div class="footer">
+                <p>&copy; ${new Date().getFullYear()} Jobizaaa Network. All rights reserved.</p>
+              </div>
+            </div>
+          </body>
+          </html>
+        `,
+        text: `Dear ${newUser.fullName},\n\nThank you for registering with Jobizaaa Network. Your account has been created successfully. Your account requires verification and admin approval.\n\nBest regards,\nThe Jobizaa Team`,
       });
     } catch (emailError) {
       console.error("Error sending welcome email to user:", emailError);
@@ -103,72 +138,97 @@ export const registerUser = async (req, res) => {
         email: adminEmailAddress,
         subject: "New User Registration on Jobizaaa Network",
         html: `
-                        <!DOCTYPE html>
-                        <html lang="en">
-                        <head>
-                            <meta charset="UTF-8">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                            <title>New User Registered</title>
-                            <style>
-                                body { font-family: sans-serif; background-color: #f4f4f4; color: #333; }
-                                .container { max-width: 600px; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-                                .header { background-color: #28a745; color: #ffffff; padding: 15px; text-align: center; border-radius: 8px 8px 0 0; }
-                                .content { padding: 20px; line-height: 1.6; }
-                                .info-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                                .info-table th, .info-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                                .info-table th { background-color: #f2f2f2; }
-                                .footer { text-align: center; padding: 15px; font-size: 12px; color: #777; border-top: 1px solid #eee; margin-top: 20px; }
-                            </style>
-                        </head>
-                        <body>
-                            <div class="container">
-                                <div class="header">
-                                    <h2>New User Registered on Jobizaaa Network</h2>
-                                </div>
-                                <div class="content">
-                                    <p>A new user has just registered on Jobizaaa Network.</p>
-                                    <table class="info-table">
-                                        <tr><th>Full Name</th><td>${
-                                          newUser.fullName
-                                        }</td></tr>
-                                        <tr><th>Email</th><td>${
-                                          newUser.email
-                                        }</td></tr>
-                                        <tr><th>Company</th><td>${
-                                          newUser.company
-                                        }</td></tr>
-                                        <tr><th>Designation</th><td>${
-                                          newUser.designation
-                                        }</td></tr>
-                                        <tr><th>Role</th><td>${
-                                          newUser.role
-                                        }</td></tr>
-                                        <tr><th>Registered At</th><td>${new Date(
-                                          newUser.createdAt
-                                        ).toLocaleString()}</td></tr>
-                                        <tr><th>Verified</th><td>${
-                                          newUser.isVerified ? "Yes" : "No"
-                                        }</td></tr>
-                                        <tr><th>Approved</th><td>${
-                                          newUser.isApproved ? "Yes" : "No"
-                                        }</td></tr>
-                                    </table>
-                                    <p>You may need to review and approve this user if your system requires manual approval for full access.</p>
-                                    <p>Best regards,</p>
-                                    <p>Jobizaaa System Notifications</p>
-                                </div>
-                                <div class="footer">
-                                    <p>&copy; ${new Date().getFullYear()} Jobizaaa Network. All rights reserved.</p>
-                                </div>
-                            </div>
-                        </body>
-                        </html>
-                    `,
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>New User Registered</title>
+            <style>
+              body { font-family: sans-serif; background-color: #f4f4f4; color: #333; }
+              .container { max-width: 600px; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+              .header { background-color: #28a745; color: #ffffff; padding: 15px; text-align: center; border-radius: 8px 8px 0 0; }
+              .content { padding: 20px; line-height: 1.6; }
+              .info-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+              .info-table th, .info-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+              .info-table th { background-color: #f2f2f2; }
+              .footer { text-align: center; padding: 15px; font-size: 12px; color: #777; border-top: 1px solid #eee; margin-top: 20px; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h2>New User Registered on Jobizaaa Network</h2>
+              </div>
+              <div class="content">
+                <p>A new user has just registered on Jobizaaa Network. Their account status is currently pending admin approval.</p>
+                <table class="info-table">
+                  <tr><th>Full Name</th><td>${newUser.fullName}</td></tr>
+                  <tr><th>Email</th><td>${newUser.email}</td></tr>
+                  <tr><th>Company</th><td>${newUser.company}</td></tr>
+                  <tr><th>Designation</th><td>${newUser.designation}</td></tr>
+                  <tr><th>Role</th><td>${newUser.role}</td></tr>
+                  <tr><th>LinkedIn</th><td>${
+                    newUser.linkedin || "N/A"
+                  }</td></tr>
+                  <tr><th>Financial Certs</th><td>${
+                    parsedFinancialCertifications.join(", ") || "N/A"
+                  }</td></tr>
+                  <tr><th>Years Finance Exp</th><td>${
+                    newUser.yearsOfFinanceExperience || "N/A"
+                  }</td></tr>
+                  <tr><th>Industry Specializations</th><td>${
+                    parsedIndustrySpecializations.join(", ") || "N/A"
+                  }</td></tr>
+                  <tr><th>Key Financial Skills</th><td>${
+                    parsedKeyFinancialSkills.join(", ") || "N/A"
+                  }</td></tr>
+                  <tr><th>Budget Managed</th><td>${
+                    newUser.budgetManaged || "N/A"
+                  }</td></tr>
+                  ${
+                    profilePicUrl
+                      ? `<tr><th>Profile Pic</th><td><a href="${profilePicUrl}" target="_blank">View Profile Pic</a></td></tr>`
+                      : ""
+                  }
+                  <tr><th>Registered At</th><td>${new Date(
+                    newUser.createdAt
+                  ).toLocaleString()}</td></tr>
+                  <tr><th>Verified</th><td>${
+                    newUser.isVerified ? "Yes" : "No"
+                  }</td></tr>
+                  <tr><th>Approved</th><td>${
+                    newUser.isApproved ? "Yes" : "No"
+                  }</td></tr>
+                </table>
+                <p>You may need to review and approve this user for full access. Please check the admin dashboard.</p>
+                <p>Best regards,</p>
+                <p>Jobizaaa System Notifications</p>
+              </div>
+              <div class="footer">
+                <p>&copy; ${new Date().getFullYear()} Jobizaaa Network. All rights reserved.</p>
+              </div>
+            </div>
+          </body>
+          </html>
+        `,
         text: `New User Registered:\n\nFull Name: ${newUser.fullName}\nEmail: ${
           newUser.email
         }\nCompany: ${newUser.company}\nDesignation: ${
           newUser.designation
-        }\nRole: ${newUser.role}\nRegistered At: ${new Date(
+        }\nRole: ${newUser.role}\nLinkedIn: ${
+          newUser.linkedin || "N/A"
+        }\nFinancial Certs: ${
+          parsedFinancialCertifications.join(", ") || "N/A"
+        }\nYears Finance Exp: ${
+          newUser.yearsOfFinanceExperience || "N/A"
+        }\nIndustry Specializations: ${
+          parsedIndustrySpecializations.join(", ") || "N/A"
+        }\nKey Financial Skills: ${
+          parsedKeyFinancialSkills.join(", ") || "N/A"
+        }\nBudget Managed: ${newUser.budgetManaged || "N/A"}\nProfile Pic: ${
+          profilePicUrl || "N/A"
+        }\nRegistered At: ${new Date(
           newUser.createdAt
         ).toLocaleString()}\n\nThis user needs to be verified upon login and potentially approved by an admin.`,
       });
@@ -176,12 +236,21 @@ export const registerUser = async (req, res) => {
       console.error("Error sending admin notification email:", adminEmailError);
     }
 
-    res
-      .status(201)
-      .json({ message: "Registration successful. Please login.", newUser });
+    res.status(201).json({
+      message:
+        "Registration successful. Your account is awaiting admin approval and verification upon login.",
+      newUser: {
+        _id: newUser._id,
+        email: newUser.email,
+        fullName: newUser.fullName,
+        profilePic: newUser.profilePic,
+        isApproved: newUser.isApproved,
+        isVerified: newUser.isVerified,
+      },
+    });
   } catch (error) {
     console.error("Registration error:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error during registration." });
   }
 };
 

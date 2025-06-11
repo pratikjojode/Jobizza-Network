@@ -60,27 +60,27 @@ function VerifyOtpPage() {
 
   if (!email) {
     return (
-      <div className="verify-otp-container">
+      <div className="jobizaaa-otp-container">
         <p>Preparing OTP verification...</p>
-        {error && <p className="otp-error-message">{error}</p>}
+        {error && <p className="jobizaaa-otp-error-message">{error}</p>}
       </div>
     );
   }
 
   return (
-    <div className="verify-otp-container">
-      <h2 className="otp-heading">Verify Your Email</h2>
-      <p className="otp-info">
+    <div className="jobizaaa-otp-container">
+      <h2 className="jobizaaa-otp-heading">Verify Your Email</h2>
+      <p className="jobizaaa-otp-info">
         An OTP has been sent to **{email}**. Please enter it below to complete
         your login.
       </p>
-      {error && <p className="otp-error-message">{error}</p>}
+      {error && <p className="jobizaaa-otp-error-message">{error}</p>}
       {successMessage && (
-        <p className="otp-success-message">{successMessage}</p>
+        <p className="jobizaaa-otp-success-message">{successMessage}</p>
       )}
-      <form onSubmit={handleSubmit} className="otp-form">
-        <div className="form-group">
-          <label htmlFor="otp" className="form-label">
+      <form onSubmit={handleSubmit} className="jobizaaa-otp-form">
+        <div className="jobizaaa-otp-form-group">
+          <label htmlFor="otp" className="jobizaaa-otp-form-label">
             OTP:
           </label>
           <input
@@ -89,11 +89,11 @@ function VerifyOtpPage() {
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
             required
-            className="form-input"
+            className="jobizaaa-otp-form-input"
             maxLength="6"
           />
         </div>
-        <button type="submit" className="otp-button">
+        <button type="submit" className="jobizaaa-otp-button">
           Verify OTP
         </button>
       </form>

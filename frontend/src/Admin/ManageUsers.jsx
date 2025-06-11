@@ -2,15 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import "../styles/ManageUsers.css";
 
-const DEFAULT_PROFILE_PIC = "../../public/profile-pic-dummy.png";
+const DEFAULT_PROFILE_PIC = "/profile-pic-dummy.png";
+
 const ManageUsers = () => {
   const { token } = useAuth();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [viewMode, setViewMode] = useState("table"); // 'table' or 'card'
+  const [viewMode, setViewMode] = useState("table");
 
-  // State for the Update Modal
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [currentUserToEdit, setCurrentUserToEdit] = useState(null);
   const [editFormData, setEditFormData] = useState({
@@ -20,7 +20,6 @@ const ManageUsers = () => {
     company: "",
     designation: "",
     linkedin: "",
-    profilePic: "",
     financialCertifications: "",
     yearsOfFinanceExperience: "",
     industrySpecializations: "",
@@ -32,6 +31,7 @@ const ManageUsers = () => {
   });
   const [updateError, setUpdateError] = useState(null);
   const [updateLoading, setUpdateLoading] = useState(false);
+  const [profileImageFile, setProfileImageFile] = useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -180,10 +180,42 @@ const ManageUsers = () => {
     }
   };
 
-  // --- Update Modal Logic ---
+  const toggleUserStatus = async (userId, field, currentValue) => {
+    try {
+      const response = await fetch(`/api/v1/admin/users/${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ [field]: !currentValue }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        if (errorData.message === undefined) {
+          const rawError = await response.text();
+          console.error("Raw server response:", rawError);
+          throw new Error(
+            rawError || "Server returned an unexpected response format."
+          );
+        }
+        throw new Error(errorData.message || `Failed to toggle ${field}.`);
+      }
+
+      const updatedUser = await response.json();
+      setUsers((prevUsers) =>
+        prevUsers.map((user) => (user._id === userId ? updatedUser.data : user))
+      );
+    } catch (err) {
+      setError(err.message);
+      console.error(`Error toggling ${field} status:`, err);
+      alert(`Error toggling ${field} status: ${err.message}`);
+    }
+  };
+
   const handleUpdateUser = (user) => {
     setCurrentUserToEdit(user);
-    // Initialize form data with all user details
     setEditFormData({
       fullName: user.fullName || "",
       email: user.email || "",
@@ -191,7 +223,6 @@ const ManageUsers = () => {
       company: user.company || "",
       designation: user.designation || "",
       linkedin: user.linkedin || "",
-      profilePic: user.profilePic || "",
       financialCertifications: (user.financialCertifications || []).join(", "),
       yearsOfFinanceExperience: user.yearsOfFinanceExperience || "",
       industrySpecializations: (user.industrySpecializations || []).join(", "),
@@ -201,6 +232,7 @@ const ManageUsers = () => {
       isVerified: user.isVerified || false,
       isApproved: user.isApproved || false,
     });
+    setProfileImageFile(null);
     setShowUpdateModal(true);
     setUpdateError(null);
   };
@@ -210,6 +242,7 @@ const ManageUsers = () => {
     setCurrentUserToEdit(null);
     setEditFormData({});
     setUpdateError(null);
+    setProfileImageFile(null);
   };
 
   const handleChange = (e) => {
@@ -220,6 +253,10 @@ const ManageUsers = () => {
     }));
   };
 
+  const handleFileChange = (e) => {
+    setProfileImageFile(e.target.files[0]);
+  };
+
   const handleSaveUser = async (e) => {
     e.preventDefault();
     if (!currentUserToEdit || !token) return;
@@ -227,7 +264,8 @@ const ManageUsers = () => {
     setUpdateLoading(true);
     setUpdateError(null);
 
-    // Prepare data for API: convert comma-separated strings back to arrays
+    let updatedUserResult = null;
+
     const dataToSend = {
       ...editFormData,
       financialCertifications: editFormData.financialCertifications
@@ -265,23 +303,65 @@ const ManageUsers = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to update user.");
+        throw new Error(errorData.message || "Failed to update user details.");
       }
+      updatedUserResult = await response.json();
+    } catch (err) {
+      setUpdateError(`Error saving user details: ${err.message}`);
+      console.error("Error saving user details:", err);
+      setUpdateLoading(false);
+      return;
+    }
 
-      const updatedUser = await response.json();
+    if (profileImageFile) {
+      const formData = new FormData();
+      formData.append("profilePic", profileImageFile);
+
+      try {
+        const uploadResponse = await fetch(
+          `/api/v1/admin/users/${currentUserToEdit._id}/profile-pic`,
+          {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+          }
+        );
+
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json();
+          throw new Error(
+            errorData.message || "Failed to upload profile picture."
+          );
+        }
+        const uploadedImageData = await uploadResponse.json();
+        updatedUserResult.data.profilePic = uploadedImageData.profilePicUrl;
+      } catch (err) {
+        setUpdateError((prev) =>
+          prev
+            ? `${prev} And: ${err.message}`
+            : `Error uploading profile picture: ${err.message}`
+        );
+        console.error("Error uploading profile picture:", err);
+      }
+    }
+
+    if (updatedUserResult) {
       setUsers(
         users.map((user) =>
-          user._id === updatedUser.data._id ? updatedUser.data : user
+          user._id === updatedUserResult.data._id
+            ? updatedUserResult.data
+            : user
         )
       );
       alert("User updated successfully!");
       handleModalClose();
-    } catch (err) {
-      setUpdateError(err.message);
-      console.error("Error saving user:", err);
-    } finally {
-      setUpdateLoading(false);
+    } else {
+      alert("User details updated, but no data was returned.");
     }
+
+    setUpdateLoading(false);
   };
 
   const renderCollapsibleList = (items, name) => {
@@ -379,7 +459,6 @@ const ManageUsers = () => {
                     {user._id ? user._id.slice(-6) : "N/A"}
                   </td>
                   <td>
-                    {/* Updated: Use default profile pic if user.profilePic is not available */}
                     <img
                       src={user.profilePic || DEFAULT_PROFILE_PIC}
                       alt="Profile"
@@ -428,22 +507,36 @@ const ManageUsers = () => {
                     {renderCollapsibleList(user.connections, "Connections")}
                   </td>
                   <td>
-                    <span
+                    <button
                       className={`status-badge ${
                         user.isVerified ? "status-yes" : "status-no"
                       }`}
+                      onClick={() =>
+                        toggleUserStatus(
+                          user._id,
+                          "isVerified",
+                          user.isVerified
+                        )
+                      }
                     >
-                      {user.isVerified ? "Yes" : "No"}
-                    </span>
+                      {user.isVerified ? "Verified" : "Unverified"}
+                    </button>
                   </td>
                   <td>
-                    <span
+                    <button
                       className={`status-badge ${
                         user.isApproved ? "status-yes" : "status-no"
                       }`}
+                      onClick={() =>
+                        toggleUserStatus(
+                          user._id,
+                          "isApproved",
+                          user.isApproved
+                        )
+                      }
                     >
-                      {user.isApproved ? "Yes" : "No"}
-                    </span>
+                      {user.isApproved ? "Approved" : "Unapproved"}
+                    </button>
                   </td>
                   <td>
                     <strong>Created:</strong>{" "}
@@ -476,7 +569,6 @@ const ManageUsers = () => {
           {users.map((user) => (
             <div key={user._id} className="user-card">
               <div className="card-header">
-                {/* Updated: Always render img, use default if profilePic is missing */}
                 <img
                   src={user.profilePic || DEFAULT_PROFILE_PIC}
                   alt="Profile"
@@ -512,23 +604,29 @@ const ManageUsers = () => {
               <div className="card-status-container">
                 <p>
                   <strong>Verified:</strong>{" "}
-                  <span
+                  <button
                     className={`status-badge ${
                       user.isVerified ? "status-yes" : "status-no"
                     }`}
+                    onClick={() =>
+                      toggleUserStatus(user._id, "isVerified", user.isVerified)
+                    }
                   >
-                    {user.isVerified ? "Yes" : "No"}
-                  </span>
+                    {user.isVerified ? "Verified" : "Unverified"}
+                  </button>
                 </p>
                 <p>
                   <strong>Approved:</strong>{" "}
-                  <span
+                  <button
                     className={`status-badge ${
                       user.isApproved ? "status-yes" : "status-no"
                     }`}
+                    onClick={() =>
+                      toggleUserStatus(user._id, "isApproved", user.isApproved)
+                    }
                   >
-                    {user.isApproved ? "Yes" : "No"}
-                  </span>
+                    {user.isApproved ? "Approved" : "Unapproved"}
+                  </button>
                 </p>
               </div>
 
@@ -580,7 +678,6 @@ const ManageUsers = () => {
               </button>
             </div>
             <form onSubmit={handleSaveUser} className="update-user-form">
-              {/* Personal Info */}
               <div className="form-group">
                 <label htmlFor="fullName">Full Name:</label>
                 <input
@@ -598,6 +695,7 @@ const ManageUsers = () => {
                   id="email"
                   name="email"
                   value={editFormData.email}
+                  onChange={handleChange}
                   readOnly
                 />
               </div>
@@ -626,7 +724,6 @@ const ManageUsers = () => {
                 />
               </div>
 
-              {/* Professional Info */}
               <div className="form-group">
                 <label htmlFor="company">Company:</label>
                 <input
@@ -670,19 +767,39 @@ const ManageUsers = () => {
                 />
               </div>
 
-              {/* Profile Picture */}
               <div className="form-group form-group-full">
-                <label htmlFor="profilePic">Profile Picture URL:</label>
+                <label htmlFor="profilePicUpload">
+                  Upload New Profile Picture:
+                </label>
                 <input
-                  type="url"
-                  id="profilePic"
-                  name="profilePic"
-                  value={editFormData.profilePic}
-                  onChange={handleChange}
+                  type="file"
+                  id="profilePicUpload"
+                  name="profilePicUpload"
+                  accept="image/*"
+                  onChange={handleFileChange}
                 />
+                {currentUserToEdit.profilePic && (
+                  <div className="current-profile-pic-preview">
+                    <p>Current Picture:</p>
+                    <img
+                      src={currentUserToEdit.profilePic}
+                      alt="Current Profile"
+                      className="profile-pic-preview"
+                    />
+                  </div>
+                )}
+                {profileImageFile && (
+                  <div className="selected-file-preview">
+                    <p>Selected New Picture:</p>
+                    <img
+                      src={URL.createObjectURL(profileImageFile)}
+                      alt="Selected File"
+                      className="profile-pic-preview"
+                    />
+                  </div>
+                )}
               </div>
 
-              {/* Array Fields */}
               <div className="form-group form-group-full">
                 <label htmlFor="financialCertifications">
                   Financial Certifications (comma-separated):
@@ -732,7 +849,6 @@ const ManageUsers = () => {
                 />
               </div>
 
-              {/* Status Toggles */}
               <div className="form-group-checkbox">
                 <input
                   type="checkbox"

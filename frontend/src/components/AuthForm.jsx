@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
+// Consider a default profile pic path if you want to show a preview
+const DEFAULT_PROFILE_PIC = "/profile-pic-dummy.png"; // Make sure you have this image in your public folder or accessible path
+
 function AuthForm({ isRegister }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,11 +18,13 @@ function AuthForm({ isRegister }) {
   const [industrySpecializations, setIndustrySpecializations] = useState("");
   const [keyFinancialSkills, setKeyFinancialSkills] = useState("");
   const [budgetManaged, setBudgetManaged] = useState("");
+  const [profileImageFile, setProfileImageFile] = useState(null);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { login, register, isAuthenticated, user } = useAuth();
+  const { login, isAuthenticated, user } = useAuth();
 
   const cLevelRoles = [
     "CEO",
@@ -50,10 +55,15 @@ function AuthForm({ isRegister }) {
     }
   }, [isAuthenticated, user, navigate]);
 
+  const handleFileChange = (e) => {
+    setProfileImageFile(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccessMessage("");
+    setLoading(true);
 
     if (isRegister) {
       const industrySpecializationsArray = industrySpecializations
@@ -69,45 +79,79 @@ function AuthForm({ isRegister }) {
         .map((s) => s.trim())
         .filter((s) => s);
 
-      const res = await register({
-        email,
-        password,
-        fullName,
-        company,
-        designation,
-        role,
-        linkedin,
-        financialCertifications: financialCertificationsArray,
-        yearsOfFinanceExperience: parseInt(yearsOfFinanceExperience, 10) || 0,
-        industrySpecializations: industrySpecializationsArray,
-        keyFinancialSkills: keyFinancialSkillsArray,
-        budgetManaged,
-      });
+      const formData = new FormData();
+      formData.append("email", email);
+      formData.append("password", password);
+      formData.append("fullName", fullName);
+      formData.append("company", company);
+      formData.append("designation", designation);
+      formData.append("role", role);
+      formData.append("linkedin", linkedin);
+      formData.append(
+        "financialCertifications",
+        JSON.stringify(financialCertificationsArray)
+      );
+      formData.append("yearsOfFinanceExperience", yearsOfFinanceExperience);
+      formData.append(
+        "industrySpecializations",
+        JSON.stringify(industrySpecializationsArray)
+      );
+      formData.append(
+        "keyFinancialSkills",
+        JSON.stringify(keyFinancialSkillsArray)
+      );
+      formData.append("budgetManaged", budgetManaged);
 
-      if (res.success) {
-        setSuccessMessage(res.message + " Redirecting to login...");
-        setTimeout(() => {
-          navigate("/login");
-        }, 2000);
-        setEmail("");
-        setPassword("");
-        setFullName("");
-        setCompany("");
-        setDesignation("");
-        setRole("CXO");
-        setLinkedin("");
-        setFinancialCertifications("");
-        setYearsOfFinanceExperience("");
-        setIndustrySpecializations("");
-        setKeyFinancialSkills("");
-        setBudgetManaged("");
-      } else {
-        setError(res.message);
+      if (profileImageFile) {
+        formData.append("profilePic", profileImageFile);
+      }
+
+      try {
+        const response = await fetch("/api/v1/auth/register", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setSuccessMessage(data.message + " Redirecting to login...");
+          setTimeout(() => {
+            navigate("/login");
+          }, 2000);
+          setEmail("");
+          setPassword("");
+          setFullName("");
+          setCompany("");
+          setDesignation("");
+          setRole("CXO");
+          setLinkedin("");
+          setFinancialCertifications("");
+          setYearsOfFinanceExperience("");
+          setIndustrySpecializations("");
+          setKeyFinancialSkills("");
+          setBudgetManaged("");
+          setProfileImageFile(null);
+        } else {
+          setError(data.message || "Registration failed.");
+        }
+      } catch (err) {
+        console.error("Registration error:", err);
+        setError("Network error or server unreachable.");
+      } finally {
+        setLoading(false);
       }
     } else {
-      const res = await login(email, password, role);
-      if (!res.success) {
-        setError(res.message);
+      try {
+        const res = await login(email, password, role);
+        if (!res.success) {
+          setError(res.message);
+        }
+      } catch (err) {
+        console.error("Login error:", err);
+        setError("Network error or server unreachable.");
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -117,24 +161,24 @@ function AuthForm({ isRegister }) {
   }
 
   return (
-    <div className="auth-container">
-      <h2 className="auth-heading">
+    <div className="jobizaaa-auth-container">
+      <h2 className="jobizaaa-auth-heading">
         {isRegister
           ? "Join Jobizaaa Network"
           : "Welcome Back to Jobizaaa Network"}
       </h2>
-      <p className="auth-intro-text">
+      <p className="jobizaaa-auth-intro-text">
         {isRegister
           ? "Connect with a vetted community of C-level executives. Complete your profile to access unparalleled networking opportunities and strategic insights."
           : "Log in to continue your engagement with top financial leaders and access your exclusive resources."}
       </p>
-      {error && <p className="auth-error-message">{error}</p>}
+      {error && <p className="jobizaaa-auth-error-message">{error}</p>}
       {successMessage && (
-        <p className="auth-success-message">{successMessage}</p>
+        <p className="jobizaaa-auth-success-message">{successMessage}</p>
       )}
-      <form onSubmit={handleSubmit} className="auth-form">
-        <div className="form-group">
-          <label htmlFor="email" className="form-label">
+      <form onSubmit={handleSubmit} className="jobizaaa-auth-form">
+        <div className="jobizaaa-form-group">
+          <label htmlFor="email" className="jobizaaa-form-label">
             Email:
           </label>
           <input
@@ -143,11 +187,11 @@ function AuthForm({ isRegister }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="form-input"
+            className="jobizaaa-form-input"
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="password" className="form-label">
+        <div className="jobizaaa-form-group">
+          <label htmlFor="password" className="jobizaaa-form-label">
             Password:
           </label>
           <input
@@ -156,13 +200,13 @@ function AuthForm({ isRegister }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="form-input"
+            className="jobizaaa-form-input"
           />
         </div>
         {isRegister && (
           <>
-            <div className="form-group">
-              <label htmlFor="fullName" className="form-label">
+            <div className="jobizaaa-form-group">
+              <label htmlFor="fullName" className="jobizaaa-form-label">
                 Full Name:
               </label>
               <input
@@ -171,11 +215,11 @@ function AuthForm({ isRegister }) {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 required
-                className="form-input"
+                className="jobizaaa-form-input"
               />
             </div>
-            <div className="form-group">
-              <label htmlFor="company" className="form-label">
+            <div className="jobizaaa-form-group">
+              <label htmlFor="company" className="jobizaaa-form-label">
                 Company:
               </label>
               <input
@@ -184,11 +228,11 @@ function AuthForm({ isRegister }) {
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 required
-                className="form-input"
+                className="jobizaaa-form-input"
               />
             </div>
-            <div className="form-group">
-              <label htmlFor="designation" className="form-label">
+            <div className="jobizaaa-form-group">
+              <label htmlFor="designation" className="jobizaaa-form-label">
                 Designation:
               </label>
               <input
@@ -197,18 +241,18 @@ function AuthForm({ isRegister }) {
                 value={designation}
                 onChange={(e) => setDesignation(e.target.value)}
                 required
-                className="form-input"
+                className="jobizaaa-form-input"
               />
             </div>
-            <div className="form-group">
-              <label htmlFor="role" className="form-label">
+            <div className="jobizaaa-form-group">
+              <label htmlFor="role" className="jobizaaa-form-label">
                 Role:
               </label>
               <select
                 id="role"
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
-                className="form-input"
+                className="jobizaaa-form-input"
               >
                 {cLevelRoles.map((r) => (
                   <option key={r} value={r}>
@@ -217,8 +261,8 @@ function AuthForm({ isRegister }) {
                 ))}
               </select>
             </div>
-            <div className="form-group">
-              <label htmlFor="linkedin" className="form-label">
+            <div className="jobizaaa-form-group">
+              <label htmlFor="linkedin" className="jobizaaa-form-label">
                 LinkedIn Profile URL:
               </label>
               <input
@@ -226,11 +270,14 @@ function AuthForm({ isRegister }) {
                 id="linkedin"
                 value={linkedin}
                 onChange={(e) => setLinkedin(e.target.value)}
-                className="form-input"
+                className="jobizaaa-form-input"
               />
             </div>
-            <div className="form-group">
-              <label htmlFor="financialCertifications" className="form-label">
+            <div className="jobizaaa-form-group">
+              <label
+                htmlFor="financialCertifications"
+                className="jobizaaa-form-label"
+              >
                 Financial Certifications (comma-separated):
               </label>
               <input
@@ -238,11 +285,14 @@ function AuthForm({ isRegister }) {
                 id="financialCertifications"
                 value={financialCertifications}
                 onChange={(e) => setFinancialCertifications(e.target.value)}
-                className="form-input"
+                className="jobizaaa-form-input"
               />
             </div>
-            <div className="form-group">
-              <label htmlFor="yearsOfFinanceExperience" className="form-label">
+            <div className="jobizaaa-form-group">
+              <label
+                htmlFor="yearsOfFinanceExperience"
+                className="jobizaaa-form-label"
+              >
                 Years of Finance Experience:
               </label>
               <input
@@ -250,11 +300,14 @@ function AuthForm({ isRegister }) {
                 id="yearsOfFinanceExperience"
                 value={yearsOfFinanceExperience}
                 onChange={(e) => setYearsOfFinanceExperience(e.target.value)}
-                className="form-input"
+                className="jobizaaa-form-input"
               />
             </div>
-            <div className="form-group">
-              <label htmlFor="industrySpecializations" className="form-label">
+            <div className="jobizaaa-form-group">
+              <label
+                htmlFor="industrySpecializations"
+                className="jobizaaa-form-label"
+              >
                 Industry Specializations (comma-separated):
               </label>
               <input
@@ -262,11 +315,14 @@ function AuthForm({ isRegister }) {
                 id="industrySpecializations"
                 value={industrySpecializations}
                 onChange={(e) => setIndustrySpecializations(e.target.value)}
-                className="form-input"
+                className="jobizaaa-form-input"
               />
             </div>
-            <div className="form-group">
-              <label htmlFor="keyFinancialSkills" className="form-label">
+            <div className="jobizaaa-form-group">
+              <label
+                htmlFor="keyFinancialSkills"
+                className="jobizaaa-form-label"
+              >
                 Key Financial Skills (comma-separated):
               </label>
               <input
@@ -274,11 +330,11 @@ function AuthForm({ isRegister }) {
                 id="keyFinancialSkills"
                 value={keyFinancialSkills}
                 onChange={(e) => setKeyFinancialSkills(e.target.value)}
-                className="form-input"
+                className="jobizaaa-form-input"
               />
             </div>
-            <div className="form-group">
-              <label htmlFor="budgetManaged" className="form-label">
+            <div className="jobizaaa-form-group">
+              <label htmlFor="budgetManaged" className="jobizaaa-form-label">
                 Budget Managed (e.g., "$1M+"):
               </label>
               <input
@@ -286,21 +342,44 @@ function AuthForm({ isRegister }) {
                 id="budgetManaged"
                 value={budgetManaged}
                 onChange={(e) => setBudgetManaged(e.target.value)}
-                className="form-input"
+                className="jobizaaa-form-input"
               />
+            </div>
+            <div className="jobizaaa-form-group">
+              <label htmlFor="profilePic" className="jobizaaa-form-label">
+                Profile Picture (Optional):
+              </label>
+              <input
+                type="file"
+                id="profilePic"
+                name="profilePic"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="jobizaaa-form-input-file" // A slightly different class for file input
+              />
+              {profileImageFile && (
+                <div className="jobizaaa-image-preview">
+                  <img
+                    src={URL.createObjectURL(profileImageFile)}
+                    alt="Profile Preview"
+                    className="jobizaaa-profile-pic-thumbnail"
+                  />
+                  <p>{profileImageFile.name}</p>
+                </div>
+              )}
             </div>
           </>
         )}
         {!isRegister && (
-          <div className="form-group">
-            <label htmlFor="loginRole" className="form-label">
+          <div className="jobizaaa-form-group">
+            <label htmlFor="loginRole" className="jobizaaa-form-label">
               Login as Role:
             </label>
             <select
               id="loginRole"
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="form-input"
+              className="jobizaaa-form-input"
             >
               {cLevelRoles.map((r) => (
                 <option key={r} value={r}>
@@ -310,11 +389,21 @@ function AuthForm({ isRegister }) {
             </select>
           </div>
         )}
-        <button type="submit" className="auth-button">
-          {isRegister ? "Register" : "Login"}
+        <button
+          type="submit"
+          className="jobizaaa-auth-button"
+          disabled={loading}
+        >
+          {loading
+            ? isRegister
+              ? "Registering..."
+              : "Logging In..."
+            : isRegister
+            ? "Register"
+            : "Login"}
         </button>
         {!isRegister && (
-          <div className="forgot-password-link">
+          <div className="jobizaaa-forgot-password-link">
             <Link to="/forgot-password">Forgot Password?</Link>
           </div>
         )}

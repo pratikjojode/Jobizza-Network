@@ -7,8 +7,11 @@ import {
   getDashboardStats,
   approveUser,
   getUnapprovedUsers,
+  updateUserProfileByAdmin,
+  uploadProfilePic,
 } from "../controllers/adminController.js";
 import { protect, admin } from "../middlewares/authMiddleware.js";
+import upload from "../middlewares/uploadMiddleware.js";
 
 const router = express.Router();
 
@@ -20,7 +23,15 @@ router.delete("/users/:id", protect, admin, deleteUser);
 
 // Admin Dashboard Specific Routes
 router.get("/dashboard-stats", protect, admin, getDashboardStats);
+router.put("/users/:id", protect, admin, updateUserProfileByAdmin);
 router.put("/users/approve", protect, admin, approveUser);
 router.get("/users/unapproved", protect, admin, getUnapprovedUsers);
+router.put(
+  "/users/:id/profile-pic",
+  protect,
+  admin,
+  upload.single("profilePic"),
+  uploadProfilePic
+);
 
 export default router;
