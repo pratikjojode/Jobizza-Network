@@ -18,6 +18,7 @@ import AdminProfile from "./Admin/AdminProfile";
 import ManageUsers from "./Admin/ManageUsers";
 import ManageBlogs from "./Admin/ManageBlogs";
 import ManageConnections from "./Admin/ManageConnection"; // Adjust if your file is named ManageConnections.js
+import MyProfile from "./pages/MyProfile";
 
 function App() {
   return (
@@ -104,6 +105,7 @@ function App() {
           />
 
           <Route path="*" element={<NotFound />} />
+          <Route path="/profile" element={<MyProfile />} />
         </Routes>
       </AuthProvider>
     </Router>

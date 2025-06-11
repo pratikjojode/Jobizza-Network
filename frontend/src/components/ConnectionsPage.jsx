@@ -4,6 +4,7 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 
 import "../styles/ConnectionsPage.css";
+import Header from "./Header";
 
 function ConnectionsPage() {
   const { user, logout } = useAuth();
@@ -272,292 +273,296 @@ function ConnectionsPage() {
   }
 
   return (
-    <div className="page-container">
-      <header className="connections-header">
-        <div className="header-left">
-          <Link to="/" className="header-logo">
-            Jobizaa Network
-          </Link>
-        </div>
-        <div className="header-right">
-          {user && (
-            <Link to="/profile" className="header-profile-link">
-              {user.profilePic ? (
-                <img
-                  src={user.profilePic}
-                  alt="Profile"
-                  className="header-profile-avatar"
-                />
-              ) : (
-                <div className="header-profile-avatar-placeholder">
-                  {user.fullName?.charAt(0)?.toUpperCase()}
-                </div>
-              )}
-              <span>My Profile</span>
+    <>
+      <div className="page-container">
+        <header className="connections-header">
+          <div className="header-left">
+            <Link to="/" className="header-logo">
+              Jobizaa Network || Home
             </Link>
-          )}
-          <Link to="/settings" className="header-icon-link">
-            <i className="fas fa-cog"></i>
-          </Link>
-          <button className="btn-logout-header" onClick={logout}>
-            Logout
-          </button>
-        </div>
-      </header>
-
-      <div className="main-layout">
-        <aside className="left-sidebar">
-          <div className="sidebar-card">
-            <div className="profile-summary">
-              {user?.profilePic ? (
-                <img
-                  src={user.profilePic}
-                  alt={`${user.fullName}'s profile`}
-                  className="profile-avatar"
-                />
-              ) : (
-                <div
-                  className="profile-avatar"
-                  style={{
-                    background: "linear-gradient(135deg, #0a66c2, #004d96)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "2rem",
-                    color: "white",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {user?.fullName?.charAt(0)?.toUpperCase()}
-                </div>
-              )}
-              <div className="profile-info">
-                <h3>{user?.fullName}</h3>
-                <p className="profile-title">
-                  {user?.designation || "Professional"}
-                </p>
-                <p className="profile-company">{user?.company}</p>
-              </div>
-            </div>
           </div>
-
-          <div className="sidebar-card">
-            <h3 className="card-title">Quick Actions</h3>
-            <nav className="quick-nav">
-              <Link to="/my-connections" className="nav-link">
-                📋 Manage My Requests
-              </Link>
-              {user && user.role === "admin" && (
-                <Link
-                  to="/admin/manage-all-connections"
-                  className="nav-link admin-link"
-                >
-                  ⚙️ Manage All Connections
-                </Link>
-              )}
-              <Link to="/" className="nav-link">
-                🏠 Go to Home
-              </Link>
-            </nav>
-          </div>
-
-          <div className="sidebar-card">
-            <h3 className="card-title">Network Stats</h3>
-            <div className="stats">
-              <div className="stat-item">
-                <span className="stat-number">
-                  {
-                    Object.values(userConnectionStatuses).filter(
-                      (status) => status === "accepted"
-                    ).length
-                  }
-                </span>
-                <span className="stat-label">Connections</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-number">
-                  {
-                    Object.values(userConnectionStatuses).filter(
-                      (status) => status === "pending_received"
-                    ).length
-                  }
-                </span>
-                <span className="stat-label">Pending Requests</span>
-              </div>
-            </div>
-          </div>
-        </aside>
-
-        <main className="main-content">
-          <div className="content-card">
-            <div className="card-header">
-              <h2 className="section-title">Discover People</h2>
-              <p className="section-subtitle">
-                Connect with professionals in your network
-              </p>
-            </div>
-
-            {users.length === 0 ? (
-              <div className="empty-state">
-                <div className="empty-icon">👥</div>
-                <h3>No users found</h3>
-                <p>Check back later for new connection opportunities.</p>
-              </div>
-            ) : (
-              <div className="users-grid">
-                {users.map((otherUser) => (
-                  <div key={otherUser._id} className="user-card">
-                    <div className="user-header">
-                      {otherUser.profilePic ? (
-                        <img
-                          src={otherUser.profilePic}
-                          alt={`${otherUser.fullName}'s profile`}
-                          className="user-avatar"
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                          }}
-                        />
-                      ) : (
-                        <div
-                          className="user-avatar"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #6b7280, #4b5563)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontSize: "1.5rem",
-                            color: "white",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {otherUser.fullName?.charAt(0)?.toUpperCase()}
-                        </div>
-                      )}
-                      <div className="user-info">
-                        <h3 className="user-name">{otherUser.fullName}</h3>
-                        <p className="user-title">{otherUser.designation}</p>
-                        <p className="user-company">{otherUser.company}</p>
-                        <p className="user-email">{otherUser.email}</p>
-                      </div>
-                    </div>
-
-                    <div className="user-actions">
-                      {userConnectionStatuses[otherUser._id] ===
-                      "pending_received" ? (
-                        <div className="pending-actions">
-                          <button
-                            onClick={() => handleAcceptRequest(otherUser._id)}
-                            className="btn btn-accept"
-                          >
-                            Accept
-                          </button>
-                          <button
-                            onClick={() => handleDeclineRequest(otherUser._id)}
-                            className="btn btn-decline"
-                          >
-                            Decline
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => handleConnect(otherUser._id)}
-                          disabled={isConnectButtonDisabled(otherUser._id)}
-                          className={`btn btn-connect ${
-                            isConnectButtonDisabled(otherUser._id)
-                              ? "disabled"
-                              : ""
-                          }`}
-                        >
-                          {getConnectionStatusText(otherUser._id)}
-                        </button>
-                      )}
-                    </div>
+          <div className="header-right">
+            {user && (
+              <Link to="/profile" className="header-profile-link">
+                {user.profilePic ? (
+                  <img
+                    src={user.profilePic}
+                    alt="Profile"
+                    className="header-profile-avatar"
+                  />
+                ) : (
+                  <div className="header-profile-avatar-placeholder">
+                    {user.fullName?.charAt(0)?.toUpperCase()}
                   </div>
-                ))}
-              </div>
+                )}
+                <span>My Profile</span>
+              </Link>
             )}
+            <Link to="/settings" className="header-icon-link">
+              <i className="fas fa-cog"></i>
+            </Link>
+            <button className="btn-logout-header" onClick={logout}>
+              Logout
+            </button>
           </div>
-        </main>
+        </header>
 
-        <aside className="right-sidebar">
-          <div className="sidebar-card">
-            <h3 className="card-title">Recent Activity</h3>
-            <div className="activity-list">
-              <div className="activity-item">
-                <div className="activity-icon">🔔</div>
-                <div className="activity-content">
-                  <p>
-                    You have{" "}
-                    {
-                      Object.values(userConnectionStatuses).filter(
-                        (status) => status === "pending_received"
-                      ).length
-                    }{" "}
-                    pending connection requests
+        <div className="main-layout">
+          <aside className="left-sidebar">
+            <div className="sidebar-card">
+              <div className="profile-summary">
+                {user?.profilePic ? (
+                  <img
+                    src={user.profilePic}
+                    alt={`${user.fullName}'s profile`}
+                    className="profile-avatar"
+                  />
+                ) : (
+                  <div
+                    className="profile-avatar"
+                    style={{
+                      background: "linear-gradient(135deg, #0a66c2, #004d96)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "2rem",
+                      color: "white",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {user?.fullName?.charAt(0)?.toUpperCase()}
+                  </div>
+                )}
+                <div className="profile-info">
+                  <h3>{user?.fullName}</h3>
+                  <p className="profile-title">
+                    {user?.designation || "Professional"}
                   </p>
-                  <span className="activity-time">Now</span>
+                  <p className="profile-company">{user?.company}</p>
                 </div>
               </div>
-              <div className="activity-item">
-                <div className="activity-icon">✅</div>
-                <div className="activity-content">
-                  <p>
-                    You're connected with{" "}
+            </div>
+
+            <div className="sidebar-card">
+              <h3 className="card-title">Quick Actions</h3>
+              <nav className="quick-nav">
+                <Link to="/my-connections" className="nav-link">
+                  📋 Manage My Requests
+                </Link>
+                {user && user.role === "admin" && (
+                  <Link
+                    to="/admin/manage-all-connections"
+                    className="nav-link admin-link"
+                  >
+                    ⚙️ Manage All Connections
+                  </Link>
+                )}
+                <Link to="/" className="nav-link">
+                  🏠 Go to Home
+                </Link>
+              </nav>
+            </div>
+
+            <div className="sidebar-card">
+              <h3 className="card-title">Network Stats</h3>
+              <div className="stats">
+                <div className="stat-item">
+                  <span className="stat-number">
                     {
                       Object.values(userConnectionStatuses).filter(
                         (status) => status === "accepted"
                       ).length
-                    }{" "}
-                    professionals
-                  </p>
-                  <span className="activity-time">Today</span>
+                    }
+                  </span>
+                  <span className="stat-label">Connections</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-number">
+                    {
+                      Object.values(userConnectionStatuses).filter(
+                        (status) => status === "pending_received"
+                      ).length
+                    }
+                  </span>
+                  <span className="stat-label">Pending Requests</span>
                 </div>
               </div>
             </div>
-          </div>
+          </aside>
 
-          <div className="sidebar-card">
-            <h3 className="card-title">People You May Know</h3>
-            <div className="suggestions">
-              {users.slice(0, 3).map((user) => (
-                <div key={user._id} className="suggestion-item">
-                  <div className="suggestion-info">
-                    <h4>{user.fullName}</h4>
-                    <p>{user.designation}</p>
-                  </div>
-                  <button
-                    className="btn-small btn-connect"
-                    onClick={() => handleConnect(user._id)}
-                    disabled={isConnectButtonDisabled(user._id)}
-                  >
-                    Connect
-                  </button>
+          <main className="main-content">
+            <div className="content-card">
+              <div className="card-header">
+                <h2 className="section-title">Discover People</h2>
+                <p className="section-subtitle">
+                  Connect with professionals in your network
+                </p>
+              </div>
+
+              {users.length === 0 ? (
+                <div className="empty-state">
+                  <div className="empty-icon">👥</div>
+                  <h3>No users found</h3>
+                  <p>Check back later for new connection opportunities.</p>
                 </div>
-              ))}
-            </div>
-          </div>
+              ) : (
+                <div className="users-grid">
+                  {users.map((otherUser) => (
+                    <div key={otherUser._id} className="user-card">
+                      <div className="user-header">
+                        {otherUser.profilePic ? (
+                          <img
+                            src={otherUser.profilePic}
+                            alt={`${otherUser.fullName}'s profile`}
+                            className="user-avatar"
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                            }}
+                          />
+                        ) : (
+                          <div
+                            className="user-avatar"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #6b7280, #4b5563)",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: "1.5rem",
+                              color: "white",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {otherUser.fullName?.charAt(0)?.toUpperCase()}
+                          </div>
+                        )}
+                        <div className="user-info">
+                          <h3 className="user-name">{otherUser.fullName}</h3>
+                          <p className="user-title">{otherUser.designation}</p>
+                          <p className="user-company">{otherUser.company}</p>
+                          <p className="user-email">{otherUser.email}</p>
+                        </div>
+                      </div>
 
-          <div className="sidebar-card">
-            <h3 className="card-title">Coming Soon</h3>
-            <div className="coming-soon">
-              <div className="feature-item">📝 Blog Posts</div>
-              <div className="feature-item">📅 Events</div>
-              <div className="feature-item">💼 Job Postings</div>
-              <div className="feature-item">🎯 Industry News</div>
+                      <div className="user-actions">
+                        {userConnectionStatuses[otherUser._id] ===
+                        "pending_received" ? (
+                          <div className="pending-actions">
+                            <button
+                              onClick={() => handleAcceptRequest(otherUser._id)}
+                              className="btn btn-accept"
+                            >
+                              Accept
+                            </button>
+                            <button
+                              onClick={() =>
+                                handleDeclineRequest(otherUser._id)
+                              }
+                              className="btn btn-decline"
+                            >
+                              Decline
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => handleConnect(otherUser._id)}
+                            disabled={isConnectButtonDisabled(otherUser._id)}
+                            className={`btn btn-connect ${
+                              isConnectButtonDisabled(otherUser._id)
+                                ? "disabled"
+                                : ""
+                            }`}
+                          >
+                            {getConnectionStatusText(otherUser._id)}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        </aside>
-      </div>
+          </main>
 
-      <footer className="page-footer">
-        <div className="footer-content">
-          <button className="btn btn-logout" onClick={logout}>
-            Logout
-          </button>
+          <aside className="right-sidebar">
+            <div className="sidebar-card">
+              <h3 className="card-title">Recent Activity</h3>
+              <div className="activity-list">
+                <div className="activity-item">
+                  <div className="activity-icon">🔔</div>
+                  <div className="activity-content">
+                    <p>
+                      You have{" "}
+                      {
+                        Object.values(userConnectionStatuses).filter(
+                          (status) => status === "pending_received"
+                        ).length
+                      }{" "}
+                      pending connection requests
+                    </p>
+                    <span className="activity-time">Now</span>
+                  </div>
+                </div>
+                <div className="activity-item">
+                  <div className="activity-icon">✅</div>
+                  <div className="activity-content">
+                    <p>
+                      You're connected with{" "}
+                      {
+                        Object.values(userConnectionStatuses).filter(
+                          (status) => status === "accepted"
+                        ).length
+                      }{" "}
+                      professionals
+                    </p>
+                    <span className="activity-time">Today</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="sidebar-card">
+              <h3 className="card-title">People You May Know</h3>
+              <div className="suggestions">
+                {users.slice(0, 3).map((user) => (
+                  <div key={user._id} className="suggestion-item">
+                    <div className="suggestion-info">
+                      <h4>{user.fullName}</h4>
+                      <p>{user.designation}</p>
+                    </div>
+                    <button
+                      className="btn-small btn-connect"
+                      onClick={() => handleConnect(user._id)}
+                      disabled={isConnectButtonDisabled(user._id)}
+                    >
+                      Connect
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="sidebar-card">
+              <h3 className="card-title">Coming Soon</h3>
+              <div className="coming-soon">
+                <div className="feature-item">📝 Blog Posts</div>
+                <div className="feature-item">📅 Events</div>
+                <div className="feature-item">💼 Job Postings</div>
+                <div className="feature-item">🎯 Industry News</div>
+              </div>
+            </div>
+          </aside>
         </div>
-      </footer>
-    </div>
+
+        <footer className="page-footer">
+          <div className="footer-content">
+            <button className="btn btn-logout" onClick={logout}>
+              Logout
+            </button>
+          </div>
+        </footer>
+      </div>
+    </>
   );
 }
 

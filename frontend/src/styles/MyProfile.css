@@ -1,0 +1,367 @@
+/* MyProfile.css */
+
+/* Base Styles */
+.profile-loading-container,
+.profile-error-container,
+.profile-no-data-container,
+.user-profile-page-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Loading State */
+.profile-loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+}
+
+.profile-loading-spinner-wrapper {
+  text-align: center;
+}
+
+.profile-loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: #3498db;
+  margin: 0 auto 20px;
+  animation: profile-spin 1s ease-in-out infinite;
+}
+
+@keyframes profile-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error States */
+.profile-error-container,
+.profile-no-data-container {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-error-card,
+.profile-section-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 30px;
+  width: 100%;
+}
+
+.profile-error-heading {
+  color: #e74c3c;
+  margin-bottom: 15px;
+}
+
+.profile-error-message {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.profile-login-prompt {
+  color: #777;
+}
+
+.profile-login-link {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.profile-login-link:hover {
+  text-decoration: underline;
+}
+
+/* Profile Cards */
+.profile-section-card {
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+
+.profile-header-area {
+  padding: 0;
+}
+
+/* Profile Header */
+.profile-banner-image {
+  height: 180px;
+  background: linear-gradient(135deg, #3498db, #2c3e50);
+  position: relative;
+}
+
+.profile-header-content-area {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.profile-avatar-container {
+  position: relative;
+  margin-top: -80px;
+  margin-bottom: 20px;
+  align-self: flex-start;
+}
+
+.profile-avatar-img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 5px solid white;
+  object-fit: cover;
+  background: #f0f2f5;
+}
+
+.profile-badges-wrapper {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.profile-badge {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.profile-badge-verified {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.profile-badge-approved {
+  background-color: #3498db;
+  color: white;
+}
+
+.profile-main-info {
+  text-align: center;
+}
+
+.profile-full-name {
+  font-size: 1.8rem;
+  margin-bottom: 5px;
+  color: #2c3e50;
+}
+
+.profile-designation-text,
+.profile-company-text,
+.profile-role-text {
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.profile-action-buttons {
+  margin-top: 20px;
+}
+
+.profile-edit-button {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.profile-edit-button:hover {
+  background: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+
+/* About Section */
+.profile-section-title {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f2f5;
+}
+
+.profile-about-details-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.profile-about-detail-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.profile-about-label {
+  font-weight: 600;
+  color: #555;
+}
+
+.profile-about-value {
+  color: #2c3e50;
+  text-align: right;
+}
+
+.profile-linkedin-area {
+  margin-top: 20px;
+}
+
+.profile-linkedin-link {
+  display: inline-flex;
+  align-items: center;
+  color: #0077b5;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.profile-linkedin-link:hover {
+  color: #005582;
+  transform: translateX(5px);
+}
+
+.profile-linkedin-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+/* Skills Section */
+.profile-subsection-title {
+  font-size: 1.2rem;
+  color: #2c3e50;
+  margin: 25px 0 15px;
+}
+
+.profile-subsection-title:first-child {
+  margin-top: 0;
+}
+
+.profile-skills-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.profile-skill-tag {
+  background: #eef7ff;
+  color: #2980b9;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.profile-industry-tag {
+  background: #e8f5e9;
+  color: #2ecc71;
+}
+
+.profile-certifications-list {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 12px;
+}
+
+.profile-certification-item {
+  display: flex;
+  align-items: center;
+}
+
+.profile-certification-icon {
+  margin-right: 12px;
+  font-size: 1.2rem;
+}
+
+.profile-certification-name {
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+/* Responsive Styles */
+@media (min-width: 576px) {
+  .profile-about-details-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .profile-certifications-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .profile-header-content-area {
+    flex-direction: row;
+    padding: 30px;
+  }
+
+  .profile-avatar-container {
+    margin-top: -100px;
+    margin-right: 40px;
+  }
+
+  .profile-main-info {
+    text-align: left;
+    flex: 1;
+  }
+
+  .profile-action-buttons {
+    justify-content: flex-start;
+  }
+
+  .profile-about-details-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .profile-about-details-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .profile-avatar-img {
+    width: 160px;
+    height: 160px;
+  }
+
+  .profile-banner-image {
+    height: 220px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .user-profile-page-wrapper {
+    padding: 30px;
+  }
+
+  .profile-section-card {
+    padding: 40px;
+  }
+}
+
+/* Animation for hover effects */
+.profile-skill-tag,
+.profile-certification-item {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-skill-tag:hover,
+.profile-certification-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
