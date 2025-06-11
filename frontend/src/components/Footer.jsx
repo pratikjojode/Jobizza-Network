@@ -1,42 +1,47 @@
 import React from "react";
 import { FaLinkedin, FaTwitter, FaInstagram, FaFacebook, FaYoutube } from "react-icons/fa";
-import "../styles/Footer.css"; 
+import "../styles/Footer.css"; // Ensure this path is correct relative to your project structure
+
 const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-container">
         <div className="footer-logo">
           <h2>Jobizza Network</h2>
-          <p>The Exclusive Platform for C-Suite Leaders</p>
+          <p className="footer-tagline">The Exclusive Platform for C-Suite Leaders</p>
           <div className="social-icons">
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+            {/* Social media links with icons */}
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
               <FaLinkedin className="icon" />
             </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
               <FaTwitter className="icon" />
             </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
               <FaInstagram className="icon" />
             </a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
               <FaFacebook className="icon" />
             </a>
-            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
               <FaYoutube className="icon" />
             </a>
           </div>
         </div>
 
         <div className="footer-links">
+          {/* Quick Links section, updated based on navbar */}
           <div className="links-column">
             <h3>Quick Links</h3>
             <ul>
               <li><a href="/">Home</a></li>
-              <li><a href="/about">About</a></li>
-              <li><a href="/network">Network</a></li>
-              <li><a href="/insights">Insights</a></li>
+              <li><a href="/about">About Us</a></li>
+              <li><a href="/register">Register</a></li>
+              <li><a href="/login">Login</a></li>
+              <li><a href="/pre-demo">Pre-Demo</a></li>
             </ul>
           </div>
+          {/* Resources section */}
           <div className="links-column">
             <h3>Resources</h3>
             <ul>
@@ -46,6 +51,7 @@ const Footer = () => {
               <li><a href="/webinars">Webinars</a></li>
             </ul>
           </div>
+          {/* Company section */}
           <div className="links-column">
             <h3>Company</h3>
             <ul>
@@ -58,6 +64,7 @@ const Footer = () => {
         </div>
       </div>
 
+      {/* Footer bottom section with copyright */}
       <div className="footer-bottom">
         <p>&copy; {new Date().getFullYear()} Jobizza Network. All rights reserved.</p>
       </div>
