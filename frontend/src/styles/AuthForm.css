@@ -1,3 +1,21 @@
+/* General Body and HTML styling */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(
+    135deg,
+    #e0f2f7 0%,
+    #ffffff 100%
+  ); /* Light blue to white gradient background */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #333;
+}
+
 /* Main Container for Auth Form */
 .jobizaaa-auth-container {
   display: flex;
@@ -125,6 +143,38 @@
   margin: 0;
   font-size: 0.9em;
   color: #666;
+}
+
+/* Scrollable Panel for Registration Fields */
+.jobizaaa-scroll-panel {
+  max-height: 350px; /* Fixed height for the scrollable area */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding-right: 15px; /* Space for scrollbar */
+  margin-bottom: 20px; /* Space before the next elements */
+  border: 1px solid #e0e0e0; /* Subtle border for delineation */
+  border-radius: 8px;
+  padding: 20px; /* Inner padding */
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05); /* Inner shadow */
+  background-color: #fcfcfc; /* Slightly different background */
+}
+
+/* Custom scrollbar styling (for Webkit browsers) */
+.jobizaaa-scroll-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.jobizaaa-scroll-panel::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.jobizaaa-scroll-panel::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.jobizaaa-scroll-panel::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 /* Role Cards for Login */

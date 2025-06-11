@@ -3,8 +3,11 @@ import { useNavigate, Link } from "react-router-dom";
 // Assuming useAuth context is correctly implemented and provides login, isAuthenticated, user
 import { useAuth } from "../context/AuthContext";
 import '../styles/AuthForm.css'; // Import the new CSS file
-import Header from "./Header"; // Import the Header component
-import Footer from "./Footer"; // Import the Footer component
+import Header from "./Header";
+import Footer from "./Footer"; // Import Footer component
+// Removed Header and Footer imports as they were causing issues in the previous context
+// If you intend to use them, ensure they are imported and used correctly in your App.js or parent component.
+
 
 // Consider a default profile pic path if you want to show a preview
 const DEFAULT_PROFILE_PIC = "/profile-pic-dummy.png"; // Make sure you have this image in your public folder or accessible path
@@ -160,8 +163,7 @@ function AuthForm({ isRegister }) {
 
   return (
     <>
-      <Header />
-    
+    <Header />
     <div className="jobizaaa-auth-container">
       <div className="jobizaaa-auth-card">
         <h2 className="jobizaaa-auth-heading">
@@ -211,7 +213,7 @@ function AuthForm({ isRegister }) {
           </div>
 
           {isRegister && (
-            <>
+            <div className="jobizaaa-scroll-panel"> {/* Scrollable panel for registration fields */}
               {/* Registration specific fields */}
               <div className="jobizaaa-form-group">
                 <label htmlFor="fullName" className="jobizaaa-form-label">
@@ -387,8 +389,9 @@ function AuthForm({ isRegister }) {
                   </div>
                 )}
               </div>
-            </>
+            </div> 
           )}
+          {/* End of scrollable panel */}
 
           {!isRegister && (
             <>
@@ -452,7 +455,7 @@ function AuthForm({ isRegister }) {
         </form>
       </div>
     </div>
-      <Footer />
+    <Footer/>
     </>
   );
 }
