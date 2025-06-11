@@ -1,0 +1,459 @@
+/* --- General & Typography --- */
+.manage-users-container {
+  padding: 2rem;
+  background-color: #f9fafb;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+.manage-users-heading {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #1f2937;
+  text-align: center;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+.loading-message,
+.error-message,
+.no-users-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #6b7280;
+  padding: 4rem 0;
+}
+.error-message {
+  color: #ef4444;
+}
+
+/* --- Controls & Buttons --- */
+.manage-users-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.view-toggle-buttons {
+  display: flex;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.view-btn {
+  background-color: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.view-btn:first-of-type {
+  border-right: none;
+}
+.view-btn:hover {
+  background-color: #f3f4f6;
+}
+.view-btn.active {
+  background-color: #3b82f6;
+  color: #ffffff;
+  border-color: #3b82f6;
+}
+.export-csv-btn {
+  background-color: #10b981;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.export-csv-btn:hover {
+  background-color: #059669;
+}
+
+/* --- Layouts: Table & Cards --- */
+.users-table-wrapper,
+.user-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.users-table-wrapper {
+  overflow-x: auto;
+}
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1200px;
+}
+.users-table th,
+.users-table td {
+  padding: 1rem 1.25rem;
+  text-align: left;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+.users-table thead {
+  background-color: #f3f4f6;
+  color: #374151;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.users-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+}
+.users-table tbody tr:last-child {
+  border-bottom: none;
+}
+.users-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+.users-table td a,
+.user-card a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+}
+.users-table td a:hover,
+.user-card a:hover {
+  text-decoration: underline;
+}
+.user-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+.user-card {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+.user-card h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+.user-card p {
+  color: #4b5563;
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+.user-card p strong {
+  color: #374151;
+}
+
+/* --- Common Components: Badges, Details, Actions --- */
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+.status-yes {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+.status-no {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+.users-table details,
+.card-details {
+  cursor: pointer;
+}
+.users-table details summary,
+.card-details summary {
+  font-weight: 500;
+  color: #6b7280;
+}
+.card-details summary {
+  font-weight: 600;
+  color: #374151;
+}
+.users-table details ul,
+.card-details ul {
+  margin-top: 0.5rem;
+  padding-left: 1.2rem;
+  list-style-type: disc;
+  color: #4b5563;
+}
+.card-details {
+  margin-top: 0.5rem;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 0.5rem;
+}
+.user-actions,
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+.card-actions {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+.action-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.update-btn {
+  background-color: #60a5fa;
+  color: white;
+}
+.update-btn:hover {
+  background-color: #3b82f6;
+}
+.delete-btn {
+  background-color: #f87171;
+  color: white;
+}
+.delete-btn:hover {
+  background-color: #ef4444;
+}
+
+/* --- Profile Picture & Card Header --- */
+.table-profile-pic,
+.card-profile-pic {
+  border-radius: 50%;
+  object-fit: cover;
+}
+.table-profile-pic {
+  width: 40px;
+  height: 40px;
+}
+.card-profile-pic {
+  width: 60px;
+  height: 60px;
+  border: 2px solid #e5e7eb;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+.card-header-text h3 {
+  margin: 0 0 0.25rem 0;
+}
+.card-header-text p {
+  margin: 0;
+  color: #6b7280;
+}
+.card-header-text a {
+  font-size: 0.9rem;
+}
+.card-status-container {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.timestamps {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 0.75rem;
+}
+
+/* --- Update User Modal --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 650px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+.modal-header h2 {
+  font-size: 1.5rem;
+  color: #1f2937;
+  margin: 0;
+}
+.close-button {
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #6b7280;
+}
+.close-button:hover {
+  color: #1f2937;
+}
+.update-user-form {
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+.form-group-full {
+  grid-column: span 2;
+}
+.form-group label {
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+.form-group input[readonly] {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+}
+.form-group-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.form-group-checkbox input[type="checkbox"] {
+  height: 1.25rem;
+  width: 1.25rem;
+  border-radius: 4px;
+  border-color: #d1d5db;
+}
+.form-group-checkbox label {
+  margin: 0;
+  font-weight: normal;
+}
+.error-message-modal {
+  grid-column: span 2;
+  color: #ef4444;
+  background-color: #fee2e2;
+  border: 1px solid #fca5a5;
+  padding: 0.75rem;
+  border-radius: 6px;
+  text-align: center;
+}
+.modal-actions {
+  grid-column: span 2;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 1rem;
+}
+.save-button,
+.cancel-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.save-button {
+  background-color: #2563eb;
+  color: white;
+}
+.save-button:hover {
+  background-color: #1d4ed8;
+}
+.cancel-button {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+.cancel-button:hover {
+  background-color: #d1d5db;
+}
+.save-button:disabled,
+.cancel-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* --- Media Queries --- */
+@media (max-width: 768px) {
+  .manage-users-container {
+    padding: 1rem;
+  }
+  .manage-users-heading {
+    font-size: 2rem;
+  }
+  .manage-users-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .view-toggle-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+  .update-user-form {
+    grid-template-columns: 1fr;
+  }
+  .form-group,
+  .form-group-full,
+  .form-group-checkbox,
+  .error-message-modal,
+  .modal-actions {
+    grid-column: span 1;
+  }
+  .modal-content {
+    width: 95%;
+  }
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+  .save-button,
+  .cancel-button {
+    width: 100%;
+  }
+}
