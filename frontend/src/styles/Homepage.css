@@ -27,6 +27,7 @@ body {
 .home-container {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--text-medium);
+  background: linear-gradient(135deg, var(--gray-light) 0%, var(--primary-light) 100%);
   line-height: 1.6;
   max-width: 1200px;
   margin: 0 auto;
@@ -43,7 +44,7 @@ a {
   text-decoration: none;
 }
 
-/* Blue border animation for cards */
+
 @keyframes borderGlow {
   0%, 100% {
     box-shadow: 0 0 20px rgba(49, 130, 206, 0.3), 0 0 40px rgba(49, 130, 206, 0.1);
@@ -55,10 +56,11 @@ a {
   }
 }
 
+
 .hero-section {
   text-align: center;
   padding: 5rem 1.5rem;
-  background: linear-gradient(135deg, var(--gray-light) 0%, var(--primary-light) 100%);
+  background: linear-gradient(135deg, var(--gray-light) 0%, var(--primary-light) 100%); 
   border-radius: var(--border-radius);
   margin: 2rem 0 3rem;
 }
@@ -92,8 +94,13 @@ a {
   font-size: 1.1rem;
 }
 
+
 .why-join-section {
   margin: 5rem 0;
+  background-color: var(--white); 
+  padding: 3rem 1.5rem; 
+  border-radius: var(--border-radius); 
+  box-shadow: var(--box-shadow); 
 }
 
 .benefits-grid {
@@ -104,7 +111,7 @@ a {
 }
 
 .benefit-card {
-  background: var(--white);
+  background: var(--white); /* Cards remain white */
   padding: 2rem;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
@@ -141,8 +148,13 @@ a {
   color: var(--text-dark);
 }
 
+
 .executive-roles {
   margin: 5rem 0;
+  background: linear-gradient(135deg, var(--gray-light) 0%, var(--primary-light) 100%); 
+  padding: 3rem 1.5rem; 
+  border-radius: var(--border-radius); 
+  box-shadow: var(--box-shadow); 
 }
 
 .roles-grid {
@@ -168,9 +180,13 @@ a {
   color: var(--white);
 }
 
-/* Testimonial Section */
+
 .testimonial-section {
   margin: 5rem 0;
+  background-color: var(--white); 
+  padding: 3rem 1.5rem;
+  border-radius: var(--border-radius); 
+  box-shadow: var(--box-shadow); 
 }
 
 .testimonial-cards {
@@ -181,7 +197,7 @@ a {
 }
 
 .testimonial-card {
-  background: var(--white);
+  background: var(--white); /* Cards remain white */
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   padding: 2rem;
@@ -225,9 +241,12 @@ a {
   color: var(--text-light);
 }
 
-/* Features Section */
 .features-section {
   margin: 5rem 0;
+  background: linear-gradient(135deg, var(--gray-light) 0%, var(--primary-light) 100%); 
+  padding: 3rem 1.5rem; 
+  border-radius: var(--border-radius); 
+  box-shadow: var(--box-shadow); 
 }
 
 .features-grid {
@@ -238,7 +257,7 @@ a {
 }
 
 .feature-card {
-  background: var(--white);
+  background: var(--white); 
   padding: 2rem;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
@@ -251,13 +270,14 @@ a {
   color: var(--text-dark);
 }
 
-/* User Welcome */
+
 .user-welcome {
   text-align: center;
   margin: 5rem 0;
   padding: 3rem;
-  background: var(--primary-light);
+  background: var(--primary-light); 
   border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 
 .welcome-subtitle {
@@ -271,13 +291,14 @@ a {
   justify-content: center;
 }
 
-/* Final CTA */
+
 .final-cta {
   text-align: center;
   padding: 4rem 2rem;
-  background: linear-gradient(135deg, var(--gray-light) 0%, var(--primary-light) 100%);
+  background-color: var(--white); 
   border-radius: var(--border-radius);
   margin: 4rem 0;
+  box-shadow: var(--box-shadow); 
 }
 
 .cta-content {
