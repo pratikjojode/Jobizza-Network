@@ -10,6 +10,7 @@ const ManageUsers = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [viewMode, setViewMode] = useState("table");
+  const [selectedUserIds, setSelectedUserIds] = useState(new Set()); // New state for selected users
 
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [currentUserToEdit, setCurrentUserToEdit] = useState(null);
@@ -171,6 +172,12 @@ const ManageUsers = () => {
         }
 
         setUsers(users.filter((user) => user._id !== userId));
+        setSelectedUserIds((prev) => {
+          // Remove from selected if it was there
+          const newSet = new Set(prev);
+          newSet.delete(userId);
+          return newSet;
+        });
         alert("User deleted successfully!");
       } catch (err) {
         setError(err.message);
@@ -178,6 +185,75 @@ const ManageUsers = () => {
         alert(`Error deleting user: ${err.message}`);
       }
     }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedUserIds.size === 0) {
+      alert("Please select users to delete.");
+      return;
+    }
+
+    if (
+      !window.confirm(
+        `Are you sure you want to delete ${selectedUserIds.size} selected users? This action cannot be undone.`
+      )
+    ) {
+      return;
+    }
+
+    setLoading(true); // Indicate that a bulk operation is in progress
+    let successfulDeletions = 0;
+    let failedDeletions = 0;
+    const failedUserNames = [];
+
+    for (const userId of selectedUserIds) {
+      try {
+        const response = await fetch(`/api/v1/admin/users/${userId}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          const userToDelete = users.find((u) => u._id === userId);
+          const errorData = await response.json();
+          failedDeletions++;
+          failedUserNames.push(userToDelete?.fullName || userId);
+          console.error(
+            `Failed to delete user ${userId}:`,
+            errorData.message || "Unknown error"
+          );
+        } else {
+          successfulDeletions++;
+        }
+      } catch (err) {
+        const userToDelete = users.find((u) => u._id === userId);
+        failedDeletions++;
+        failedUserNames.push(userToDelete?.fullName || userId);
+        console.error(`Error deleting user ${userId}:`, err);
+      }
+    }
+
+    // After all deletions, re-fetch or filter local state
+    if (successfulDeletions > 0) {
+      alert(`${successfulDeletions} users deleted successfully.`);
+    }
+    if (failedDeletions > 0) {
+      alert(
+        `${failedDeletions} users failed to delete: ${failedUserNames.join(
+          ", "
+        )}. Check console for details.`
+      );
+    }
+
+    // Re-fetch users to get the most up-to-date list and clear selected items
+    // Alternatively, filter 'users' state locally:
+    setUsers((prevUsers) =>
+      prevUsers.filter((user) => !selectedUserIds.has(user._id))
+    );
+    setSelectedUserIds(new Set()); // Clear selection
+    setLoading(false); // End loading indication
   };
 
   const toggleUserStatus = async (userId, field, currentValue) => {
@@ -364,6 +440,27 @@ const ManageUsers = () => {
     setUpdateLoading(false);
   };
 
+  const handleSelectUser = (userId) => {
+    setSelectedUserIds((prevSelected) => {
+      const newSelected = new Set(prevSelected);
+      if (newSelected.has(userId)) {
+        newSelected.delete(userId);
+      } else {
+        newSelected.add(userId);
+      }
+      return newSelected;
+    });
+  };
+
+  const handleSelectAllUsers = (e) => {
+    if (e.target.checked) {
+      const allUserIds = new Set(users.map((user) => user._id));
+      setSelectedUserIds(allUserIds);
+    } else {
+      setSelectedUserIds(new Set());
+    }
+  };
+
   const renderCollapsibleList = (items, name) => {
     if (items && items.length > 0) {
       return (
@@ -423,9 +520,18 @@ const ManageUsers = () => {
             Card View
           </button>
         </div>
-        <button className="export-csv-btn" onClick={exportUsersToCsv}>
-          Export to CSV
-        </button>
+        <div className="action-buttons">
+          <button className="export-csv-btn" onClick={exportUsersToCsv}>
+            Export to CSV
+          </button>
+          <button
+            className="delete-selected-btn"
+            onClick={handleBulkDelete}
+            disabled={selectedUserIds.size === 0 || loading}
+          >
+            Delete Selected ({selectedUserIds.size})
+          </button>
+        </div>
       </div>
 
       {viewMode === "table" ? (
@@ -433,6 +539,17 @@ const ManageUsers = () => {
           <table className="users-table">
             <thead>
               <tr>
+                <th>
+                  <input
+                    type="checkbox"
+                    onChange={handleSelectAllUsers}
+                    checked={
+                      selectedUserIds.size === users.length && users.length > 0
+                    }
+                    disabled={users.length === 0}
+                  />
+                </th>{" "}
+                {/* New Select All checkbox */}
                 <th>ID</th>
                 <th>Profile</th>
                 <th>Full Name</th>
@@ -455,6 +572,14 @@ const ManageUsers = () => {
             <tbody>
               {users.map((user) => (
                 <tr key={user._id}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={selectedUserIds.has(user._id)}
+                      onChange={() => handleSelectUser(user._id)}
+                    />
+                  </td>{" "}
+                  {/* Individual user checkbox */}
                   <td title={user._id}>
                     {user._id ? user._id.slice(-6) : "N/A"}
                   </td>
@@ -568,6 +693,13 @@ const ManageUsers = () => {
         <div className="user-cards-grid">
           {users.map((user) => (
             <div key={user._id} className="user-card">
+              <div className="card-selection">
+                <input
+                  type="checkbox"
+                  checked={selectedUserIds.has(user._id)}
+                  onChange={() => handleSelectUser(user._id)}
+                />
+              </div>
               <div className="card-header">
                 <img
                   src={user.profilePic || DEFAULT_PROFILE_PIC}

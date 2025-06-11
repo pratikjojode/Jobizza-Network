@@ -1,22 +1,80 @@
-/* Admin Dashboard Layout */
+/* Variables for consistent theming */
+:root {
+  /* Colors */
+  --jobizaa-primary-blue: #63a4ff; /* A vibrant light blue */
+  --jobizaa-dark-primary: #1a1a1a; /* Very dark for backgrounds like sidebar */
+  --jobizaa-dark-secondary: #2c3e50; /* Slightly lighter dark for accents */
+  --jobizaa-white: #ffffff;
+  --jobizaa-off-white: #f8f9fa; /* Light background for content area */
+  --jobizaa-light-gray-bg: #eff2f7; /* Very light background for overall layout */
+  --jobizaa-text-dark: #333333; /* Standard dark text */
+  --jobizaa-text-medium: #555555; /* Lighter general text */
+  --jobizaa-text-light: #e0e7ff; /* Text on dark backgrounds */
+  --jobizaa-border-light: rgba(
+    255,
+    255,
+    255,
+    0.15
+  ); /* For subtle borders on dark */
+  --jobizaa-shadow-soft: rgba(0, 0, 0, 0.05); /* Light shadow */
+  --jobizaa-shadow-medium: rgba(0, 0, 0, 0.1); /* Medium shadow */
+  --jobizaa-success-color: #28a745;
+  --jobizaa-error-color: #dc3545;
+
+  /* Spacing */
+  --jobizaa-header-height: 60px;
+  --jobizaa-sidebar-width: 260px;
+  --jobizaa-sidebar-collapsed-width: 80px;
+  --jobizaa-padding-xs: 10px; /* Extra small padding */
+  --jobizaa-padding-sm: 15px;
+  --jobizaa-padding-md: 20px;
+  --jobizaa-padding-lg: 30px;
+  --jobizaa-padding-xl: 40px;
+
+  /* Typography */
+  --jobizaa-font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  --jobizaa-font-size-xs: 0.85rem;
+  --jobizaa-font-size-sm: 0.9rem;
+  --jobizaa-font-size-base: 1rem;
+  --jobizaa-font-size-md: 1.1rem;
+  --jobizaa-font-size-lg: 1.3rem;
+  --jobizaa-font-size-xl: 1.4rem;
+
+  /* Border Radius */
+  --jobizaa-border-radius-sm: 5px;
+  --jobizaa-border-radius-md: 8px;
+  --jobizaa-border-radius-lg: 10px;
+
+  /* Transitions */
+  --jobizaa-transition-ease: all 0.3s ease-in-out;
+}
+
+/* Universal box-sizing for consistent layout */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* --- Admin Dashboard Layout --- */
 .admin-dashboard-layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f8f9fa;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  overflow-x: hidden;
+  background-color: var(--jobizaa-light-gray-bg);
+  font-family: var(--jobizaa-font-family);
+  overflow-x: hidden; /* Prevents overall horizontal scrollbar from the layout itself */
 }
 
-/* Sticky Header */
+/* --- Sticky Header --- */
 .admin-header {
-  height: 60px;
-  background: #fff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  height: var(--jobizaa-header-height);
+  background: var(--jobizaa-white);
+  box-shadow: 0 2px 10px var(--jobizaa-shadow-medium);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 30px;
+  padding: 0 var(--jobizaa-padding-lg);
   position: fixed;
   top: 0;
   left: 0;
@@ -28,161 +86,215 @@
 .header-left {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: var(--jobizaa-padding-sm);
 }
+
 .header-logo {
-  font-size: 1.4rem;
+  font-size: var(--jobizaa-font-size-xl);
   font-weight: 700;
-  color: #1a2a4c;
-  background: linear-gradient(90deg, #1a2a4c 0%, #3d7bff 100%);
+  background: linear-gradient(
+    90deg,
+    var(--jobizaa-dark-primary) 0%,
+    var(--jobizaa-primary-blue) 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
 .header-right {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: var(--jobizaa-padding-md);
 }
+
 .header-icon-btn {
   background: none;
   border: none;
-  color: #5e6e82;
-  font-size: 1.2rem;
+  color: var(--jobizaa-text-medium);
+  font-size: 1.4rem; /* Slightly larger icon */
   cursor: pointer;
-  width: 36px;
-  height: 36px;
+  width: 38px; /* Slightly larger clickable area */
+  height: 38px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s;
+  transition: var(--jobizaa-transition-ease);
 }
+
 .header-icon-btn:hover {
-  background-color: #f0f4ff;
-  color: #3d7bff;
+  background-color: rgba(99, 164, 255, 0.1); /* Very light blue background */
+  color: var(--jobizaa-primary-blue);
 }
+
 .user-dropdown {
   position: relative;
 }
+
 .user-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #3d7bff 0%, #1a2a4c 100%);
-  color: #fff;
+  background: linear-gradient(
+    135deg,
+    var(--jobizaa-primary-blue) 0%,
+    var(--jobizaa-dark-secondary) 100%
+  );
+  color: var(--jobizaa-white);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 2px 5px var(--jobizaa-shadow-soft);
 }
+
 .dropdown-content {
   display: none;
   position: absolute;
   right: 0;
   top: 100%;
-  background-color: #fff;
+  background-color: var(--jobizaa-white);
   min-width: 200px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  box-shadow: 0 8px 16px var(--jobizaa-shadow-medium);
+  border-radius: var(--jobizaa-border-radius-md);
   padding: 10px 0;
   z-index: 1;
   margin-top: 5px;
+  animation: fadeIn 0.2s ease-out; /* Subtle fade-in */
 }
+
 .dropdown-content a,
 .dropdown-content button {
   display: block;
-  padding: 10px 20px;
+  padding: 10px var(--jobizaa-padding-md);
   text-decoration: none;
-  color: #333;
-  font-size: 0.9rem;
+  color: var(--jobizaa-text-dark);
+  font-size: var(--jobizaa-font-size-sm);
   text-align: left;
   width: 100%;
   background: none;
   border: none;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: var(--jobizaa-transition-ease);
 }
+
 .dropdown-content a:hover,
 .dropdown-content button:hover {
-  background-color: #f8f9ff;
-  color: #3d7bff;
+  background-color: var(--jobizaa-light-gray-bg); /* Very light gray */
+  color: var(--jobizaa-primary-blue);
 }
+
 .user-dropdown:hover .dropdown-content {
   display: block;
 }
 
-/* Main Layout */
+/* Keyframe for dropdown animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Main Layout --- */
 .admin-main-container {
   display: flex;
   flex: 1;
-  margin-top: 60px; /* Push content below fixed header */
+  margin-top: var(
+    --jobizaa-header-height
+  ); /* Push content below fixed header */
 }
 
-/* Sidebar */
+/* --- Sidebar --- */
 .admin-sidebar {
-  width: 260px;
-  background: linear-gradient(180deg, #1a2a4c 0%, #0d1b33 100%);
-  color: #fff;
+  width: var(--jobizaa-sidebar-width);
+  background: linear-gradient(
+    180deg,
+    var(--jobizaa-dark-primary) 0%,
+    var(--jobizaa-dark-secondary) 100%
+  );
+  color: var(--jobizaa-white);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   position: fixed;
-  top: 60px;
+  top: var(--jobizaa-header-height);
   left: 0;
-  height: calc(100vh - 60px);
+  height: calc(100vh - var(--jobizaa-header-height));
   overflow-y: auto;
-  transition: width 0.3s ease-out;
+  transition: var(--jobizaa-transition-ease);
   z-index: 900;
 }
+
 .sidebar-heading {
-  padding: 25px 20px;
-  font-size: 1.3rem;
+  padding: var(--jobizaa-padding-md) var(--jobizaa-padding-md);
+  font-size: var(--jobizaa-font-size-lg);
   font-weight: 600;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--jobizaa-border-light);
+  color: var(--jobizaa-primary-blue); /* Highlight sidebar heading */
 }
+
 .sidebar-menu {
   list-style: none;
-  padding: 20px 0;
+  padding: var(--jobizaa-padding-md) 0;
   margin: 0;
   flex-grow: 1;
 }
+
 .sidebar-menu li {
-  margin: 3px 0;
+  margin-bottom: 5px; /* Slight spacing between list items */
 }
+
 .sidebar-link {
   display: flex;
   align-items: center;
-  padding: 14px 25px;
-  color: #e0e7ff;
+  padding: 14px var(--jobizaa-padding-lg);
+  color: var(--jobizaa-text-light);
   text-decoration: none;
-  transition: all 0.25s ease;
-  font-size: 1rem;
+  transition: var(--jobizaa-transition-ease);
+  font-size: var(--jobizaa-font-size-base);
   font-weight: 500;
   border-left: 4px solid transparent;
 }
+
 .sidebar-link i {
-  margin-right: 15px;
+  margin-right: var(--jobizaa-padding-sm);
   width: 20px;
   text-align: center;
 }
+
 .sidebar-link:hover {
-  background-color: rgba(255, 255, 255, 0.08);
-  color: #fff;
-  border-left: 4px solid #3d7bff;
+  background-color: rgba(99, 164, 255, 0.1); /* Light blue tint on hover */
+  color: var(--jobizaa-white);
+  border-left: 4px solid var(--jobizaa-primary-blue);
 }
+
 .sidebar-link.active {
-  background-color: rgba(61, 123, 255, 0.15);
-  border-left: 4px solid #3d7bff;
+  background-color: rgba(
+    99,
+    164,
+    255,
+    0.2
+  ); /* More prominent light blue tint for active */
+  color: var(--jobizaa-white);
+  border-left: 4px solid var(--jobizaa-primary-blue);
+  font-weight: 600;
 }
+
 .sidebar-footer {
-  padding: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: var(--jobizaa-padding-md);
+  border-top: 1px solid var(--jobizaa-border-light);
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
+
 .logout-button,
 .dashboard-home-link {
   display: flex;
@@ -192,66 +304,81 @@
   width: 100%;
   padding: 13px;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--jobizaa-border-radius-md);
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: var(--jobizaa-font-size-base);
   font-weight: 600;
-  transition: all 0.3s;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  transition: var(--jobizaa-transition-ease);
+  box-shadow: 0 2px 5px var(--jobizaa-shadow-medium);
   text-decoration: none;
 }
+
 .logout-button {
-  background: rgba(230, 57, 70, 0.9);
-  color: #fff;
+  background: var(--jobizaa-error-color);
+  color: var(--jobizaa-white);
 }
+
 .logout-button:hover {
-  background: rgba(214, 48, 49, 1);
+  background: #c82333; /* A slightly darker red for hover */
 }
+
 .dashboard-home-link {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #3d7bff;
+  background-color: rgba(255, 255, 255, 0.1); /* Subtle white tint */
+  color: var(--jobizaa-text-light); /* Light text on dark background */
 }
+
 .dashboard-home-link:hover {
   background-color: rgba(255, 255, 255, 0.2);
-  color: #fff;
+  color: var(--jobizaa-white);
 }
 
-/* Content Area */
+/* --- Content Area --- */
 .admin-content {
   flex: 1;
-  margin-left: 260px;
-  padding: 35px 40px;
+  margin-left: var(--jobizaa-sidebar-width);
+  padding: var(--jobizaa-padding-lg) var(--jobizaa-padding-xl);
   overflow-y: auto;
-  background-color: #f8f9fa;
-  transition: margin-left 0.3s ease-out;
-}
-.dashboard-welcome-text {
-  background: linear-gradient(120deg, #e3eeff 0%, #f3f7ff 100%);
-  padding: 18px 25px;
-  border-radius: 8px;
-  color: #1a2a4c;
-  margin-bottom: 30px;
-  font-size: 1.1rem;
-  border-left: 5px solid #3d7bff;
-  font-weight: 500;
+  background-color: var(--jobizaa-off-white);
+  transition: var(--jobizaa-transition-ease);
 }
 
-/* Sidebar Collapse */
+.dashboard-welcome-text {
+  background: linear-gradient(
+    120deg,
+    rgba(99, 164, 255, 0.2) 0%,
+    var(--jobizaa-white) 100%
+  );
+  padding: var(--jobizaa-padding-md) var(--jobizaa-padding-lg);
+  border-radius: var(--jobizaa-border-radius-md);
+  color: var(--jobizaa-dark-primary);
+  margin-bottom: var(--jobizaa-padding-lg);
+  font-size: var(--jobizaa-font-size-md);
+  border-left: 5px solid var(--jobizaa-primary-blue);
+  font-weight: 500;
+  box-shadow: 0 2px 5px var(--jobizaa-shadow-soft);
+}
+
+/* --- Sidebar Collapse --- */
 .admin-sidebar.collapsed {
-  width: 80px;
+  width: var(--jobizaa-sidebar-collapsed-width);
 }
+
 .admin-sidebar.collapsed + .admin-content {
-  margin-left: 80px;
+  margin-left: var(--jobizaa-sidebar-collapsed-width);
 }
+
 .admin-sidebar.collapsed .sidebar-heading,
 .admin-sidebar.collapsed .sidebar-link span,
-.admin-sidebar.collapsed .sidebar-footer span {
+.admin-sidebar.collapsed .sidebar-footer .logout-button span,
+.admin-sidebar.collapsed .sidebar-footer .dashboard-home-link span {
   display: none;
 }
+
 .admin-sidebar.collapsed .sidebar-link {
   justify-content: center;
   padding: 14px 0;
 }
+
 .admin-sidebar.collapsed .logout-button,
 .admin-sidebar.collapsed .dashboard-home-link {
   width: 50px;
@@ -260,26 +387,33 @@
   font-size: 1.2rem;
   padding: 0;
 }
+.admin-sidebar.collapsed .logout-button i,
+.admin-sidebar.collapsed .dashboard-home-link i {
+  margin: 0; /* Remove margin for centered icon */
+}
 
-/* Toggle Button */
+/* --- Toggle Button (for header) --- */
 .sidebar-toggle-btn {
   background: none;
   border: none;
-  color: #5e6e82;
+  color: var(--jobizaa-text-medium);
   font-size: 1.8rem;
   cursor: pointer;
   padding: 5px;
-  border-radius: 5px;
+  border-radius: var(--jobizaa-border-radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.sidebar-toggle-btn:hover {
-  background-color: #f0f4ff;
-  color: #3d7bff;
+  transition: var(--jobizaa-transition-ease);
 }
 
-/* Icons */
+.sidebar-toggle-btn:hover {
+  background-color: rgba(99, 164, 255, 0.1);
+  color: var(--jobizaa-primary-blue);
+}
+
+/* --- Icons --- */
+/* (Assuming these are handled by a font icon library or emojis) */
 .icon-bell:before {
   content: "🔔";
 }
@@ -309,24 +443,24 @@
 }
 .icon-collapse:before {
   content: "◀️";
-}
+} /* Or a chevron-left icon from a library */
 .icon-expand:before {
   content: "▶️";
-}
+} /* Or a chevron-right icon from a library */
 
-/* Media Queries */
+/* --- Media Queries --- */
 @media (max-width: 1024px) {
   .admin-sidebar {
-    width: 220px;
+    width: calc(var(--jobizaa-sidebar-width) - 40px);
   }
   .admin-content {
-    margin-left: 220px;
+    margin-left: calc(var(--jobizaa-sidebar-width) - 40px);
   }
   .admin-sidebar.collapsed {
-    width: 70px;
+    width: calc(var(--jobizaa-sidebar-collapsed-width) - 10px);
   }
   .admin-sidebar.collapsed + .admin-content {
-    margin-left: 70px;
+    margin-left: calc(var(--jobizaa-sidebar-collapsed-width) - 10px);
   }
 }
 
@@ -334,51 +468,135 @@
   .admin-sidebar {
     position: fixed;
     transform: translateX(-100%);
-    width: 260px;
-    top: 60px;
-    height: calc(100vh - 60px);
+    width: var(--jobizaa-sidebar-width); /* Full width when open on mobile */
+    top: var(--jobizaa-header-height);
+    height: calc(100vh - var(--jobizaa-header-height));
     transition: transform 0.3s ease-out;
+    box-shadow: 2px 0 10px var(--jobizaa-shadow-medium); /* Shadow to indicate depth */
   }
   .admin-sidebar.mobile-open {
     transform: translateX(0);
   }
   .admin-content {
-    margin-left: 0;
-    padding-top: 70px;
+    margin-left: 0; /* Content always full width on mobile */
+    padding: var(--jobizaa-padding-md) var(--jobizaa-padding-sm); /* Adjusted horizontal padding for small screens */
+    padding-top: calc(
+      var(--jobizaa-header-height) + var(--jobizaa-padding-md)
+    ); /* Keep top padding */
   }
+  /* Overlay for when sidebar is open on mobile */
   .sidebar-overlay {
     display: none;
-  }
-  .sidebar-overlay.open {
-    display: block;
     position: fixed;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 899;
+    cursor: pointer;
+  }
+  .sidebar-overlay.open {
+    display: block;
+  }
+  /* Hide specific elements on mobile header if desired, e.g., for more space */
+  .header-logo {
+    font-size: var(--jobizaa-font-size-lg);
+  }
+  .header-icon-btn {
+    font-size: 1.2rem;
+    width: 32px;
+    height: 32px;
+  }
+
+  /* --- Specific fixes for content within admin-content for responsiveness --- */
+
+  /* For the container of your cards, e.g., if you have multiple cards */
+  .user-cards-container {
+    /* This is an assumption, replace with your actual class */
+    display: flex;
+    flex-wrap: wrap; /* Allow cards to wrap to the next line */
+    justify-content: center; /* Center cards if there's only one or an odd number */
+    gap: var(--jobizaa-padding-md); /* Space between cards */
+    padding: 0; /* Ensure no extra padding causing overflow */
+    margin: 0;
+  }
+
+  /* For individual user cards */
+  .user-card {
+    /* This is an assumption, replace with your actual class */
+    width: 100%; /* Ensure it takes full available width */
+    max-width: 100%; /* Crucial to prevent overflow */
+    margin: 0 auto var(--jobizaa-padding-md) auto; /* Center card and add bottom margin */
+    padding: var(--jobizaa-padding-sm); /* Example padding inside the card */
+    box-shadow: 0 2px 8px var(--jobizaa-shadow-soft); /* Subtle shadow for definition */
+    border-radius: var(--jobizaa-border-radius-md);
+    background-color: var(--jobizaa-white);
+  }
+
+  /* Ensure text inside cards wraps properly */
+  .user-card p,
+  .user-card span,
+  .user-card div {
+    word-break: break-word; /* Force long words to break */
+    overflow-wrap: break-word; /* Standard property for word wrapping */
+    white-space: normal; /* Ensure text wraps normally, overriding any nowrap */
+  }
+
+  /* General responsive rules for images and tables that might cause overflow */
+  .admin-content img {
+    max-width: 100%;
+    height: auto;
+    display: block; /* Ensures images behave as blocks */
+  }
+
+  .admin-content table {
+    width: 100%; /* Make tables fill their container */
+    display: block; /* Allow horizontal scrolling if table content overflows */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
   }
 }
 
 @media (max-width: 480px) {
   .admin-header {
-    height: 55px;
-    padding: 0 10px;
+    height: calc(var(--jobizaa-header-height) - 5px);
+    padding: 0 var(--jobizaa-padding-xs); /* Even smaller padding on very small screens */
   }
   .header-logo {
-    font-size: 1.1rem;
+    font-size: var(--jobizaa-font-size-md);
   }
   .user-avatar {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
   }
   .admin-sidebar {
-    width: 250px;
+    width: 250px; /* Adjust sidebar width for smaller mobile screens if needed */
   }
   .sidebar-link {
-    font-size: 0.9rem;
+    font-size: var(--jobizaa-font-size-sm);
   }
   .logout-button,
   .dashboard-home-link {
-    font-size: 0.85rem;
+    font-size: var(--jobizaa-font-size-xs);
     padding: 10px;
   }
+}
+/* Active Link Styling */
+.sidebar-link.isActive {
+  background-color: #1d3557; /* Darker background to show selection */
+  color: #ffffff !important; /* White text */
+  font-weight: 600;
+  border-left: 4px solid #ffd700; /* Gold accent for active item */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar-link.isActive svg {
+  color: #ffd700; /* Gold icon for active link */
+}
+
+.sidebar-link:hover {
+  background-color: #2b3e5c;
+  color: #fff;
+}
+
+.sidebar-link span {
+  margin-left: 10px;
 }

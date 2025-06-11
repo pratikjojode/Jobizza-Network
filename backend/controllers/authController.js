@@ -57,15 +57,39 @@ export const registerUser = async (req, res) => {
       }
     }
 
-    const parsedFinancialCertifications = financialCertifications
-      ? JSON.parse(financialCertifications)
-      : [];
-    const parsedIndustrySpecializations = industrySpecializations
-      ? JSON.parse(industrySpecializations)
-      : [];
-    const parsedKeyFinancialSkills = keyFinancialSkills
-      ? JSON.parse(keyFinancialSkills)
-      : [];
+    // Helper function to safely parse array fields
+    const parseArrayField = (field) => {
+      if (!field) return [];
+
+      // If it's already an array, return it filtered
+      if (Array.isArray(field)) {
+        return field
+          .map((item) => String(item).trim())
+          .filter((item) => item.length > 0);
+      }
+
+      // If it's a string, split it
+      if (typeof field === "string") {
+        return field
+          .split(",")
+          .map((item) => item.trim())
+          .filter((item) => item.length > 0);
+      }
+
+      // For any other type, try to convert to string first
+      return String(field)
+        .split(",")
+        .map((item) => item.trim())
+        .filter((item) => item.length > 0);
+    };
+
+    const parsedFinancialCertifications = parseArrayField(
+      financialCertifications
+    );
+    const parsedIndustrySpecializations = parseArrayField(
+      industrySpecializations
+    );
+    const parsedKeyFinancialSkills = parseArrayField(keyFinancialSkills);
 
     const newUser = new User({
       email,

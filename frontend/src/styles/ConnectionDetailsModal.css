@@ -1,0 +1,173 @@
+/* ConnectionDetailsModal.css */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure modal is on top of other content */
+  animation: fadeIn 0.3s ease-out; /* Fade-in animation */
+}
+
+.modal-content {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 600px; /* Max width for readability */
+  max-height: 90vh; /* Max height to allow scrolling if content is long */
+  overflow-y: auto; /* Enable vertical scrolling */
+  position: relative;
+  transform: translateY(0);
+  animation: slideIn 0.3s ease-out; /* Slide-in animation */
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.8em;
+  font-weight: 600;
+}
+
+.modal-close-button {
+  background: none;
+  border: none;
+  font-size: 2em;
+  color: #7f8c8d;
+  cursor: pointer;
+  padding: 0 5px;
+  transition: color 0.2s ease;
+}
+
+.modal-close-button:hover {
+  color: #e74c3c;
+}
+
+.modal-body {
+  line-height: 1.6;
+}
+
+.modal-body p {
+  margin-bottom: 10px;
+  font-size: 0.95em;
+  color: #444;
+}
+
+.modal-body strong {
+  color: #333;
+}
+
+.modal-section {
+  background-color: #f8faff; /* Light background for sections */
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.modal-section h3 {
+  color: #3498db;
+  font-size: 1.2em;
+  margin-top: 0;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #dbe8f7; /* Lighter border for section title */
+  padding-bottom: 8px;
+}
+
+/* Status styling within modal */
+.modal-body .status-pending {
+  color: #f39c12;
+  font-weight: bold;
+}
+.modal-body .status-accepted {
+  color: #27ae60;
+  font-weight: bold;
+}
+.modal-body .status-declined {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.modal-footer {
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+  margin-top: 25px;
+  text-align: right;
+}
+
+.modal-close-button-footer {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.2s ease;
+}
+
+.modal-close-button-footer:hover {
+  background-color: #5a6268;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive adjustments for modal */
+@media (max-width: 600px) {
+  .modal-content {
+    width: 95%;
+    padding: 20px;
+    margin: 10px;
+  }
+
+  .modal-header h2 {
+    font-size: 1.5em;
+  }
+
+  .modal-close-button {
+    font-size: 1.8em;
+  }
+
+  .modal-body p,
+  .modal-section p {
+    font-size: 0.9em;
+  }
+
+  .modal-section h3 {
+    font-size: 1.1em;
+  }
+}
