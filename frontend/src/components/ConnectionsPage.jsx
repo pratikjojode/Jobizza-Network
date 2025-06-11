@@ -4,7 +4,6 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 
 import "../styles/ConnectionsPage.css";
-import Header from "./Header";
 
 function ConnectionsPage() {
   const { user, logout } = useAuth();
@@ -75,7 +74,10 @@ function ConnectionsPage() {
             String(conn.sender._id) === String(user.id)
               ? String(conn.receiver._id)
               : String(conn.sender._id);
-          statusMap[connectedUserId] = "accepted";
+          statusMap[connectedUserId] = {
+            status: "accepted",
+            requestId: conn._id,
+          };
         } else {
           console.warn("Skipping malformed accepted connection:", conn);
         }
@@ -85,7 +87,10 @@ function ConnectionsPage() {
       sentPendingRequests.forEach((req) => {
         // Ensure receiver exists and has _id
         if (req.receiver?._id) {
-          statusMap[String(req.receiver._id)] = "pending_sent";
+          statusMap[String(req.receiver._id)] = {
+            status: "pending_sent",
+            requestId: req._id,
+          };
         } else {
           console.warn("Skipping malformed sent pending request:", req);
         }
@@ -95,13 +100,17 @@ function ConnectionsPage() {
       receivedPendingRequests.forEach((req) => {
         // Ensure sender exists and has _id
         if (req.sender?._id) {
-          statusMap[String(req.sender._id)] = "pending_received";
+          statusMap[String(req.sender._id)] = {
+            status: "pending_received",
+            requestId: req._id, // Store the connection request ID here
+          };
         } else {
           console.warn("Skipping malformed received pending request:", req);
         }
       });
 
       setUserConnectionStatuses(statusMap);
+      console.log("Current user connection statuses:", statusMap); // Log the status map
     } catch (err) {
       console.error("Error fetching data:", err);
       if (
@@ -142,7 +151,7 @@ function ConnectionsPage() {
     }
 
     try {
-      await axios.post(
+      const response = await axios.post(
         "/api/v1/connections",
         { receiverId },
         {
@@ -152,9 +161,13 @@ function ConnectionsPage() {
         }
       );
       alert("Connection request sent!");
+      // Assuming your backend response for POST /api/v1/connections includes the newly created connection's _id
       setUserConnectionStatuses((prev) => ({
         ...prev,
-        [receiverId]: "pending_sent",
+        [receiverId]: {
+          status: "pending_sent",
+          requestId: response.data.data._id,
+        },
       }));
     } catch (err) {
       alert(
@@ -165,7 +178,8 @@ function ConnectionsPage() {
   };
 
   const getConnectionStatusText = (userId) => {
-    const status = userConnectionStatuses[userId];
+    const statusData = userConnectionStatuses[userId];
+    const status = statusData ? statusData.status : null; // Access the status property
     switch (status) {
       case "accepted":
         return "Connected";
@@ -181,7 +195,8 @@ function ConnectionsPage() {
   };
 
   const isConnectButtonDisabled = (userId) => {
-    const status = userConnectionStatuses[userId];
+    const statusData = userConnectionStatuses[userId];
+    const status = statusData ? statusData.status : null; // Access the status property
     return (
       status === "accepted" ||
       status === "pending_sent" ||
@@ -196,9 +211,17 @@ function ConnectionsPage() {
       return;
     }
 
+    // Get the connection request ID from the status map
+    const connectionRequestData = userConnectionStatuses[senderId];
+    if (!connectionRequestData || !connectionRequestData.requestId) {
+      alert("Connection request ID not found for acceptance. Cannot proceed.");
+      return;
+    }
+    const requestId = connectionRequestData.requestId;
+
     try {
-      await axios.patch(
-        `/api/v1/connections/${senderId}/accept`,
+      await axios.put(
+        `/api/v1/connections/${requestId}/accept`, // Use the requestId here
         {},
         {
           headers: { Authorization: `Bearer ${storedToken}` },
@@ -207,7 +230,7 @@ function ConnectionsPage() {
       alert("Connection request accepted!");
       setUserConnectionStatuses((prev) => ({
         ...prev,
-        [senderId]: "accepted",
+        [senderId]: { status: "accepted", requestId: requestId }, // Update the status correctly
       }));
     } catch (err) {
       alert(
@@ -225,9 +248,17 @@ function ConnectionsPage() {
       return;
     }
 
+    // Get the connection request ID from the status map
+    const connectionRequestData = userConnectionStatuses[senderId];
+    if (!connectionRequestData || !connectionRequestData.requestId) {
+      alert("Connection request ID not found for decline. Cannot proceed.");
+      return;
+    }
+    const requestId = connectionRequestData.requestId;
+
     try {
       await axios.patch(
-        `/api/v1/connections/${senderId}/decline`,
+        `/api/v1/connections/${requestId}/decline`, // Use the requestId here
         {},
         {
           headers: { Authorization: `Bearer ${storedToken}` },
@@ -236,7 +267,7 @@ function ConnectionsPage() {
       alert("Connection request declined!");
       setUserConnectionStatuses((prev) => ({
         ...prev,
-        [senderId]: "declined",
+        [senderId]: { status: "declined", requestId: requestId }, // Update the status correctly
       }));
     } catch (err) {
       alert(
@@ -370,7 +401,7 @@ function ConnectionsPage() {
                   <span className="stat-number">
                     {
                       Object.values(userConnectionStatuses).filter(
-                        (status) => status === "accepted"
+                        (statusData) => statusData.status === "accepted"
                       ).length
                     }
                   </span>
@@ -380,7 +411,7 @@ function ConnectionsPage() {
                   <span className="stat-number">
                     {
                       Object.values(userConnectionStatuses).filter(
-                        (status) => status === "pending_received"
+                        (statusData) => statusData.status === "pending_received"
                       ).length
                     }
                   </span>
@@ -445,7 +476,7 @@ function ConnectionsPage() {
                       </div>
 
                       <div className="user-actions">
-                        {userConnectionStatuses[otherUser._id] ===
+                        {userConnectionStatuses[otherUser._id]?.status ===
                         "pending_received" ? (
                           <div className="pending-actions">
                             <button
@@ -495,7 +526,8 @@ function ConnectionsPage() {
                       You have{" "}
                       {
                         Object.values(userConnectionStatuses).filter(
-                          (status) => status === "pending_received"
+                          (statusData) =>
+                            statusData.status === "pending_received"
                         ).length
                       }{" "}
                       pending connection requests
@@ -510,7 +542,7 @@ function ConnectionsPage() {
                       You're connected with{" "}
                       {
                         Object.values(userConnectionStatuses).filter(
-                          (status) => status === "accepted"
+                          (statusData) => statusData.status === "accepted"
                         ).length
                       }{" "}
                       professionals

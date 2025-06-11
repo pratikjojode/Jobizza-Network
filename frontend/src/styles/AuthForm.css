@@ -1,326 +1,334 @@
-/* General Body and HTML styling */
-body, html {
-    margin: 0;
-    padding: 0;
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #e0f2f7 0%, #ffffff 100%); /* Light blue to white gradient background */
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #333;
-}
-
 /* Main Container for Auth Form */
 .jobizaaa-auth-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    width: 100%;
-    padding: 20px;
-    box-sizing: border-box;
-    /* Ensure container itself is responsive */
-    flex-direction: column; /* Allows content to stack vertically on small screens */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  /* Ensure container itself is responsive */
+  flex-direction: column; /* Allows content to stack vertically on small screens */
 }
 
 /* Auth Card Styling */
 .jobizaaa-auth-card {
-    background: #ffffff;
-    border-radius: 15px; /* Rounded corners */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Soft shadow */
-    padding: 40px;
-    max-width: 600px; /* Increased max-width for register form */
-    width: 100%;
-    text-align: center;
-    animation: fadeInScale 0.8s ease-out; /* Fade in and slight scale animation */
-    margin: 20px; /* Add some margin for smaller screens */
-    box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+  background: #ffffff;
+  border-radius: 15px; /* Rounded corners */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  padding: 40px;
+  max-width: 600px; /* Increased max-width for register form */
+  width: 100%;
+  text-align: center;
+  animation: fadeInScale 0.8s ease-out; /* Fade in and slight scale animation */
+  margin: 20px; /* Add some margin for smaller screens */
+  box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
 }
 
 /* Animations */
 @keyframes fadeInScale {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* Headings and Intro Text */
 .jobizaaa-auth-heading {
-    color: #2a6f97; /* Darker blue for heading */
-    font-size: 2.2em;
-    margin-bottom: 15px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
+  color: #2a6f97; /* Darker blue for heading */
+  font-size: 2.2em;
+  margin-bottom: 15px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
 .jobizaaa-auth-intro-text {
-    color: #555;
-    font-size: 1.1em;
-    line-height: 1.6;
-    margin-bottom: 30px;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
+  color: #555;
+  font-size: 1.1em;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Form Styling */
 .jobizaaa-auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px; /* Space between form groups */
-    text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Space between form groups */
+  text-align: left;
 }
 
 .jobizaaa-form-group {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .jobizaaa-form-label {
-    display: block;
-    margin-bottom: 8px;
-    color: #444;
-    font-weight: 600;
-    font-size: 0.95em;
+  display: block;
+  margin-bottom: 8px;
+  color: #444;
+  font-weight: 600;
+  font-size: 0.95em;
 }
 
 .jobizaaa-form-input,
 .jobizaaa-form-input-file,
 .jobizaaa-form-group select {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #cce7f0; /* Light blue border */
-    border-radius: 8px; /* Rounded corners */
-    font-size: 1em;
-    color: #333;
-    transition: all 0.3s ease; /* Smooth transition for focus/hover */
-    box-sizing: border-box; /* Include padding in width */
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #cce7f0; /* Light blue border */
+  border-radius: 8px; /* Rounded corners */
+  font-size: 1em;
+  color: #333;
+  transition: all 0.3s ease; /* Smooth transition for focus/hover */
+  box-sizing: border-box; /* Include padding in width */
 }
 
 .jobizaaa-form-input:focus,
 .jobizaaa-form-group select:focus {
-    border-color: #007bff; /* Bright blue on focus */
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Soft glow on focus */
-    outline: none;
+  border-color: #007bff; /* Bright blue on focus */
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Soft glow on focus */
+  outline: none;
 }
 
 /* File input styling */
 .jobizaaa-form-input-file {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 /* Profile image preview */
 .jobizaaa-image-preview {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 15px;
-    background-color: #f9f9f9;
-    border: 1px dashed #cce7f0;
-    border-radius: 8px;
-    padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+  background-color: #f9f9f9;
+  border: 1px dashed #cce7f0;
+  border-radius: 8px;
+  padding: 10px;
 }
 
 .jobizaaa-profile-pic-thumbnail {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #007bff;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #007bff;
 }
 
 .jobizaaa-image-preview p {
-    margin: 0;
-    font-size: 0.9em;
-    color: #666;
+  margin: 0;
+  font-size: 0.9em;
+  color: #666;
 }
 
 /* Role Cards for Login */
 .jobizaaa-role-selection-label {
-    margin-top: 20px;
-    text-align: center;
-    font-size: 1.1em;
-    font-weight: 700;
+  margin-top: 20px;
+  text-align: center;
+  font-size: 1.1em;
+  font-weight: 700;
 }
 
 .jobizaaa-role-cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Adjusted minmax for better mobile fit */
-    gap: 15px;
-    margin-top: 15px;
-    margin-bottom: 25px;
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(100px, 1fr)
+  ); /* Adjusted minmax for better mobile fit */
+  gap: 15px;
+  margin-top: 15px;
+  margin-bottom: 25px;
 }
 
 .jobizaaa-role-card {
-    background-color: #f0f8ff; /* Very light blue */
-    border: 1px solid #a8dcfc; /* Light blue border */
-    border-radius: 10px;
-    padding: 15px;
-    text-align: center;
-    font-weight: 600;
-    color: #2a6f97; /* Darker blue text */
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+  background-color: #f0f8ff; /* Very light blue */
+  border: 1px solid #a8dcfc; /* Light blue border */
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  font-weight: 600;
+  color: #2a6f97; /* Darker blue text */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow */
 }
 
 .jobizaaa-role-card:hover {
-    background-color: #e6f7ff; /* Lighter blue on hover */
-    transform: translateY(-3px); /* Slight lift effect */
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    border-color: #007bff; /* Brighter blue border on hover */
+  background-color: #e6f7ff; /* Lighter blue on hover */
+  transform: translateY(-3px); /* Slight lift effect */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  border-color: #007bff; /* Brighter blue border on hover */
 }
 
 .jobizaaa-role-card-selected {
-    background: linear-gradient(45deg, #007bff, #0056b3); /* Blue gradient when selected */
-    color: #ffffff;
-    border-color: #007bff;
-    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
-    transform: translateY(-2px);
+  background: linear-gradient(
+    45deg,
+    #007bff,
+    #0056b3
+  ); /* Blue gradient when selected */
+  color: #ffffff;
+  border-color: #007bff;
+  box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+  transform: translateY(-2px);
 }
 
 /* Buttons */
 .jobizaaa-auth-button {
-    background: linear-gradient(90deg, #007bff, #0056b3); /* Blue gradient button */
-    color: white;
-    padding: 14px 25px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1em;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.2);
-    margin-top: 15px;
-    align-self: center; /* Center the button */
-    width: 100%;
-    max-width: 300px;
+  background: linear-gradient(
+    90deg,
+    #007bff,
+    #0056b3
+  ); /* Blue gradient button */
+  color: white;
+  padding: 14px 25px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.2);
+  margin-top: 15px;
+  align-self: center; /* Center the button */
+  width: 100%;
+  max-width: 300px;
 }
 
 .jobizaaa-auth-button:hover {
-    background: linear-gradient(90deg, #0056b3, #004085); /* Darker gradient on hover */
-    box-shadow: 0 7px 20px rgba(0, 123, 255, 0.3);
-    transform: translateY(-2px);
+  background: linear-gradient(
+    90deg,
+    #0056b3,
+    #004085
+  ); /* Darker gradient on hover */
+  box-shadow: 0 7px 20px rgba(0, 123, 255, 0.3);
+  transform: translateY(-2px);
 }
 
 .jobizaaa-auth-button:disabled {
-    background: #cccccc;
-    cursor: not-allowed;
-    box-shadow: none;
-    transform: none;
+  background: #cccccc;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 /* Messages (Error and Success) */
 .jobizaaa-auth-message {
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    font-size: 0.95em;
-    font-weight: 500;
-    text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 0.95em;
+  font-weight: 500;
+  text-align: center;
 }
 
 .jobizaaa-auth-error-message {
-    background-color: #ffe0e0;
-    color: #cc0000;
-    border: 1px solid #ff9999;
+  background-color: #ffe0e0;
+  color: #cc0000;
+  border: 1px solid #ff9999;
 }
 
 .jobizaaa-auth-success-message {
-    background-color: #e0ffe0;
-    color: #008000;
-    border: 1px solid #99ff99;
+  background-color: #e0ffe0;
+  color: #008000;
+  border: 1px solid #99ff99;
 }
 
 /* Links */
 .jobizaaa-forgot-password-link,
 .jobizaaa-auth-toggle-link {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 0.95em;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.95em;
 }
 
 .jobizaaa-link {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.3s ease;
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
 }
 
 .jobizaaa-link:hover {
-    color: #0056b3;
-    text-decoration: underline;
+  color: #0056b3;
+  text-decoration: underline;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .jobizaaa-auth-card {
-        padding: 30px 20px;
-        margin: 10px; /* Ensure margin for smaller screens */
-    }
+  .jobizaaa-auth-card {
+    padding: 30px 20px;
+    margin: 10px; /* Ensure margin for smaller screens */
+  }
 
-    .jobizaaa-auth-heading {
-        font-size: 1.8em;
-    }
+  .jobizaaa-auth-heading {
+    font-size: 1.8em;
+  }
 
-    .jobizaaa-auth-intro-text {
-        font-size: 1em;
-    }
+  .jobizaaa-auth-intro-text {
+    font-size: 1em;
+  }
 
-    .jobizaaa-role-cards-container {
-        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); /* Further adjustment for tablets */
-        gap: 12px;
-    }
+  .jobizaaa-role-cards-container {
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(90px, 1fr)
+    ); /* Further adjustment for tablets */
+    gap: 12px;
+  }
 
-    .jobizaaa-auth-button {
-        padding: 12px 20px;
-        font-size: 1em;
-    }
+  .jobizaaa-auth-button {
+    padding: 12px 20px;
+    font-size: 1em;
+  }
 }
 
 @media (max-width: 480px) {
-    .jobizaaa-auth-card {
-        border-radius: 10px;
-        padding: 25px 15px;
-        margin: 5px; /* Tighter margin for small mobile screens */
-    }
+  .jobizaaa-auth-card {
+    border-radius: 10px;
+    padding: 25px 15px;
+    margin: 5px; /* Tighter margin for small mobile screens */
+  }
 
-    .jobizaaa-auth-heading {
-        font-size: 1.6em;
-    }
+  .jobizaaa-auth-heading {
+    font-size: 1.6em;
+  }
 
-    .jobizaaa-auth-intro-text {
-        font-size: 0.9em;
-        margin-bottom: 20px;
-    }
+  .jobizaaa-auth-intro-text {
+    font-size: 0.9em;
+    margin-bottom: 20px;
+  }
 
-    .jobizaaa-form-input,
-    .jobizaaa-form-group select {
-        padding: 10px 12px;
-        font-size: 0.9em;
-    }
+  .jobizaaa-form-input,
+  .jobizaaa-form-group select {
+    padding: 10px 12px;
+    font-size: 0.9em;
+  }
 
-    .jobizaaa-form-label {
-        font-size: 0.9em;
-    }
+  .jobizaaa-form-label {
+    font-size: 0.9em;
+  }
 
-    .jobizaaa-role-cards-container {
-        grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); /* Even smaller minmax for mobile */
-        gap: 8px;
-    }
+  .jobizaaa-role-cards-container {
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(70px, 1fr)
+    ); /* Even smaller minmax for mobile */
+    gap: 8px;
+  }
 
-    .jobizaaa-role-card {
-        padding: 12px;
-        font-size: 0.9em;
-    }
+  .jobizaaa-role-card {
+    padding: 12px;
+    font-size: 0.9em;
+  }
 
-    .jobizaaa-auth-button {
-        padding: 10px 15px;
-        font-size: 0.9em;
-    }
+  .jobizaaa-auth-button {
+    padding: 10px 15px;
+    font-size: 0.9em;
+  }
 }
