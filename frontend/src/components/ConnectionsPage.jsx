@@ -1,498 +1,509 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
-
 import "../styles/ConnectionsPage.css";
 
-function ConnectionsPage() {
-  const { user, logout } = useAuth();
+// Constants
+const CONNECTION_STATUSES = {
+  NOT_CONNECTED: "not_connected",
+  ACCEPTED: "accepted",
+  PENDING_SENT: "pending_sent",
+  PENDING_RECEIVED: "pending_received",
+  DECLINED: "declined",
+};
 
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [loggedInUserId, setLoggedInUserId] = useState(null);
-  const [userConnectionStatuses, setUserConnectionStatuses] = useState({});
-  const [actionLoading, setActionLoading] = useState({});
-  const [refreshing, setRefreshing] = useState(false);
+const API_ENDPOINTS = {
+  ALL_USERS: "/api/v1/connections/all-users",
+  MY_CONNECTIONS: "/api/v1/connections/my-connections",
+  SENT_PENDING: "/api/v1/connections/my-connections/sent-pending",
+  RECEIVED_PENDING: "/api/v1/connections/my-connections/received-pending",
+  CONNECTIONS: "/api/v1/connections",
+};
 
-  useEffect(() => {
-    if (user && user.id) {
-      setLoggedInUserId(user.id);
-    } else {
-      setLoggedInUserId(null);
-    }
-  }, [user]);
+// Custom hooks
+const useConnectionData = (user, logout) => {
+  const [state, setState] = useState({
+    users: [],
+    loading: true,
+    error: null,
+    userConnectionStatuses: {},
+    actionLoading: {},
+    refreshing: false,
+  });
+
+  const updateState = useCallback((updates) => {
+    setState((prev) => ({ ...prev, ...updates }));
+  }, []);
+
+  const getAuthHeaders = useCallback(() => {
+    const token = localStorage.getItem("token");
+    return token ? { Authorization: `Bearer ${token}` } : null;
+  }, []);
 
   const fetchData = useCallback(async () => {
-    if (refreshing) return; // Prevent multiple simultaneous refreshes
+    if (state.refreshing) return;
 
-    setLoading(true);
-    setError(null);
+    updateState({ loading: true, error: null });
+    const headers = getAuthHeaders();
 
-    const storedToken = localStorage.getItem("token");
-
-    if (!storedToken || !user || !user.id) {
-      setError("Please log in to manage your connections.");
-      setLoading(false);
+    if (!headers || !user?.id) {
+      updateState({
+        error: "Please log in to manage your connections.",
+        loading: false,
+      });
       return;
     }
 
     try {
-      // Fetch all users
-      const usersResponse = await axios.get("/api/v1/connections/all-users", {
-        headers: { Authorization: `Bearer ${storedToken}` },
-      });
+      const [
+        usersResponse,
+        connectionsResponse,
+        sentPendingResponse,
+        receivedPendingResponse,
+      ] = await Promise.all([
+        axios.get(API_ENDPOINTS.ALL_USERS, { headers }),
+        axios.get(API_ENDPOINTS.MY_CONNECTIONS, { headers }),
+        axios.get(API_ENDPOINTS.SENT_PENDING, { headers }),
+        axios.get(API_ENDPOINTS.RECEIVED_PENDING, { headers }),
+      ]);
 
       const allUsers = usersResponse.data.data || [];
       const filteredUsers = allUsers.filter(
         (u) => String(u._id) !== String(user.id)
       );
-      setUsers(filteredUsers);
-
-      // Fetch connection data
-      const [
-        connectionsResponse,
-        sentPendingResponse,
-        receivedPendingResponse,
-      ] = await Promise.all([
-        axios.get("/api/v1/connections/my-connections", {
-          headers: { Authorization: `Bearer ${storedToken}` },
-        }),
-        axios.get("/api/v1/connections/my-connections/sent-pending", {
-          headers: { Authorization: `Bearer ${storedToken}` },
-        }),
-        axios.get("/api/v1/connections/my-connections/received-pending", {
-          headers: { Authorization: `Bearer ${storedToken}` },
-        }),
-      ]);
 
       const currentConnections = connectionsResponse.data.data || [];
       const sentPendingRequests = sentPendingResponse.data.data || [];
       const receivedPendingRequests = receivedPendingResponse.data.data || [];
 
-      const statusMap = {};
-
-      // Initialize all users as not connected
-      filteredUsers.forEach((u) => {
-        statusMap[String(u._id)] = {
-          status: "not_connected",
+      // Build status map efficiently
+      const statusMap = filteredUsers.reduce((acc, u) => {
+        acc[String(u._id)] = {
+          status: CONNECTION_STATUSES.NOT_CONNECTED,
           requestId: null,
         };
+        return acc;
+      }, {});
+
+      // Process connections
+      [
+        {
+          data: currentConnections,
+          status: CONNECTION_STATUSES.ACCEPTED,
+          key: "connectedUser",
+        },
+        {
+          data: sentPendingRequests,
+          status: CONNECTION_STATUSES.PENDING_SENT,
+          key: "receiver",
+        },
+        {
+          data: receivedPendingRequests,
+          status: CONNECTION_STATUSES.PENDING_RECEIVED,
+          key: "sender",
+        },
+      ].forEach(({ data, status, key }) => {
+        data.forEach((item) => {
+          const userId = String(item[key]?._id);
+          if (userId && statusMap[userId]) {
+            statusMap[userId] = { status, requestId: item._id };
+          }
+        });
       });
 
-      // Process accepted connections
-      currentConnections.forEach((conn) => {
-        if (conn.connectedUser?._id) {
-          const connectedUserId = String(conn.connectedUser._id);
-          statusMap[connectedUserId] = {
-            status: "accepted",
-            requestId: conn._id,
-          };
-        }
+      updateState({
+        users: filteredUsers,
+        userConnectionStatuses: statusMap,
+        loading: false,
       });
-
-      // Process sent pending requests
-      sentPendingRequests.forEach((req) => {
-        if (req.receiver?._id) {
-          statusMap[String(req.receiver._id)] = {
-            status: "pending_sent",
-            requestId: req._id,
-          };
-        }
-      });
-
-      // Process received pending requests
-      receivedPendingRequests.forEach((req) => {
-        if (req.sender?._id) {
-          statusMap[String(req.sender._id)] = {
-            status: "pending_received",
-            requestId: req._id,
-          };
-        }
-      });
-
-      setUserConnectionStatuses(statusMap);
     } catch (err) {
       console.error("Error fetching data:", err);
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        setError("Session expired. Please log in again.");
+      const isAuthError =
+        err.response?.status === 401 || err.response?.status === 403;
+
+      if (isAuthError) {
+        updateState({
+          error: "Session expired. Please log in again.",
+          loading: false,
+        });
         logout();
       } else {
-        setError(err.response?.data?.message || "Failed to fetch data.");
+        updateState({
+          error: err.response?.data?.message || "Failed to fetch data.",
+          loading: false,
+        });
       }
-    } finally {
-      setLoading(false);
     }
-  }, [user, logout, refreshing]);
+  }, [user, logout, state.refreshing, getAuthHeaders, updateState]);
+
+  const refresh = useCallback(async () => {
+    updateState({ refreshing: true });
+    await fetchData();
+    updateState({ refreshing: false });
+  }, [fetchData, updateState]);
 
   useEffect(() => {
-    if (user && user.id) {
+    if (user?.id) {
       fetchData();
     } else {
-      setLoading(false);
-      setError("Please log in to view this page.");
-    }
-  }, [user, fetchData]);
-
-  const handleConnect = async (receiverId) => {
-    if (!loggedInUserId) {
-      alert("You must be logged in to send a connection request.");
-      return;
-    }
-
-    const storedToken = localStorage.getItem("token");
-    if (!storedToken) {
-      alert("Session expired. Please log in again.");
-      logout();
-      return;
-    }
-
-    setActionLoading((prev) => ({ ...prev, [receiverId]: true }));
-
-    try {
-      await axios.post(
-        "/api/v1/connections",
-        { receiverId },
-        {
-          headers: { Authorization: `Bearer ${storedToken}` },
-        }
-      );
-
-      // Update the status immediately
-      setUserConnectionStatuses((prev) => ({
-        ...prev,
-        [receiverId]: {
-          status: "pending_sent",
-          requestId: null,
-        },
-      }));
-
-      alert("Connection request sent successfully!");
-      await fetchData();
-    } catch (err) {
-      console.error("Error sending connection request:", err);
-      const errorMessage = err.response?.data?.message || err.message;
-
-      if (err.response?.status === 401) {
-        alert("Session expired. Please log in again.");
-        logout();
-      } else if (
-        errorMessage.includes("cannot send a connection request to yourself")
-      ) {
-        alert("You cannot send a connection request to yourself.");
-      } else {
-        alert(`Failed to send request: ${errorMessage}`);
-        await fetchData(); // Refresh to sync state
-      }
-    } finally {
-      setActionLoading((prev) => {
-        const newState = { ...prev };
-        delete newState[receiverId];
-        return newState;
+      updateState({
+        loading: false,
+        error: "Please log in to view this page.",
       });
     }
-  };
+  }, [user, fetchData, updateState]);
 
-  const handleAcceptRequest = async (senderId) => {
-    const storedToken = localStorage.getItem("token");
-    if (!storedToken) {
-      alert("Session expired. Please log in again.");
-      logout();
-      return;
-    }
+  return { ...state, fetchData, refresh, updateState, getAuthHeaders };
+};
 
-    const connectionRequestData = userConnectionStatuses[senderId];
-    if (!connectionRequestData?.requestId) {
-      alert("Connection request ID not found. Refreshing data...");
-      await fetchData();
-      return;
-    }
+// Component for user action buttons
+const UserActionButtons = ({
+  userId,
+  status,
+  actionLoading,
+  onConnect,
+  onAccept,
+  onDecline,
+  onCancel,
+  onRemove,
+}) => {
+  const isLoading = actionLoading[userId];
+  const loadingText = "Processing...";
 
-    setActionLoading((prev) => ({ ...prev, [senderId]: true }));
-
-    try {
-      await axios.put(
-        `/api/v1/connections/${connectionRequestData.requestId}/accept`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${storedToken}` },
-        }
+  switch (status) {
+    case CONNECTION_STATUSES.PENDING_RECEIVED:
+      return (
+        <div className="pending-actions">
+          <button
+            onClick={() => onAccept(userId)}
+            disabled={isLoading}
+            className="btn btn-accept"
+            aria-label="Accept connection request"
+          >
+            {isLoading ? loadingText : "Accept"}
+          </button>
+          <button
+            onClick={() => onDecline(userId)}
+            disabled={isLoading}
+            className="btn btn-decline"
+            aria-label="Decline connection request"
+          >
+            {isLoading ? loadingText : "Decline"}
+          </button>
+        </div>
       );
 
-      setUserConnectionStatuses((prev) => ({
-        ...prev,
-        [senderId]: {
-          status: "accepted",
-          requestId: connectionRequestData.requestId,
-        },
-      }));
-
-      alert("Connection request accepted!");
-      await fetchData();
-    } catch (err) {
-      console.error("Error accepting connection request:", err);
-      const errorMessage = err.response?.data?.message || err.message;
-
-      if (err.response?.status === 401) {
-        alert("Session expired. Please log in again.");
-        logout();
-      } else if (err.response?.status === 403) {
-        alert("You are not authorized to accept this request.");
-      } else if (err.response?.status === 404) {
-        alert("Connection request not found. It may have been cancelled.");
-      } else {
-        alert(`Failed to accept request: ${errorMessage}`);
-      }
-      await fetchData();
-    } finally {
-      setActionLoading((prev) => {
-        const newState = { ...prev };
-        delete newState[senderId];
-        return newState;
-      });
-    }
-  };
-
-  const handleDeclineRequest = async (senderId) => {
-    const storedToken = localStorage.getItem("token");
-    if (!storedToken) {
-      alert("Session expired. Please log in again.");
-      logout();
-      return;
-    }
-
-    const connectionRequestData = userConnectionStatuses[senderId];
-    if (!connectionRequestData?.requestId) {
-      alert("Connection request ID not found. Refreshing data...");
-      await fetchData();
-      return;
-    }
-
-    setActionLoading((prev) => ({ ...prev, [senderId]: true }));
-
-    try {
-      await axios.put(
-        `/api/v1/connections/${connectionRequestData.requestId}/decline`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${storedToken}` },
-        }
+    case CONNECTION_STATUSES.PENDING_SENT:
+      return (
+        <button
+          onClick={() => onCancel(userId)}
+          disabled={isLoading}
+          className="btn btn-cancel"
+          aria-label="Cancel connection request"
+        >
+          {isLoading ? loadingText : "Cancel Request"}
+        </button>
       );
 
-      setUserConnectionStatuses((prev) => ({
-        ...prev,
-        [senderId]: {
-          status: "declined",
-          requestId: null,
-        },
-      }));
-
-      alert("Connection request declined!");
-      await fetchData();
-    } catch (err) {
-      console.error("Error declining connection request:", err);
-      const errorMessage = err.response?.data?.message || err.message;
-
-      if (err.response?.status === 401) {
-        alert("Session expired. Please log in again.");
-        logout();
-      } else if (err.response?.status === 403) {
-        alert("You are not authorized to decline this request.");
-      } else if (err.response?.status === 404) {
-        alert("Connection request not found. It may have been cancelled.");
-      } else {
-        alert(`Failed to decline request: ${errorMessage}`);
-      }
-      await fetchData();
-    } finally {
-      setActionLoading((prev) => {
-        const newState = { ...prev };
-        delete newState[senderId];
-        return newState;
-      });
-    }
-  };
-
-  const handleCancelRequest = async (receiverId) => {
-    const storedToken = localStorage.getItem("token");
-    if (!storedToken) {
-      alert("Session expired. Please log in again.");
-      logout();
-      return;
-    }
-
-    const connectionRequestData = userConnectionStatuses[receiverId];
-    if (!connectionRequestData?.requestId) {
-      alert("Connection request ID not found. Refreshing data...");
-      await fetchData();
-      return;
-    }
-
-    setActionLoading((prev) => ({ ...prev, [receiverId]: true }));
-
-    try {
-      await axios.delete(
-        `/api/v1/connections/${connectionRequestData.requestId}`,
-        {
-          headers: { Authorization: `Bearer ${storedToken}` },
-        }
+    case CONNECTION_STATUSES.ACCEPTED:
+      return (
+        <div className="connected-actions">
+          <span className="connected-status" aria-label="Connected">
+            ✅ Connected
+          </span>
+          <button
+            onClick={() => onRemove(userId)}
+            disabled={isLoading}
+            className="btn btn-remove"
+            aria-label="Remove connection"
+          >
+            {isLoading ? loadingText : "Remove"}
+          </button>
+        </div>
       );
 
-      setUserConnectionStatuses((prev) => ({
-        ...prev,
-        [receiverId]: {
-          status: "not_connected",
-          requestId: null,
-        },
-      }));
+    default:
+      return (
+        <button
+          onClick={() => onConnect(userId)}
+          disabled={isLoading || status === CONNECTION_STATUSES.PENDING_SENT}
+          className={`btn btn-connect ${isLoading ? "disabled" : ""}`}
+          aria-label="Send connection request"
+        >
+          {isLoading ? loadingText : "Connect"}
+        </button>
+      );
+  }
+};
 
-      alert("Connection request cancelled!");
-      await fetchData();
-    } catch (err) {
-      console.error("Error cancelling connection request:", err);
-      const errorMessage = err.response?.data?.message || err.message;
+// User card component
+const UserCard = ({ user, status, actionLoading, actions }) => {
+  const userInitial = user.fullName?.charAt(0)?.toUpperCase() || "?";
 
-      if (err.response?.status === 401) {
-        alert("Session expired. Please log in again.");
-        logout();
-      } else if (err.response?.status === 403) {
-        alert("You are not authorized to cancel this request.");
-      } else if (err.response?.status === 404) {
-        alert(
-          "Connection request not found. It may have already been processed."
+  return (
+    <div
+      className="user-card"
+      role="article"
+      aria-labelledby={`user-${user._id}`}
+    >
+      <div className="user-header">
+        {user.profilePic ? (
+          <img
+            src={user.profilePic}
+            alt={`${user.fullName}'s profile`}
+            className="user-avatar"
+            onError={(e) => {
+              e.target.style.display = "none";
+              e.target.nextElementSibling.style.display = "flex";
+            }}
+          />
+        ) : null}
+        <div
+          className="user-avatar"
+          style={{
+            background: "linear-gradient(135deg, #6b7280, #4b5563)",
+            display: user.profilePic ? "none" : "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "1.5rem",
+            color: "white",
+            fontWeight: "bold",
+          }}
+          aria-hidden="true"
+        >
+          {userInitial}
+        </div>
+        <div className="user-info">
+          <h3 className="user-name" id={`user-${user._id}`}>
+            {user.fullName}
+          </h3>
+          <p className="user-title">{user.designation}</p>
+          <p className="user-company">{user.company}</p>
+          <p className="user-email">{user.email}</p>
+        </div>
+      </div>
+
+      <div className="user-actions">
+        <UserActionButtons
+          userId={user._id}
+          status={status}
+          actionLoading={actionLoading}
+          {...actions}
+        />
+      </div>
+    </div>
+  );
+};
+
+// Main component
+function ConnectionsPage() {
+  const { user, logout } = useAuth();
+  const {
+    users,
+    loading,
+    error,
+    userConnectionStatuses,
+    actionLoading,
+    refreshing,
+    fetchData,
+    refresh,
+    updateState,
+    getAuthHeaders,
+  } = useConnectionData(user, logout);
+
+  // Memoized computed values
+  const networkStats = useMemo(() => {
+    const statuses = Object.values(userConnectionStatuses);
+    return {
+      connections: statuses.filter(
+        (s) => s.status === CONNECTION_STATUSES.ACCEPTED
+      ).length,
+      pendingReceived: statuses.filter(
+        (s) => s.status === CONNECTION_STATUSES.PENDING_RECEIVED
+      ).length,
+      pendingSent: statuses.filter(
+        (s) => s.status === CONNECTION_STATUSES.PENDING_SENT
+      ).length,
+    };
+  }, [userConnectionStatuses]);
+
+  const suggestedUsers = useMemo(() => {
+    return users
+      .filter((u) => {
+        const status = userConnectionStatuses[u._id]?.status;
+        return (
+          status === CONNECTION_STATUSES.NOT_CONNECTED ||
+          status === CONNECTION_STATUSES.DECLINED
         );
-      } else {
-        alert(`Failed to cancel request: ${errorMessage}`);
-      }
-      await fetchData();
-    } finally {
-      setActionLoading((prev) => {
-        const newState = { ...prev };
-        delete newState[receiverId];
-        return newState;
-      });
-    }
-  };
+      })
+      .slice(0, 3);
+  }, [users, userConnectionStatuses]);
+
+  // Action handlers with better error handling
+  const createActionHandler = useCallback(
+    (action, endpoint, successMessage) => {
+      return async (userId, additionalData = {}) => {
+        const headers = getAuthHeaders();
+        if (!headers) {
+          alert("Session expired. Please log in again.");
+          logout();
+          return;
+        }
+
+        updateState((prev) => ({
+          actionLoading: { ...prev.actionLoading, [userId]: true },
+        }));
+
+        try {
+          await axios[action.method || "post"](
+            typeof endpoint === "function" ? endpoint(userId) : endpoint,
+            additionalData,
+            { headers }
+          );
+
+          if (action.updateStatus) {
+            updateState((prev) => ({
+              userConnectionStatuses: {
+                ...prev.userConnectionStatuses,
+                [userId]: action.updateStatus(
+                  prev.userConnectionStatuses[userId]
+                ),
+              },
+            }));
+          }
+
+          alert(successMessage);
+          await fetchData();
+        } catch (err) {
+          console.error(`Error in ${action.name}:`, err);
+          const errorMessage = err.response?.data?.message || err.message;
+
+          if (err.response?.status === 401) {
+            alert("Session expired. Please log in again.");
+            logout();
+          } else {
+            alert(`Failed to ${action.name.toLowerCase()}: ${errorMessage}`);
+            await fetchData();
+          }
+        } finally {
+          updateState((prev) => {
+            const newActionLoading = { ...prev.actionLoading };
+            delete newActionLoading[userId];
+            return { actionLoading: newActionLoading };
+          });
+        }
+      };
+    },
+    [getAuthHeaders, logout, updateState, fetchData]
+  );
+
+  // Connection action handlers
+  const handleConnect = createActionHandler(
+    {
+      name: "Connect",
+      method: "post",
+      updateStatus: () => ({
+        status: CONNECTION_STATUSES.PENDING_SENT,
+        requestId: null,
+      }),
+    },
+    API_ENDPOINTS.CONNECTIONS,
+    "Connection request sent successfully!"
+  );
+
+  const handleAcceptRequest = createActionHandler(
+    {
+      name: "Accept Request",
+      method: "put",
+      updateStatus: (current) => ({
+        ...current,
+        status: CONNECTION_STATUSES.ACCEPTED,
+      }),
+    },
+    (userId) => {
+      const requestId = userConnectionStatuses[userId]?.requestId;
+      return `${API_ENDPOINTS.CONNECTIONS}/${requestId}/accept`;
+    },
+    "Connection request accepted!"
+  );
+
+  const handleDeclineRequest = createActionHandler(
+    {
+      name: "Decline Request",
+      method: "put",
+      updateStatus: () => ({
+        status: CONNECTION_STATUSES.DECLINED,
+        requestId: null,
+      }),
+    },
+    (userId) => {
+      const requestId = userConnectionStatuses[userId]?.requestId;
+      return `${API_ENDPOINTS.CONNECTIONS}/${requestId}/decline`;
+    },
+    "Connection request declined!"
+  );
+
+  const handleCancelRequest = createActionHandler(
+    {
+      name: "Cancel Request",
+      method: "delete",
+      updateStatus: () => ({
+        status: CONNECTION_STATUSES.NOT_CONNECTED,
+        requestId: null,
+      }),
+    },
+    (userId) => {
+      const requestId = userConnectionStatuses[userId]?.requestId;
+      return `${API_ENDPOINTS.CONNECTIONS}/${requestId}`;
+    },
+    "Connection request cancelled!"
+  );
 
   const handleRemoveConnection = async (userId) => {
-    if (!confirm("Are you sure you want to remove this connection?")) {
+    if (!window.confirm("Are you sure you want to remove this connection?")) {
       return;
     }
 
-    const storedToken = localStorage.getItem("token");
-    if (!storedToken) {
-      alert("Session expired. Please log in again.");
-      logout();
-      return;
-    }
-
-    const connectionData = userConnectionStatuses[userId];
-    if (!connectionData?.requestId) {
-      alert("Connection ID not found. Refreshing data...");
-      await fetchData();
-      return;
-    }
-
-    setActionLoading((prev) => ({ ...prev, [userId]: true }));
-
-    try {
-      await axios.delete(
-        `/api/v1/connections/${connectionData.requestId}/remove`,
-        {
-          headers: { Authorization: `Bearer ${storedToken}` },
-        }
-      );
-
-      setUserConnectionStatuses((prev) => ({
-        ...prev,
-        [userId]: {
-          status: "not_connected",
+    const actionHandler = createActionHandler(
+      {
+        name: "Remove Connection",
+        method: "delete",
+        updateStatus: () => ({
+          status: CONNECTION_STATUSES.NOT_CONNECTED,
           requestId: null,
-        },
-      }));
-
-      alert("Connection removed successfully!");
-      await fetchData();
-    } catch (err) {
-      console.error("Error removing connection:", err);
-      const errorMessage = err.response?.data?.message || err.message;
-
-      if (err.response?.status === 401) {
-        alert("Session expired. Please log in again.");
-        logout();
-      } else if (err.response?.status === 403) {
-        alert("You are not authorized to remove this connection.");
-      } else if (err.response?.status === 404) {
-        alert("Connection not found.");
-      } else {
-        alert(`Failed to remove connection: ${errorMessage}`);
-      }
-      await fetchData();
-    } finally {
-      setActionLoading((prev) => {
-        const newState = { ...prev };
-        delete newState[userId];
-        return newState;
-      });
-    }
-  };
-
-  const getConnectionStatusText = (userId) => {
-    const statusData = userConnectionStatuses[userId];
-    const status = statusData ? statusData.status : "not_connected";
-
-    if (actionLoading[userId]) {
-      return "Processing...";
-    }
-
-    switch (status) {
-      case "accepted":
-        return "Connected";
-      case "pending_sent":
-        return "Request Sent";
-      case "pending_received":
-        return "Incoming Request";
-      case "declined":
-        return "Connect";
-      case "not_connected":
-      default:
-        return "Connect";
-    }
-  };
-
-  const isConnectButtonDisabled = (userId) => {
-    const statusData = userConnectionStatuses[userId];
-    const status = statusData ? statusData.status : "not_connected";
-
-    return (
-      actionLoading[userId] ||
-      status === "pending_sent" ||
-      status === "pending_received"
+        }),
+      },
+      (userId) => {
+        const requestId = userConnectionStatuses[userId]?.requestId;
+        return `${API_ENDPOINTS.CONNECTIONS}/${requestId}/remove`;
+      },
+      "Connection removed successfully!"
     );
+
+    await actionHandler(userId);
   };
 
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    await fetchData();
-    setRefreshing(false);
-  };
-
+  // Loading state
   if (loading) {
     return (
       <div className="page-container">
-        <div className="loading-spinner">Loading connections data...</div>
+        <div className="loading-spinner" role="status" aria-live="polite">
+          <div className="spinner"></div>
+          <p>Loading connections data...</p>
+        </div>
       </div>
     );
   }
 
+  // Error state
   if (error) {
     return (
       <div className="page-container">
-        <div className="error-message">
+        <div className="error-message" role="alert">
           <h2>Error</h2>
           <p>{error}</p>
-          <button onClick={handleRefresh} className="retry-button">
+          <button onClick={refresh} className="retry-button">
             Retry
           </button>
         </div>
@@ -500,375 +511,357 @@ function ConnectionsPage() {
     );
   }
 
+  const userActions = {
+    onConnect: (userId) => handleConnect(userId, { receiverId: userId }),
+    onAccept: handleAcceptRequest,
+    onDecline: handleDeclineRequest,
+    onCancel: handleCancelRequest,
+    onRemove: handleRemoveConnection,
+  };
+
   return (
-    <>
-      <div className="page-container">
-        <header className="connections-header">
-          <div className="header-left">
-            <Link to="/" className="header-logo">
-              Jobizaa Network || Home
-            </Link>
-          </div>
-          <div className="header-right">
-            {user && (
-              <Link to="/profile" className="header-profile-link">
-                {user.profilePic ? (
-                  <img
-                    src={user.profilePic}
-                    alt="Profile"
-                    className="header-profile-avatar"
-                  />
-                ) : (
-                  <div className="header-profile-avatar-placeholder">
-                    {user.fullName?.charAt(0)?.toUpperCase()}
-                  </div>
-                )}
-                <span>My Profile</span>
-              </Link>
-            )}
-            <Link to="/settings" className="header-icon-link">
-              <i className="fas fa-cog"></i>
-            </Link>
-            <button className="btn-logout-header" onClick={logout}>
-              Logout
-            </button>
-          </div>
-        </header>
-
-        <div className="main-layout">
-          <aside className="left-sidebar">
-            <div className="sidebar-card">
-              <div className="profile-summary">
-                {user?.profilePic ? (
-                  <img
-                    src={user.profilePic}
-                    alt={`${user.fullName}'s profile`}
-                    className="profile-avatar"
-                  />
-                ) : (
-                  <div
-                    className="profile-avatar"
-                    style={{
-                      background: "linear-gradient(135deg, #0a66c2, #004d96)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "2rem",
-                      color: "white",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {user?.fullName?.charAt(0)?.toUpperCase()}
-                  </div>
-                )}
-                <div className="profile-info">
-                  <h3>{user?.fullName}</h3>
-                  <p className="profile-title">
-                    {user?.designation || "Professional"}
-                  </p>
-                  <p className="profile-company">{user?.company}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="sidebar-card">
-              <h3 className="card-title">Quick Actions</h3>
-              <nav className="quick-nav">
-                <Link to="/my-connections" className="nav-link">
-                  📋 Manage My Requests
-                </Link>
-                {user && user.role === "admin" && (
-                  <Link
-                    to="/admin/manage-all-connections"
-                    className="nav-link admin-link"
-                  >
-                    ⚙️ Manage All Connections
-                  </Link>
-                )}
-                <Link to="/" className="nav-link">
-                  🏠 Go to Home
-                </Link>
-                <button
-                  onClick={handleRefresh}
-                  className="nav-link refresh-btn"
-                  disabled={refreshing}
-                >
-                  {refreshing ? "🔄 Refreshing..." : "🔄 Refresh Data"}
-                </button>
-              </nav>
-            </div>
-
-            <div className="sidebar-card">
-              <h3 className="card-title">Network Stats</h3>
-              <div className="stats">
-                <div className="stat-item">
-                  <span className="stat-number">
-                    {
-                      Object.values(userConnectionStatuses).filter(
-                        (statusData) => statusData.status === "accepted"
-                      ).length
-                    }
-                  </span>
-                  <span className="stat-label">Connections</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-number">
-                    {
-                      Object.values(userConnectionStatuses).filter(
-                        (statusData) => statusData.status === "pending_received"
-                      ).length
-                    }
-                  </span>
-                  <span className="stat-label">Pending Requests</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-number">
-                    {
-                      Object.values(userConnectionStatuses).filter(
-                        (statusData) => statusData.status === "pending_sent"
-                      ).length
-                    }
-                  </span>
-                  <span className="stat-label">Sent Requests</span>
-                </div>
-              </div>
-            </div>
-          </aside>
-
-          <main className="main-content">
-            <div className="content-card">
-              <div className="card-header">
-                <h2 className="section-title">Discover People</h2>
-                <p className="section-subtitle">
-                  Connect with professionals in your network
-                </p>
-              </div>
-
-              {users.length === 0 ? (
-                <div className="empty-state">
-                  <div className="empty-icon">👥</div>
-                  <h3>No users found</h3>
-                  <p>Check back later for new connection opportunities.</p>
-                </div>
+    <div className="page-container">
+      <header className="connections-header">
+        <div className="header-left">
+          <Link to="/" className="header-logo">
+            Jobizaa Network || Home
+          </Link>
+        </div>
+        <div className="header-right">
+          {user && (
+            <Link to="/profile" className="header-profile-link">
+              {user.profilePic ? (
+                <img
+                  src={user.profilePic}
+                  alt="Profile"
+                  className="header-profile-avatar"
+                />
               ) : (
-                <div className="users-grid">
-                  {users.map((otherUser) => (
-                    <div key={otherUser._id} className="user-card">
-                      <div className="user-header">
-                        {otherUser.profilePic ? (
-                          <img
-                            src={otherUser.profilePic}
-                            alt={`${otherUser.fullName}'s profile`}
-                            className="user-avatar"
-                            onError={(e) => {
-                              e.target.style.display = "none";
-                            }}
-                          />
-                        ) : (
-                          <div
-                            className="user-avatar"
-                            style={{
-                              background:
-                                "linear-gradient(135deg, #6b7280, #4b5563)",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              fontSize: "1.5rem",
-                              color: "white",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            {otherUser.fullName?.charAt(0)?.toUpperCase()}
-                          </div>
-                        )}
-                        <div className="user-info">
-                          <h3 className="user-name">{otherUser.fullName}</h3>
-                          <p className="user-title">{otherUser.designation}</p>
-                          <p className="user-company">{otherUser.company}</p>
-                          <p className="user-email">{otherUser.email}</p>
-                        </div>
-                      </div>
-
-                      <div className="user-actions">
-                        {userConnectionStatuses[otherUser._id]?.status ===
-                        "pending_received" ? (
-                          <div className="pending-actions">
-                            <button
-                              onClick={() => handleAcceptRequest(otherUser._id)}
-                              disabled={actionLoading[otherUser._id]}
-                              className="btn btn-accept"
-                            >
-                              {actionLoading[otherUser._id]
-                                ? "Processing..."
-                                : "Accept"}
-                            </button>
-                            <button
-                              onClick={() =>
-                                handleDeclineRequest(otherUser._id)
-                              }
-                              disabled={actionLoading[otherUser._id]}
-                              className="btn btn-decline"
-                            >
-                              {actionLoading[otherUser._id]
-                                ? "Processing..."
-                                : "Decline"}
-                            </button>
-                          </div>
-                        ) : userConnectionStatuses[otherUser._id]?.status ===
-                          "pending_sent" ? (
-                          <button
-                            onClick={() => handleCancelRequest(otherUser._id)}
-                            disabled={actionLoading[otherUser._id]}
-                            className="btn btn-cancel"
-                          >
-                            {actionLoading[otherUser._id]
-                              ? "Processing..."
-                              : "Cancel Request"}
-                          </button>
-                        ) : userConnectionStatuses[otherUser._id]?.status ===
-                          "accepted" ? (
-                          <div className="connected-actions">
-                            <span className="connected-status">
-                              ✅ Connected
-                            </span>
-                            <button
-                              onClick={() =>
-                                handleRemoveConnection(otherUser._id)
-                              }
-                              disabled={actionLoading[otherUser._id]}
-                              className="btn btn-remove"
-                            >
-                              {actionLoading[otherUser._id]
-                                ? "Processing..."
-                                : "Remove"}
-                            </button>
-                          </div>
-                        ) : (
-                          <button
-                            onClick={() => handleConnect(otherUser._id)}
-                            disabled={isConnectButtonDisabled(otherUser._id)}
-                            className={`btn btn-connect ${
-                              isConnectButtonDisabled(otherUser._id)
-                                ? "disabled"
-                                : ""
-                            }`}
-                          >
-                            {getConnectionStatusText(otherUser._id)}
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                <div className="header-profile-avatar-placeholder">
+                  {user.fullName?.charAt(0)?.toUpperCase()}
                 </div>
               )}
-            </div>
-          </main>
-
-          <aside className="right-sidebar">
-            <div className="sidebar-card">
-              <h3 className="card-title">Recent Activity</h3>
-              <div className="activity-list">
-                <div className="activity-item">
-                  <div className="activity-icon">🔔</div>
-                  <div className="activity-content">
-                    <p>
-                      You have{" "}
-                      {
-                        Object.values(userConnectionStatuses).filter(
-                          (statusData) =>
-                            statusData.status === "pending_received"
-                        ).length
-                      }{" "}
-                      pending connection requests
-                    </p>
-                    <span className="activity-time">Now</span>
-                  </div>
-                </div>
-                <div className="activity-item">
-                  <div className="activity-icon">✅</div>
-                  <div className="activity-content">
-                    <p>
-                      You're connected with{" "}
-                      {
-                        Object.values(userConnectionStatuses).filter(
-                          (statusData) => statusData.status === "accepted"
-                        ).length
-                      }{" "}
-                      professionals
-                    </p>
-                    <span className="activity-time">Today</span>
-                  </div>
-                </div>
-                <div className="activity-item">
-                  <div className="activity-icon">📤</div>
-                  <div className="activity-content">
-                    <p>
-                      You sent{" "}
-                      {
-                        Object.values(userConnectionStatuses).filter(
-                          (statusData) => statusData.status === "pending_sent"
-                        ).length
-                      }{" "}
-                      connection requests
-                    </p>
-                    <span className="activity-time">Recent</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="sidebar-card">
-              <h3 className="card-title">People You May Know</h3>
-              <div className="suggestions">
-                {users
-                  .filter(
-                    (u) =>
-                      userConnectionStatuses[u._id]?.status ===
-                        "not_connected" ||
-                      userConnectionStatuses[u._id]?.status === "declined"
-                  )
-                  .slice(0, 3)
-                  .map((user) => (
-                    <div key={user._id} className="suggestion-item">
-                      <div className="suggestion-info">
-                        <h4>{user.fullName}</h4>
-                        <p>{user.designation}</p>
-                      </div>
-                      <button
-                        className="btn-small btn-connect"
-                        onClick={() => handleConnect(user._id)}
-                        disabled={isConnectButtonDisabled(user._id)}
-                      >
-                        {actionLoading[user._id]
-                          ? "..."
-                          : getConnectionStatusText(user._id)}
-                      </button>
-                    </div>
-                  ))}
-              </div>
-            </div>
-
-            <div className="sidebar-card">
-              <h3 className="card-title">Coming Soon</h3>
-              <div className="coming-soon">
-                <div className="feature-item">📝 Blog Posts</div>
-                <div className="feature-item">📅 Events</div>
-                <div className="feature-item">💼 Job Postings</div>
-                <div className="feature-item">🎯 Industry News</div>
-              </div>
-            </div>
-          </aside>
+              <span>My Profile</span>
+            </Link>
+          )}
+          <Link
+            to="/settings"
+            className="header-icon-link"
+            aria-label="Settings"
+          >
+            <i className="fas fa-cog"></i>
+          </Link>
+          <button className="btn-logout-header" onClick={logout}>
+            Logout
+          </button>
         </div>
+      </header>
 
-        <footer className="page-footer">
-          <div className="footer-content">
-            <button className="btn btn-logout" onClick={logout}>
-              Logout
-            </button>
+      <div className="main-layout">
+        <aside className="left-sidebar">
+          <div className="sidebar-card">
+            <div className="profile-summary">
+              {user?.profilePic ? (
+                <img
+                  src={user.profilePic}
+                  alt={`${user.fullName}'s profile`}
+                  className="profile-avatar"
+                />
+              ) : (
+                <div
+                  className="profile-avatar"
+                  style={{
+                    background: "linear-gradient(135deg, #0a66c2, #004d96)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "2rem",
+                    color: "white",
+                    fontWeight: "bold",
+                  }}
+                  aria-hidden="true"
+                >
+                  {user?.fullName?.charAt(0)?.toUpperCase()}
+                </div>
+              )}
+              <div className="profile-info">
+                <h3>{user?.fullName}</h3>
+                <p className="profile-title">
+                  {user?.designation || "Professional"}
+                </p>
+                <p className="profile-company">{user?.company}</p>
+              </div>
+            </div>
           </div>
-        </footer>
+
+          <div className="sidebar-card">
+            <h3 className="card-title">Quick Actions</h3>
+            <nav className="quick-nav">
+              <Link to="/my-connections" className="nav-link">
+                📋 Manage My Requests
+              </Link>
+              {user?.role === "admin" && (
+                <Link
+                  to="/admin/manage-all-connections"
+                  className="nav-link admin-link"
+                >
+                  ⚙️ Manage All Connections
+                </Link>
+              )}
+              <Link to="/" className="nav-link">
+                🏠 Go to Home
+              </Link>
+              <button
+                onClick={refresh}
+                className="nav-link refresh-btn"
+                disabled={refreshing}
+                aria-label={refreshing ? "Refreshing data" : "Refresh data"}
+              >
+                {refreshing ? "🔄 Refreshing..." : "🔄 Refresh Data"}
+              </button>
+            </nav>
+          </div>
+
+          <div className="sidebar-card">
+            <h3 className="card-title">Network Stats</h3>
+            <div className="stats">
+              <div className="stat-item">
+                <span className="stat-number">{networkStats.connections}</span>
+                <span className="stat-label">Connections</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-number">
+                  {networkStats.pendingReceived}
+                </span>
+                <span className="stat-label">Pending Requests</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-number">{networkStats.pendingSent}</span>
+                <span className="stat-label">Sent Requests</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <main className="main-content">
+          <div className="content-card">
+            <div className="card-header">
+              <h2 className="section-title">Discover People</h2>
+              <p className="section-subtitle">
+                Connect with professionals in your network
+              </p>
+            </div>
+
+            {users.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-icon" aria-hidden="true">
+                  👥
+                </div>
+                <h3>No users found</h3>
+                <p>Check back later for new connection opportunities.</p>
+              </div>
+            ) : (
+              <div className="users-grid" role="grid">
+                {users.map((userItem) => {
+                  const userStatus =
+                    userConnectionStatuses[userItem._id]?.status ||
+                    CONNECTION_STATUSES.NOT_CONNECTED;
+
+                  return (
+                    <div key={userItem._id} className="user-profile-card">
+                      {userItem.profilePic && (
+                        <img
+                          src={userItem.profilePic}
+                          alt={`${userItem.fullName}'s profile`}
+                          className="user-avatar"
+                        />
+                      )}
+
+                      {userItem.fullName && <h3>{userItem.fullName}</h3>}
+
+                      {userItem.company && (
+                        <p>
+                          <strong>Company:</strong> {userItem.company}
+                        </p>
+                      )}
+                      {userItem.designation && (
+                        <p>
+                          <strong>Designation:</strong> {userItem.designation}
+                        </p>
+                      )}
+                      {userItem.role && (
+                        <p>
+                          <strong>Position:</strong> {userItem.role}
+                        </p>
+                      )}
+
+                      {userItem.linkedin && (
+                        <p>
+                          <strong>LinkedIn:</strong>{" "}
+                          <a
+                            href={userItem.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {userItem.linkedin}
+                          </a>
+                        </p>
+                      )}
+
+                      {userItem.yearsOfFinanceExperience && (
+                        <p>
+                          <strong>Experience:</strong>{" "}
+                          {userItem.yearsOfFinanceExperience} years
+                        </p>
+                      )}
+
+                      {userItem.financialCertifications?.length > 0 && (
+                        <p>
+                          <strong>Certifications:</strong>{" "}
+                          {userItem.financialCertifications.join(", ")}
+                        </p>
+                      )}
+
+                      {userItem.industrySpecializations?.length > 0 && (
+                        <p>
+                          <strong>Industries:</strong>{" "}
+                          {userItem.industrySpecializations.join(", ")}
+                        </p>
+                      )}
+
+                      {userItem.keyFinancialSkills?.length > 0 && (
+                        <p>
+                          <strong>Skills:</strong>{" "}
+                          {userItem.keyFinancialSkills.join(", ")}
+                        </p>
+                      )}
+
+                      {userItem.budgetManaged && (
+                        <p>
+                          <strong>Budget:</strong> {userItem.budgetManaged}
+                        </p>
+                      )}
+
+                      {typeof userItem.isVerified === "boolean" && (
+                        <p>
+                          <strong>Verified:</strong>{" "}
+                          {userItem.isVerified ? "Yes" : "No"}
+                        </p>
+                      )}
+
+                      <p>
+                        <strong>Status:</strong> {userStatus}
+                      </p>
+
+                      {userItem.createdAt && (
+                        <small>
+                          <strong>Joined:</strong>{" "}
+                          {new Date(userItem.createdAt).toLocaleDateString()}
+                        </small>
+                      )}
+
+                      <div className="user-card-actions">
+                        <UserActionButtons
+                          userId={userItem._id}
+                          status={userStatus}
+                          actionLoading={actionLoading}
+                          {...userActions}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </main>
+
+        <aside className="right-sidebar">
+          <div className="sidebar-card">
+            <h3 className="card-title">Recent Activity</h3>
+            <div className="activity-list">
+              <div className="activity-item">
+                <div className="activity-icon" aria-hidden="true">
+                  🔔
+                </div>
+                <div className="activity-content">
+                  <p>
+                    You have {networkStats.pendingReceived} pending connection
+                    requests
+                  </p>
+                  <span className="activity-time">Now</span>
+                </div>
+              </div>
+              <div className="activity-item">
+                <div className="activity-icon" aria-hidden="true">
+                  ✅
+                </div>
+                <div className="activity-content">
+                  <p>
+                    You're connected with {networkStats.connections}{" "}
+                    professionals
+                  </p>
+                  <span className="activity-time">Today</span>
+                </div>
+              </div>
+              <div className="activity-item">
+                <div className="activity-icon" aria-hidden="true">
+                  📤
+                </div>
+                <div className="activity-content">
+                  <p>You sent {networkStats.pendingSent} connection requests</p>
+                  <span className="activity-time">Recent</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="sidebar-card">
+            <h3 className="card-title">People You May Know</h3>
+            <div className="suggestions">
+              {suggestedUsers.map((suggestedUser) => (
+                <div key={suggestedUser._id} className="suggestion-item">
+                  <div className="suggestion-info">
+                    <h4>{suggestedUser.fullName}</h4>
+                    <p>{suggestedUser.designation}</p>
+                  </div>
+                  <button
+                    className="btn-small btn-connect"
+                    onClick={() =>
+                      handleConnect(suggestedUser._id, {
+                        receiverId: suggestedUser._id,
+                      })
+                    }
+                    disabled={actionLoading[suggestedUser._id]}
+                    aria-label={`Connect with ${suggestedUser.fullName}`}
+                  >
+                    {actionLoading[suggestedUser._id] ? "..." : "Connect"}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="sidebar-card">
+            <h3 className="card-title">Coming Soon</h3>
+            <div className="coming-soon">
+              <div className="feature-item">📝 Blog Posts</div>
+              <div className="feature-item">📅 Events</div>
+              <div className="feature-item">💼 Job Postings</div>
+              <div className="feature-item">🎯 Industry News</div>
+            </div>
+          </div>
+        </aside>
       </div>
-    </>
+
+      <footer className="page-footer">
+        <div className="footer-content">
+          <button className="btn btn-logout" onClick={logout}>
+            Logout
+          </button>
+        </div>
+      </footer>
+    </div>
   );
 }
 

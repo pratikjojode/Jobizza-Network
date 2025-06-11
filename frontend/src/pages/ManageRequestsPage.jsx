@@ -119,7 +119,6 @@ function ManageRequestsPage() {
     }
     try {
       await axios.put(
-        // Backend expects PUT for decline as per your previous conversation
         `/api/v1/connections/${requestId}/decline`,
         {},
         {
@@ -192,31 +191,35 @@ function ManageRequestsPage() {
 
   if (loading) {
     return (
-      <div className="page-container">
-        <div className="loading-spinner">Loading connection data...</div>
+      <div className="manage-requests-dashboard">
+        <div className="page-container">
+          <div className="loading-spinner">Loading connection data...</div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="page-container">
-        <div className="error-message">
-          <h2>Error</h2>
-          <p>{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="retry-button"
-          >
-            Retry
-          </button>
+      <div className="manage-requests-dashboard">
+        <div className="page-container">
+          <div className="error-message">
+            <h2>Error</h2>
+            <p>{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="retry-button"
+            >
+              Retry
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <>
+    <div className="manage-requests-dashboard">
       <div className="page-container">
         <header className="connections-header">
           <div className="header-left">
@@ -595,7 +598,7 @@ function ManageRequestsPage() {
           </div>
         </footer>
       </div>
-    </>
+    </div>
   );
 }
 
