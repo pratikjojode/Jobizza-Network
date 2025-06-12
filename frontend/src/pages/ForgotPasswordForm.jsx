@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Header from "../components/Header"; // Import Header component
-import Footer from "../components/Footer"; // Import Footer component
-import '../styles/ForgotPasswordForm.css'; // Import the new CSS file
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import '../styles/ForgotPasswordForm.css';
 
 function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
@@ -10,8 +10,8 @@ function ForgotPasswordForm() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setMessage("Sending..."); // Set a sending message
-    setIsSuccess(false); // Reset success status
+    setMessage("Sending...");
+    setIsSuccess(false);
 
     try {
       const response = await fetch("/api/v1/auth/forgot-password", {
@@ -27,9 +27,9 @@ function ForgotPasswordForm() {
       if (response.ok) {
         setMessage(data.message);
         setIsSuccess(true);
-        setEmail(""); // Clear email field on success
+        setEmail("");
       } else {
-        setMessage(data.message || "Something went wrong."); // Display error message from backend or a generic one
+        setMessage(data.message || "Something went wrong.");
         setIsSuccess(false);
       }
     } catch (error) {
@@ -41,40 +41,39 @@ function ForgotPasswordForm() {
 
   return (
     <>
-      <Header /> {/* Render Header component */}
-      <div className="jobizaaa-forgot-password-container">
-        <div className="jobizaaa-forgot-password-card">
-          <h2 className="jobizaaa-forgot-password-heading">Forgot Password</h2>
-          <p className="jobizaaa-forgot-password-intro-text">
-            Enter your email address below, and we'll send you a link to reset your password.
+      <Header />
+      <div className="forgot-password-container">
+        <div className="forgot-password-card">
+          <h2 className="forgot-password-heading">Forgot Password</h2>
+          <p className="forgot-password-text">
+            Enter your email address below and we'll send you a link to reset your password.
           </p>
 
-          <form onSubmit={handleSubmit} className="jobizaaa-forgot-password-form">
-            <div className="jobizaaa-form-group">
-              <label htmlFor="email" className="jobizaaa-form-label">Email:</label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="jobizaaa-form-input"
-                aria-label="Email address"
-              />
-            </div>
-            <button type="submit" className="jobizaaa-forgot-password-button">
+          <form onSubmit={handleSubmit} className="forgot-password-form">
+            <label htmlFor="email" className="forgot-password-label">Email:</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="forgot-password-input"
+              aria-label="Email address"
+              placeholder="example@domain.com"
+            />
+            <button type="submit" className="forgot-password-button">
               Send Reset Link
             </button>
           </form>
 
           {message && (
-            <p className={`jobizaaa-forgot-password-message ${isSuccess ? "jobizaaa-forgot-password-success-message" : "jobizaaa-forgot-password-error-message"}`}>
+            <p className={`forgot-password-message ${isSuccess ? "success" : "error"}`}>
               {message}
             </p>
           )}
         </div>
       </div>
-      <Footer /> {/* Render Footer component */}
+      <Footer />
     </>
   );
 }

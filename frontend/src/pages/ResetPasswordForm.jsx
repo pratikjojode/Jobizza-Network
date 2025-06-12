@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import '../styles/ResetPasswordForm.css';
 
 function ResetPasswordForm() {
   const { token } = useParams();
@@ -47,7 +50,7 @@ function ResetPasswordForm() {
         setIsSuccess(true);
         setNewPassword("");
         setConfirmNewPassword("");
-        navigate("/login");
+        setTimeout(() => navigate("/login"), 2000);
       } else {
         setMessage(data.message || "Failed to reset password.");
         setIsSuccess(false);
@@ -60,42 +63,64 @@ function ResetPasswordForm() {
   };
 
   return (
-    <div>
-      <h2>Reset Password</h2>
-      {!token && (
-        <p style={{ color: "red" }}>
-          Invalid or missing reset token in the URL.
-        </p>
-      )}
-      {token && (
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="newPassword">New Password:</label>
-            <input
-              type="password"
-              id="newPassword"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="confirmNewPassword">Confirm New Password:</label>
-            <input
-              type="password"
-              id="confirmNewPassword"
-              value={confirmNewPassword}
-              onChange={(e) => setConfirmNewPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button type="submit">Reset Password</button>
-        </form>
-      )}
-      {message && (
-        <p style={{ color: isSuccess ? "green" : "red" }}>{message}</p>
-      )}
-    </div>
+    <>
+      <Header />
+      <main className="jobizaaa-reset-password-container">
+        <div className="jobizaaa-reset-password-card">
+          <h2 className="jobizaaa-reset-password-heading">Reset Password</h2>
+
+          {!token && (
+            <p className="jobizaaa-reset-password-error-message">
+              Invalid or missing reset token in the URL.
+            </p>
+          )}
+
+          {token && (
+            <>
+              <p className="jobizaaa-reset-password-intro-text">
+                Enter your new password below. Make sure it's strong and memorable.
+              </p>
+              <form onSubmit={handleSubmit} className="jobizaaa-reset-password-form">
+                <div className="jobizaaa-form-group">
+                  <label htmlFor="newPassword" className="jobizaaa-form-label">New Password:</label>
+                  <input
+                    type="password"
+                    id="newPassword"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                    className="jobizaaa-form-input"
+                  />
+                </div>
+
+                <div className="jobizaaa-form-group">
+                  <label htmlFor="confirmNewPassword" className="jobizaaa-form-label">Confirm New Password:</label>
+                  <input
+                    type="password"
+                    id="confirmNewPassword"
+                    value={confirmNewPassword}
+                    onChange={(e) => setConfirmNewPassword(e.target.value)}
+                    required
+                    className="jobizaaa-form-input"
+                  />
+                </div>
+
+                <button type="submit" className="jobizaaa-reset-password-button">
+                  Reset Password
+                </button>
+              </form>
+            </>
+          )}
+
+          {message && (
+            <p className={`jobizaaa-reset-password-message ${isSuccess ? "jobizaaa-reset-password-success-message" : "jobizaaa-reset-password-error-message"}`}>
+              {message}
+            </p>
+          )}
+        </div>
+      </main>
+      <Footer />
+    </>
   );
 }
 

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import '../styles/Header.css'; 
-import JobizzaLogo from '../assets/Jobizza-logo.jpeg'; 
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom'; // Assuming you're using React Router
+import '../styles/Header.css';
+import JobizzaLogo from '../assets/Jobizza-logo.jpeg';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -13,43 +15,42 @@ const Header = () => {
     setIsMenuOpen(false);
   };
 
+  const getLinkClass = (path) => {
+    return location.pathname === path ? 'nav-link active' : 'nav-link';
+  };
+
   return (
     <header className="navbar">
       <div className="navbar-container">
         <div className="navbar-logo">
           <a href="/" onClick={closeMenu}>
-            <img 
-              src={JobizzaLogo} 
-              alt="Jobizza Technologies" 
-              className="logo-img"
-            />
-            
+            <img src={JobizzaLogo} alt="Jobizza Technologies" className="logo-img" />
           </a>
         </div>
 
-        
+        {/* Desktop Navigation */}
         <nav className="navbar-nav desktop-nav">
           <ul className="nav-list">
             <li className="nav-item">
-              <a href="/" className="nav-link">Home</a>
+              <a href="/" className={getLinkClass('/')}>Home</a>
             </li>
             <li className="nav-item">
-              <a href="/Register" className="nav-link">Register</a>
+              <a href="/register" className={getLinkClass('/register')}>Register</a>
             </li>
             <li className="nav-item">
-              <a href="/login" className="nav-link">Login</a>
+              <a href="/login" className={getLinkClass('/login')}>Login</a>
             </li>
             <li className="nav-item">
-              <a href="/pre-demo" className="nav-link">Pre-Demo</a>
+              <a href="/pre-demo" className={getLinkClass('/pre-demo')}>Pre-Demo</a>
             </li>
             <li className="nav-item">
-              <a href="/about" className="nav-link">About Us</a>
+              <a href="/about" className={getLinkClass('/about')}>About Us</a>
             </li>
           </ul>
         </nav>
 
-        
-        <button 
+        {/* Hamburger */}
+        <button
           className={`hamburger ${isMenuOpen ? 'active' : ''}`}
           onClick={toggleMenu}
           aria-label="Toggle navigation menu"
@@ -59,32 +60,29 @@ const Header = () => {
           <span className="hamburger-line"></span>
         </button>
 
-        
+        {/* Mobile Navigation */}
         <nav className={`navbar-nav mobile-nav ${isMenuOpen ? 'active' : ''}`}>
           <ul className="nav-list">
             <li className="nav-item">
-              <a href="/" className="nav-link" onClick={closeMenu}>Home</a>
+              <a href="/" className={getLinkClass('/')} onClick={closeMenu}>Home</a>
             </li>
             <li className="nav-item">
-              <a href="/register" className="nav-link" onClick={closeMenu}>Register</a>
+              <a href="/register" className={getLinkClass('/register')} onClick={closeMenu}>Register</a>
             </li>
             <li className="nav-item">
-              <a href="/login" className="nav-link" onClick={closeMenu}>Login</a>
+              <a href="/login" className={getLinkClass('/login')} onClick={closeMenu}>Login</a>
             </li>
             <li className="nav-item">
-              <a href="/pre-demo" className="nav-link" onClick={closeMenu}>Pre-Demo</a>
+              <a href="/pre-demo" className={getLinkClass('/pre-demo')} onClick={closeMenu}>Pre-Demo</a>
             </li>
             <li className="nav-item">
-              <a href="/about" className="nav-link" onClick={closeMenu}>About Us</a>
+              <a href="/about" className={getLinkClass('/about')} onClick={closeMenu}>About Us</a>
             </li>
           </ul>
         </nav>
 
-        
-        <div 
-          className={`navbar-overlay ${isMenuOpen ? 'active' : ''}`}
-          onClick={closeMenu}
-        ></div>
+        {/* Overlay */}
+        <div className={`navbar-overlay ${isMenuOpen ? 'active' : ''}`} onClick={closeMenu}></div>
       </div>
     </header>
   );
