@@ -4,6 +4,8 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import "../styles/ConnectionsPage.css";
 import ConnectionsHeader from "./ConnectionsHeader";
+import { toast } from "react-toastify"; // Only import toast, not ToastContainer
+// Do not import "react-toastify/dist/ReactToastify.css" here, it should be in App.js
 
 const CONNECTION_STATUSES = {
   NOT_CONNECTED: "not_connected",
@@ -19,7 +21,7 @@ const API_ENDPOINTS = {
   SENT_PENDING: "/api/v1/connections/my-connections/sent-pending",
   RECEIVED_PENDING: "/api/v1/connections/my-connections/received-pending",
   CONNECTIONS: "/api/v1/connections",
-  MY_OWN_PROFILE: "/api/v1/connections/me",
+  MY_OWN_PROFILE: "/api/v1/users/me",
 };
 
 const useConnectionData = (user, logout) => {
@@ -30,7 +32,6 @@ const useConnectionData = (user, logout) => {
     userConnectionStatuses: {},
     actionLoading: {},
     refreshing: false,
-    // Add state for the authenticated user's full profile data
     currentUserFullProfile: null,
   });
 
@@ -63,14 +64,12 @@ const useConnectionData = (user, logout) => {
         connectionsResponse,
         sentPendingResponse,
         receivedPendingResponse,
-        // Fetch the authenticated user's own full profile
         myProfileResponse,
       ] = await Promise.all([
         axios.get(API_ENDPOINTS.ALL_USERS, { headers }),
         axios.get(API_ENDPOINTS.MY_CONNECTIONS, { headers }),
         axios.get(API_ENDPOINTS.SENT_PENDING, { headers }),
         axios.get(API_ENDPOINTS.RECEIVED_PENDING, { headers }),
-        // Perform the new API call
         axios.get(API_ENDPOINTS.MY_OWN_PROFILE, { headers }),
       ]);
 
@@ -82,7 +81,6 @@ const useConnectionData = (user, logout) => {
       const currentConnections = connectionsResponse.data.data || [];
       const sentPendingRequests = sentPendingResponse.data.data || [];
       const receivedPendingRequests = receivedPendingResponse.data.data || [];
-      // Extract the full profile data for the current user
       const currentUserFullProfile = myProfileResponse.data.data.user || null;
 
       const statusMap = filteredUsers.reduce((acc, u) => {
@@ -122,7 +120,7 @@ const useConnectionData = (user, logout) => {
         users: filteredUsers,
         userConnectionStatuses: statusMap,
         loading: false,
-        currentUserFullProfile: currentUserFullProfile, // Set the fetched profile
+        currentUserFullProfile: currentUserFullProfile,
       });
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -130,12 +128,14 @@ const useConnectionData = (user, logout) => {
         err.response?.status === 401 || err.response?.status === 403;
 
       if (isAuthError) {
+        toast.error("Session expired. Please log in again.");
         updateState({
           error: "Session expired. Please log in again.",
           loading: false,
         });
         logout();
       } else {
+        toast.error(err.response?.data?.message || "Failed to fetch data.");
         updateState({
           error: err.response?.data?.message || "Failed to fetch data.",
           loading: false,
@@ -357,7 +357,7 @@ const UserCard = ({ user, status, actionLoading, actions }) => {
 };
 
 function ConnectionsPage() {
-  const { user, logout } = useAuth(); // 'user' from AuthContext typically holds basic user info (id, name, email)
+  const { user, logout } = useAuth();
   const {
     users,
     loading,
@@ -369,10 +369,9 @@ function ConnectionsPage() {
     refresh,
     updateState,
     getAuthHeaders,
-    currentUserFullProfile, // Get the newly fetched full profile
+    currentUserFullProfile,
   } = useConnectionData(user, logout);
 
-  // Use the full profile data for the sidebar if available, otherwise fallback to basic user data
   const displayedUser = currentUserFullProfile || user;
 
   const networkStats = useMemo(() => {
@@ -405,7 +404,7 @@ function ConnectionsPage() {
       return async (userId, additionalData = {}) => {
         const headers = getAuthHeaders();
         if (!headers) {
-          alert("Session expired. Please log in again.");
+          toast.error("Session expired. Please log in again.");
           logout();
           return;
         }
@@ -432,17 +431,19 @@ function ConnectionsPage() {
             }));
           }
 
-          alert(successMessage);
+          toast.success(successMessage);
           await fetchData();
         } catch (err) {
           console.error(`Error in ${action.name}:`, err);
           const errorMessage = err.response?.data?.message || err.message;
 
           if (err.response?.status === 401) {
-            alert("Session expired. Please log in again.");
+            toast.error("Session expired. Please log in again.");
             logout();
           } else {
-            alert(`Failed to ${action.name.toLowerCase()}: ${errorMessage}`);
+            toast.error(
+              `Failed to ${action.name.toLowerCase()}: ${errorMessage}`
+            );
             await fetchData();
           }
         } finally {
@@ -583,7 +584,6 @@ function ConnectionsPage() {
         <aside className="left-sidebar">
           <div className="sidebar-card">
             <div className="profile-summary">
-              {/* Use displayedUser for profile details in the sidebar */}
               {displayedUser?.profilePic ? (
                 <img
                   src={displayedUser.profilePic}
@@ -629,7 +629,7 @@ function ConnectionsPage() {
               <Link to="/my-connections" className="nav-link">
                 📋 Manage My Requests
               </Link>
-              {displayedUser?.role === "admin" && ( // Use displayedUser for role check
+              {displayedUser?.role === "admin" && (
                 <Link
                   to="/admin/manage-all-connections"
                   className="nav-link admin-link"

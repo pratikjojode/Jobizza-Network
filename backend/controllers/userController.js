@@ -140,7 +140,7 @@ export const getOwnConnectionProfile = async (req, res) => {
   }
 };
 
-// Add this route to handle specific user profiles
+
 export const getUserProfile = async (req, res) => {
   try {
     const { userId } = req.params;

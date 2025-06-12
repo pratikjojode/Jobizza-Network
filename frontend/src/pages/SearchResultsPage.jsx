@@ -4,6 +4,7 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import "../styles/SearchResultsPage.css";
 import ConnectionsHeader from "../components/ConnectionsHeader";
+import { toast } from "react-toastify";
 
 const SearchResultsPage = () => {
   const { search } = useLocation();
@@ -48,7 +49,7 @@ const SearchResultsPage = () => {
       );
       setSearchResults(response.data.data.results);
     } catch (err) {
-      console.error("Error fetching search results:", err);
+      toast.error("Error fetching search results:", err);
       const errorMessage =
         err.response?.data?.message || "Failed to load search results.";
 

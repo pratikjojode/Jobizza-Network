@@ -18,8 +18,7 @@ router.put(
   upload.single("profilePic"),
   updateUserProfile
 );
-
-// Add this route
-router.get("/:userId", protect, getUserProfile);
 router.get("/me", protect, getOwnConnectionProfile);
+router.get("/:userId", protect, getUserProfile);
+
 export default router;

@@ -10,7 +10,7 @@ import {
   getReceivedPendingRequests,
   getAllConnectionRequests,
   getAllUsersForConnection,
-  getOwnConnectionProfile,
+  
 } from "../controllers/connectionController.js";
 import { protect } from "../middlewares/authMiddleware.js";
 
@@ -21,7 +21,7 @@ router.use(protect);
 router.get("/", protect, getAllConnectionRequests);
 router.post("/", sendConnectionRequest);
 
-router.get("/me", protect, getOwnConnectionProfile);
+
 router.get("/all-users", getAllUsersForConnection);
 router.get("/my-connections", getMyConnections);
 
