@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import HomePage from "./components/HomePage";
+import AboutUs from "./components/AboutUs";
 import AuthForm from "./components/AuthForm";
 import AdminDashboard from "./components/AdminDashboard";
 import ConnectionsPage from "./components/ConnectionsPage";
@@ -31,6 +32,7 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<HomePage />} />
+           <Route path="/about" element={<AboutUs />} />
           <Route
             path="/login"
             element={
@@ -47,6 +49,7 @@ function App() {
               </PublicRoute>
             }
           />
+          
           <Route
             path="/verify-otp"
             element={
