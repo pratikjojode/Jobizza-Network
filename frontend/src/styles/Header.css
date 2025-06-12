@@ -194,7 +194,8 @@
 }
 
 .navbar-overlay {
-  display: none;
+ display: none !important;
+
   position: fixed;
   top: 70px;
   left: 0;

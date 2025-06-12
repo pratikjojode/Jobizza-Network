@@ -1,0 +1,218 @@
+
+
+
+
+/* OTP Container Styling */
+.jobizaaa-otp-container {
+    flex-grow: 1; /* Allows container to take available vertical space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* OTP Card Styling (similar to AuthForm card) */
+.jobizaaa-otp-card {
+    background: #ffffff;
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    padding: 40px;
+    max-width: 500px; /* Max width for the card */
+    width: 100%;
+    text-align: center;
+    animation: fadeInScale 0.8s ease-out; /* Fade in and slight scale animation */
+    margin: 20px; /* Add some margin for smaller screens */
+    box-sizing: border-box;
+}
+
+/* Animations */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Headings and Info Text */
+.jobizaaa-otp-heading {
+    color: #2a6f97; /* Darker blue for heading */
+    font-size: 2.2em;
+    margin-bottom: 15px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.jobizaaa-otp-info {
+    color: #555;
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.jobizaaa-otp-email {
+    font-weight: 700;
+    color: #007bff; /* Highlight email address */
+}
+
+/* Form Styling */
+.jobizaaa-otp-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-align: left;
+}
+
+.jobizaaa-otp-form-group {
+    margin-bottom: 10px;
+}
+
+.jobizaaa-otp-form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #444;
+    font-weight: 600;
+    font-size: 0.95em;
+    text-align: center;
+}
+
+.jobizaaa-otp-form-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #cce7f0; /* Light blue border */
+    border-radius: 8px; /* Rounded corners */
+    font-size: 1.2em; /* Slightly larger for OTP for readability */
+    letter-spacing: 0.1em; /* Space out OTP digits */
+    text-align: center; /* Center OTP digits */
+    color: #333;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.jobizaaa-otp-form-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+    outline: none;
+}
+
+/* Button Styling */
+.jobizaaa-otp-button {
+    background: linear-gradient(90deg, #007bff, #0056b3); /* Blue gradient button */
+    color: white;
+    padding: 14px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.2);
+    margin-top: 15px;
+    align-self: center;
+    width: 100%;
+    max-width: 300px;
+}
+
+.jobizaaa-otp-button:hover {
+    background: linear-gradient(90deg, #0056b3, #004085); /* Darker gradient on hover */
+    box-shadow: 0 7px 20px rgba(0, 123, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.jobizaaa-otp-button:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* Messages (Error and Success) */
+.jobizaaa-otp-message {
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+    font-weight: 500;
+    text-align: center;
+}
+
+.jobizaaa-otp-error-message {
+    background-color: #ffe0e0;
+    color: #cc0000;
+    border: 1px solid #ff9999;
+}
+
+.jobizaaa-otp-success-message {
+    background-color: #e0ffe0;
+    color: #008000;
+    border: 1px solid #99ff99;
+}
+
+.jobizaaa-otp-loading-message {
+    text-align: center;
+    font-size: 1.2em;
+    color: #2a6f97;
+    margin-top: 50px; /* Provide some spacing */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .jobizaaa-otp-card {
+        padding: 30px 20px;
+        margin: 10px;
+    }
+
+    .jobizaaa-otp-heading {
+        font-size: 1.8em;
+    }
+
+    .jobizaaa-otp-info {
+        font-size: 1em;
+        margin-bottom: 20px;
+    }
+
+    .jobizaaa-otp-form-input {
+        font-size: 1.1em;
+        padding: 10px 12px;
+    }
+
+    .jobizaaa-otp-button {
+        padding: 12px 20px;
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 480px) {
+    .jobizaaa-otp-card {
+        border-radius: 10px;
+        padding: 25px 15px;
+        margin: 5px;
+    }
+
+    .jobizaaa-otp-heading {
+        font-size: 1.6em;
+    }
+
+    .jobizaaa-otp-info {
+        font-size: 0.9em;
+        margin-bottom: 15px;
+    }
+
+    .jobizaaa-otp-form-input {
+        font-size: 1em;
+        padding: 10px;
+    }
+
+    .jobizaaa-otp-button {
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+}
