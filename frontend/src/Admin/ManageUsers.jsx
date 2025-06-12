@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import "../styles/ManageUsers.css";
+import { toast } from "react-toastify";
 
 const DEFAULT_PROFILE_PIC = "/profile-pic-dummy.png";
 
@@ -10,7 +11,7 @@ const ManageUsers = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [viewMode, setViewMode] = useState("table");
-  const [selectedUserIds, setSelectedUserIds] = useState(new Set()); // New state for selected users
+  const [selectedUserIds, setSelectedUserIds] = useState(new Set());
 
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [currentUserToEdit, setCurrentUserToEdit] = useState(null);
@@ -67,7 +68,7 @@ const ManageUsers = () => {
         }
       } catch (err) {
         setError(err.message);
-        console.error("Error fetching users:", err);
+        toast.error("Error fetching users:", err);
       } finally {
         setLoading(false);
       }
