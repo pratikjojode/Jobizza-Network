@@ -4,6 +4,8 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import "../styles/ManageRequestsPage.css";
 import ConnectionsHeader from "../components/ConnectionsHeader";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function ManageRequestsPage() {
   const { user, logout } = useAuth();
@@ -24,6 +26,9 @@ function ManageRequestsPage() {
     if (!storedToken || !user || !user.id) {
       setError("Please log in to manage your connections.");
       setLoading(false);
+      toast.error("Please log in to manage your connections.", {
+        autoClose: 5000,
+      });
       return;
     }
 
@@ -56,6 +61,10 @@ function ManageRequestsPage() {
       setAcceptedConnections(acceptedConnectionsResponse.data.data || []);
     } catch (err) {
       console.error("Error fetching connection data:", err);
+      const errorMessage =
+        err.response?.data?.message ||
+        "Failed to fetch connection requests and connections.";
+
       if (
         err.response &&
         (err.response.status === 401 || err.response.status === 403)
@@ -63,16 +72,15 @@ function ManageRequestsPage() {
         setError(
           "Access Denied. Your session might have expired or you don't have permission."
         );
+        toast.error("Access Denied. Please log in again.", { autoClose: 5000 });
       } else {
-        setError(
-          err.response?.data?.message ||
-            "Failed to fetch connection requests and connections."
-        );
+        setError(errorMessage);
+        toast.error(errorMessage, { autoClose: 5000 });
       }
     } finally {
       setLoading(false);
     }
-  }, [user]); // Re-run if user data changes
+  }, [user]);
 
   // Fetch data on component mount and when user changes
   useEffect(() => {
@@ -81,6 +89,7 @@ function ManageRequestsPage() {
     } else {
       setLoading(false);
       setError("Please log in to view this page.");
+      toast.info("Please log in to view this page.", { autoClose: 5000 });
     }
   }, [user, fetchData]);
 
@@ -89,7 +98,9 @@ function ManageRequestsPage() {
   const handleAcceptRequest = async (requestId) => {
     const storedToken = localStorage.getItem("token");
     if (!storedToken) {
-      alert("Authentication token missing. Please log in.");
+      toast.error("Authentication token missing. Please log in.", {
+        autoClose: 3000,
+      });
       return;
     }
     try {
@@ -100,14 +111,14 @@ function ManageRequestsPage() {
           headers: { Authorization: `Bearer ${storedToken}` },
         }
       );
-      alert("Connection request accepted!");
-      fetchData(); // Re-fetch data to update UI
+      toast.success("Connection request accepted!", { autoClose: 3000 });
+      fetchData();
     } catch (err) {
-      alert(
-        `Failed to accept request: ${
-          err.response?.data?.message || err.message
-        }`
-      );
+      const errorMessage =
+        err.response?.data?.message || "Failed to accept request.";
+      toast.error(`Failed to accept request: ${errorMessage}`, {
+        autoClose: 5000,
+      });
       console.error("Error accepting request:", err);
     }
   };
@@ -115,7 +126,9 @@ function ManageRequestsPage() {
   const handleDeclineRequest = async (requestId) => {
     const storedToken = localStorage.getItem("token");
     if (!storedToken) {
-      alert("Authentication token missing. Please log in.");
+      toast.error("Authentication token missing. Please log in.", {
+        autoClose: 3000,
+      });
       return;
     }
     try {
@@ -126,14 +139,14 @@ function ManageRequestsPage() {
           headers: { Authorization: `Bearer ${storedToken}` },
         }
       );
-      alert("Connection request declined!");
-      fetchData(); // Re-fetch data to update UI
+      toast.info("Connection request declined!", { autoClose: 3000 });
+      fetchData();
     } catch (err) {
-      alert(
-        `Failed to decline request: ${
-          err.response?.data?.message || err.message
-        }`
-      );
+      const errorMessage =
+        err.response?.data?.message || "Failed to decline request.";
+      toast.error(`Failed to decline request: ${errorMessage}`, {
+        autoClose: 5000,
+      });
       console.error("Error declining request:", err);
     }
   };
@@ -141,24 +154,26 @@ function ManageRequestsPage() {
   const handleCancelRequest = async (requestId) => {
     const storedToken = localStorage.getItem("token");
     if (!storedToken) {
-      alert("Authentication token missing. Please log in.");
+      toast.error("Authentication token missing. Please log in.", {
+        autoClose: 3000,
+      });
       return;
     }
     if (!window.confirm("Are you sure you want to cancel this request?")) {
-      return; // User cancelled the action
+      return;
     }
     try {
       await axios.delete(`/api/v1/connections/${requestId}`, {
         headers: { Authorization: `Bearer ${storedToken}` },
       });
-      alert("Connection request cancelled!");
-      fetchData(); // Re-fetch data to update UI
+      toast.warn("Connection request cancelled!", { autoClose: 3000 });
+      fetchData();
     } catch (err) {
-      alert(
-        `Failed to cancel request: ${
-          err.response?.data?.message || err.message
-        }`
-      );
+      const errorMessage =
+        err.response?.data?.message || "Failed to cancel request.";
+      toast.error(`Failed to cancel request: ${errorMessage}`, {
+        autoClose: 5000,
+      });
       console.error("Error cancelling request:", err);
     }
   };
@@ -166,24 +181,26 @@ function ManageRequestsPage() {
   const handleRemoveConnection = async (connectionId) => {
     const storedToken = localStorage.getItem("token");
     if (!storedToken) {
-      alert("Authentication token missing. Please log in.");
+      toast.error("Authentication token missing. Please log in.", {
+        autoClose: 3000,
+      });
       return;
     }
     if (!window.confirm("Are you sure you want to remove this connection?")) {
-      return; // User cancelled the action
+      return;
     }
     try {
       await axios.delete(`/api/v1/connections/${connectionId}/remove`, {
         headers: { Authorization: `Bearer ${storedToken}` },
       });
-      alert("Connection removed!");
-      fetchData(); // Re-fetch data to update UI
+      toast.warn("Connection removed!", { autoClose: 3000 });
+      fetchData();
     } catch (err) {
-      alert(
-        `Failed to remove connection: ${
-          err.response?.data?.message || err.message
-        }`
-      );
+      const errorMessage =
+        err.response?.data?.message || "Failed to remove connection.";
+      toast.error(`Failed to remove connection: ${errorMessage}`, {
+        autoClose: 5000,
+      });
       console.error("Error removing connection:", err);
     }
   };
@@ -193,6 +210,17 @@ function ManageRequestsPage() {
   if (loading) {
     return (
       <div className="manage-requests-dashboard-container">
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
         <div className="manage-requests-page-wrapper">
           <div className="loading-state-indicator">
             Loading connection data...
@@ -205,6 +233,17 @@ function ManageRequestsPage() {
   if (error) {
     return (
       <div className="manage-requests-dashboard-container">
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
         <div className="manage-requests-page-wrapper">
           <div className="error-display-card">
             <h2 className="error-title">Error</h2>
@@ -223,6 +262,19 @@ function ManageRequestsPage() {
 
   return (
     <div className="manage-requests-dashboard-container">
+      {/* The ToastContainer should ideally be in your App.js or main layout component */}
+      {/* Placing it here for demonstration, but consider moving it up for global toasts */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <ConnectionsHeader />
       <div className="manage-requests-page-wrapper">
         <div className="main-content-layout">
