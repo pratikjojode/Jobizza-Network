@@ -23,6 +23,7 @@ import ManageBlogs from "./Admin/ManageBlogs";
 import ManageConnections from "./Admin/ManageConnection";
 import MyProfile from "./pages/MyProfile";
 import ManageRequestsPage from "./pages/ManageRequestsPage";
+import CreateBlogPost from "./pages/CreateBlogPost";
 
 function App() {
   return (
@@ -109,6 +110,7 @@ function App() {
           <Route path="/my-connections" element={<ManageRequestsPage />} />
           <Route path="/search" element={<SearchResultsPage />} />
           <Route path="/profile" element={<MyProfile />} />
+          <Route path="/blogs/create" element={<CreateBlogPost />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
 

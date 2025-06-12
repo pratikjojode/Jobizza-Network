@@ -3,7 +3,7 @@ import "../styles/ConnectionDetailsModal.css";
 
 const ConnectionDetailsModal = ({ connection, onClose }) => {
   if (!connection) {
-    return null; // Don't render if no connection is provided
+    return null;
   }
 
   return (

@@ -1,0 +1,194 @@
+/* ManageBlogs.css */
+
+.manage-blogs-container {
+  padding: 20px;
+}
+
+.manage-blogs-header {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Common Button Styles */
+.btn {
+  padding: 8px 15px;
+  border-radius: 5px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.2s;
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+.btn-save {
+  background-color: #28a745;
+}
+
+.btn-cancel {
+  background-color: #6c757d;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+}
+
+/* View Mode Buttons */
+.view-btn {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.view-btn.active {
+  background-color: #0056b3; /* Darker blue for active */
+  color: white;
+  border-color: #0056b3;
+}
+
+/* Empty State Message */
+.empty-blogs-message {
+  text-align: center;
+  font-size: 1.2em;
+}
+
+/* --- Grid View Styles --- */
+.blog-grid-container {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(300px, 1fr)
+  ); /* Responsive grid */
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.blog-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Pushes actions to the bottom */
+  background-color: #fff;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  background-color: #f9f9f9;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
+  flex-grow: 1;
+}
+
+.card-image-container {
+  min-height: 200px; /* Fixed height for image container */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #eee;
+}
+
+.card-image {
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+  object-fit: cover; /* Cover the area, crop if necessary */
+}
+
+.current-image-thumbnail {
+  max-width: 80px;
+  max-height: 80px;
+  margin-bottom: 5px;
+  object-fit: cover;
+}
+
+.file-input {
+  padding: 10px 0;
+}
+
+.card-body {
+  padding: 15px;
+  font-size: 0.95em;
+  color: #555;
+  flex-grow: 1; /* Allows content to grow */
+}
+
+.card-description {
+  margin: 8px 0;
+  line-height: 1.4;
+}
+
+.card-actions {
+  padding: 15px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* --- Table View Styles --- */
+.blogs-table-container {
+  overflow-x: auto; /* Added for horizontal scrolling on small screens */
+}
+
+.blogs-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.blogs-table thead {
+  background-color: #f8f9fa;
+}
+
+.blogs-table th,
+.blogs-table td {
+  border: 1px solid #dee2e6;
+  padding: 12px 8px;
+  text-align: left;
+  vertical-align: top;
+  word-break: break-word; /* Prevent long words from breaking layout */
+}
+
+.blogs-table tbody tr {
+  transition: background-color 0.2s;
+}
+
+.blogs-table tbody tr:hover {
+  background-color: #f2f2f2;
+}
+
+/* Form Element Styles (for both views) */
+.input-field {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  box-sizing: border-box; /* Include padding in width */
+}
+
+.textarea-field {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  min-height: 60px;
+  resize: vertical;
+  box-sizing: border-box;
+}

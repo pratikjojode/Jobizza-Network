@@ -1,0 +1,92 @@
+/* NotFound.css */
+
+.not-found-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh; /* Occupy most of the viewport height */
+  text-align: center;
+  padding: 20px;
+  background-color: #f8f9fa; /* Light background for contrast */
+  color: #343a40; /* Darker text for readability */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.not-found-heading {
+  font-size: 4em; /* Large heading for impact */
+  color: #dc3545; /* A distinct error color (red) */
+  margin-bottom: 0.5em;
+  font-weight: 700;
+  animation: fadeInScale 0.8s ease-out; /* Simple animation */
+}
+
+.not-found-text {
+  font-size: 1.2em;
+  margin-bottom: 1.5em;
+  max-width: 600px;
+  line-height: 1.6;
+  animation: fadeIn 1s ease-out 0.2s forwards; /* Delayed fade-in */
+  opacity: 0; /* Start invisible for animation */
+}
+
+.not-found-link {
+  display: inline-block;
+  padding: 12px 25px;
+  background-color: #007bff; /* Primary action color (blue) */
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  animation: fadeIn 1s ease-out 0.4s forwards; /* Delayed fade-in */
+  opacity: 0; /* Start invisible for animation */
+}
+
+.not-found-link:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .not-found-heading {
+    font-size: 3em;
+  }
+
+  .not-found-text {
+    font-size: 1em;
+  }
+
+  .not-found-link {
+    padding: 10px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .not-found-heading {
+    font-size: 2.5em;
+  }
+}

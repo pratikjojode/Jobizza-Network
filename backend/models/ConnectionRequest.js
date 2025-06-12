@@ -24,7 +24,6 @@ const connectionRequestSchema = new mongoose.Schema(
 connectionRequestSchema.index({ sender: 1, receiver: 1 });
 
 connectionRequestSchema.pre("save", async function (next) {
-  // Only run these checks if the document is new (i.e., a new request is being created)
   if (this.isNew) {
     if (this.sender.equals(this.receiver)) {
       return next(new Error("Cannot send a connection request to yourself."));
