@@ -20,6 +20,8 @@ import ManageBlogs from "./Admin/ManageBlogs";
 import ManageConnections from "./Admin/ManageConnection"; // Adjust if your file is named ManageConnections.js
 import MyProfile from "./pages/MyProfile";
 import ManageRequestsPage from "./pages/ManageRequestsPage";
+import UserProfilePage from "./pages/UserProfilePage";
+import SearchResultsPage from "./pages/SearchResultsPage";
 
 function App() {
   return (
@@ -104,8 +106,10 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route path="/profile/:userId" element={<UserProfilePage />} />
           <Route path="/my-connections" element={<ManageRequestsPage />} />
           <Route path="*" element={<NotFound />} />
+          <Route path="/search" element={<SearchResultsPage />} />
           <Route path="/profile" element={<MyProfile />} />
         </Routes>
       </AuthProvider>

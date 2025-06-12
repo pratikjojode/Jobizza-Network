@@ -2,6 +2,8 @@ import express from "express";
 
 import { protect } from "../middlewares/authMiddleware.js";
 import {
+  getOwnConnectionProfile,
+  getUserProfile,
   getUserProfileById,
   updateUserProfile,
 } from "../controllers/userController.js";
@@ -17,4 +19,7 @@ router.put(
   updateUserProfile
 );
 
+// Add this route
+router.get("/:userId", protect, getUserProfile);
+router.get("/me", protect, getOwnConnectionProfile);
 export default router;

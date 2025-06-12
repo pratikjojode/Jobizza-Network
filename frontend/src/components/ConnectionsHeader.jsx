@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   FaUsers,
@@ -9,17 +9,34 @@ import {
   FaBlog,
   FaCog,
   FaBars,
-  FaTimes, // Import FaTimes for the close icon
+  FaTimes,
+  FaSearch,
 } from "react-icons/fa";
 
 import "../styles/UniqueConnectionsHeader.css";
 
 function ConnectionsHeader() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchFilter, setSearchFilter] = useState("all");
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(
+        `/search?q=${encodeURIComponent(
+          searchTerm.trim()
+        )}&filter=${searchFilter}`
+      );
+      setSearchTerm("");
+      setIsMenuOpen(false);
+    }
   };
 
   return (
@@ -34,6 +51,34 @@ function ConnectionsHeader() {
         <nav
           className={`header-navigation-menu ${isMenuOpen ? "menu-open" : ""}`}
         >
+          <form
+            onSubmit={handleSearch}
+            className="header-search-form mobile-search"
+          >
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+              aria-label="Search connections"
+            />
+            <select
+              value={searchFilter}
+              onChange={(e) => setSearchFilter(e.target.value)}
+              className="search-filter-select"
+              aria-label="Select search filter"
+            >
+              <option value="all">All</option>
+              <option value="people">People</option>
+              <option value="companies">Companies</option>
+              <option value="posts">Posts</option>
+            </select>
+            <button type="submit" className="search-button">
+              <FaSearch />
+            </button>
+          </form>
+
           <Link
             to="/connections"
             className="nav-item-icon-link"
@@ -83,6 +128,34 @@ function ConnectionsHeader() {
       </div>
 
       <div className="header-right-user-actions">
+        <form
+          onSubmit={handleSearch}
+          className="header-search-form desktop-search"
+        >
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+            aria-label="Search connections"
+          />
+          <select
+            value={searchFilter}
+            onChange={(e) => setSearchFilter(e.target.value)}
+            className="search-filter-select"
+            aria-label="Select search filter"
+          >
+            <option value="all">All</option>
+            <option value="people">People</option>
+            <option value="companies">Companies</option>
+            <option value="posts">Posts</option>
+          </select>
+          <button type="submit" className="search-button">
+            <FaSearch />
+          </button>
+        </form>
+
         {user && (
           <Link to="/profile" className="user-profile-display-link">
             {user.profilePic ? (

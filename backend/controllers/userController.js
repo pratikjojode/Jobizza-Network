@@ -1,4 +1,3 @@
-// userController.js
 import User from "../models/User.js";
 
 export const getUserProfileById = async (req, res) => {
@@ -101,6 +100,79 @@ export const updateUserProfile = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Internal server error",
+    });
+  }
+};
+
+export const getOwnConnectionProfile = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const userProfile = await User.findById(userId).select(
+      "fullName email designation company yearsOfFinanceExperience financialCertifications industrySpecializations keyFinancialSkills budgetManaged linkedin profilePic isVerified"
+    );
+
+    if (!userProfile) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Your profile could not be found.",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        user: userProfile,
+      },
+    });
+  } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        status: "fail",
+        message: "Invalid user ID format.",
+      });
+    }
+
+    res.status(500).json({
+      status: "error",
+      message: "An error occurred while fetching your profile.",
+    });
+  }
+};
+
+// Add this route to handle specific user profiles
+export const getUserProfile = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const userProfile = await User.findById(userId).select(
+      "fullName email designation company yearsOfFinanceExperience financialCertifications industrySpecializations keyFinancialSkills budgetManaged linkedin profilePic isVerified"
+    );
+
+    if (!userProfile) {
+      return res.status(404).json({
+        status: "fail",
+        message: "User profile not found.",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        user: userProfile,
+      },
+    });
+  } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        status: "fail",
+        message: "Invalid user ID format.",
+      });
+    }
+
+    res.status(500).json({
+      status: "error",
+      message: "An error occurred while fetching the user profile.",
     });
   }
 };

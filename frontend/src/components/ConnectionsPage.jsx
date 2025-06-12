@@ -19,6 +19,7 @@ const API_ENDPOINTS = {
   SENT_PENDING: "/api/v1/connections/my-connections/sent-pending",
   RECEIVED_PENDING: "/api/v1/connections/my-connections/received-pending",
   CONNECTIONS: "/api/v1/connections",
+  MY_OWN_PROFILE: "/api/v1/connections/me",
 };
 
 const useConnectionData = (user, logout) => {
@@ -29,6 +30,8 @@ const useConnectionData = (user, logout) => {
     userConnectionStatuses: {},
     actionLoading: {},
     refreshing: false,
+    // Add state for the authenticated user's full profile data
+    currentUserFullProfile: null,
   });
 
   const updateState = useCallback((updates) => {
@@ -60,11 +63,15 @@ const useConnectionData = (user, logout) => {
         connectionsResponse,
         sentPendingResponse,
         receivedPendingResponse,
+        // Fetch the authenticated user's own full profile
+        myProfileResponse,
       ] = await Promise.all([
         axios.get(API_ENDPOINTS.ALL_USERS, { headers }),
         axios.get(API_ENDPOINTS.MY_CONNECTIONS, { headers }),
         axios.get(API_ENDPOINTS.SENT_PENDING, { headers }),
         axios.get(API_ENDPOINTS.RECEIVED_PENDING, { headers }),
+        // Perform the new API call
+        axios.get(API_ENDPOINTS.MY_OWN_PROFILE, { headers }),
       ]);
 
       const allUsers = usersResponse.data.data || [];
@@ -75,6 +82,8 @@ const useConnectionData = (user, logout) => {
       const currentConnections = connectionsResponse.data.data || [];
       const sentPendingRequests = sentPendingResponse.data.data || [];
       const receivedPendingRequests = receivedPendingResponse.data.data || [];
+      // Extract the full profile data for the current user
+      const currentUserFullProfile = myProfileResponse.data.data.user || null;
 
       const statusMap = filteredUsers.reduce((acc, u) => {
         acc[String(u._id)] = {
@@ -113,6 +122,7 @@ const useConnectionData = (user, logout) => {
         users: filteredUsers,
         userConnectionStatuses: statusMap,
         loading: false,
+        currentUserFullProfile: currentUserFullProfile, // Set the fetched profile
       });
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -347,7 +357,7 @@ const UserCard = ({ user, status, actionLoading, actions }) => {
 };
 
 function ConnectionsPage() {
-  const { user, logout } = useAuth();
+  const { user, logout } = useAuth(); // 'user' from AuthContext typically holds basic user info (id, name, email)
   const {
     users,
     loading,
@@ -359,7 +369,11 @@ function ConnectionsPage() {
     refresh,
     updateState,
     getAuthHeaders,
+    currentUserFullProfile, // Get the newly fetched full profile
   } = useConnectionData(user, logout);
+
+  // Use the full profile data for the sidebar if available, otherwise fallback to basic user data
+  const displayedUser = currentUserFullProfile || user;
 
   const networkStats = useMemo(() => {
     const statuses = Object.values(userConnectionStatuses);
@@ -569,11 +583,18 @@ function ConnectionsPage() {
         <aside className="left-sidebar">
           <div className="sidebar-card">
             <div className="profile-summary">
-              {user?.profilePic ? (
+              {/* Use displayedUser for profile details in the sidebar */}
+              {displayedUser?.profilePic ? (
                 <img
-                  src={user.profilePic}
-                  alt={`${user.fullName}'s profile`}
+                  src={displayedUser.profilePic}
+                  alt={`${displayedUser.fullName}'s profile`}
                   className="profile-avatar"
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                    if (e.target.nextElementSibling) {
+                      e.target.nextElementSibling.style.display = "flex";
+                    }
+                  }}
                 />
               ) : (
                 <div
@@ -589,15 +610,15 @@ function ConnectionsPage() {
                   }}
                   aria-hidden="true"
                 >
-                  {user?.fullName?.charAt(0)?.toUpperCase()}
+                  {displayedUser?.fullName?.charAt(0)?.toUpperCase()}
                 </div>
               )}
               <div className="profile-info">
-                <h3>{user?.fullName}</h3>
+                <h3>{displayedUser?.fullName}</h3>
                 <p className="profile-title">
-                  {user?.designation || "Professional"}
+                  {displayedUser?.designation || "Professional"}
                 </p>
-                <p className="profile-company">{user?.company}</p>
+                <p className="profile-company">{displayedUser?.company}</p>
               </div>
             </div>
           </div>
@@ -608,7 +629,7 @@ function ConnectionsPage() {
               <Link to="/my-connections" className="nav-link">
                 📋 Manage My Requests
               </Link>
-              {user?.role === "admin" && (
+              {displayedUser?.role === "admin" && ( // Use displayedUser for role check
                 <Link
                   to="/admin/manage-all-connections"
                   className="nav-link admin-link"

@@ -1,0 +1,306 @@
+/* UserProfilePage.css */
+
+/* General Container for the whole page */
+.profile-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the profile card horizontally */
+  padding: 20px;
+  background-color: #f4f2ee; /* LinkedIn background color */
+  min-height: calc(100vh - 60px); /* Adjust based on your header height */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+/* Error States */
+.error-state,
+.not-found-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 80vh; /* Take up most of the viewport height */
+}
+
+.error-message,
+.empty-state {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 90%;
+}
+
+.error-message h2,
+.empty-state h3 {
+  color: #c0392b; /* Red for errors */
+  margin-bottom: 15px;
+}
+
+.empty-state h3 {
+  color: #333; /* Darker for general not found */
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+/* Profile Card Styles */
+.profile-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 900px; /* Max width similar to LinkedIn profile cards */
+  margin-top: 20px;
+  overflow: hidden; /* Ensures rounded corners apply to children */
+}
+
+/* Profile Header Section */
+.profile-header {
+  background-color: #f0f8ff; /* Light blue background for header */
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.profile-avatar-large {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+}
+
+.profile-avatar-placeholder-large {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: white;
+  font-weight: bold;
+  border: 4px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+}
+
+.profile-name {
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.profile-designation {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.profile-company {
+  font-size: 1rem;
+  color: #777;
+}
+
+/* Profile Details Sections */
+.profile-details-section {
+  padding: 25px 30px;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-details-section:last-of-type {
+  border-bottom: none; /* No border for the last section */
+}
+
+.profile-details-section h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #0a66c2; /* LinkedIn blue for section headers */
+  margin-bottom: 15px;
+}
+
+.profile-details-section p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.profile-details-section strong {
+  color: #333;
+}
+
+/* LinkedIn Link */
+.linkedin-link-profile {
+  display: inline-block;
+  background-color: #0a66c2;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.linkedin-link-profile:hover {
+  background-color: #004d96;
+}
+
+/* Action Buttons */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  font-weight: 600;
+  margin: 5px; /* Add some margin between buttons */
+}
+
+.btn-primary {
+  background-color: #0a66c2; /* LinkedIn blue */
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #004d96;
+}
+
+.btn-secondary {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background-color: #d0d0d0;
+}
+
+.btn-success {
+  background-color: #28a745; /* Green for success/accept */
+  color: #fff;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+
+.btn-danger {
+  background-color: #dc3545; /* Red for danger/remove */
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  color: #666;
+}
+
+/* Profile Actions Footer */
+.profile-actions-footer {
+  padding: 20px 30px;
+  text-align: center;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Space between buttons */
+}
+
+/* Profile Actions Header (for connection status/buttons) */
+.profile-actions-header {
+  padding: 15px 30px;
+  display: flex;
+  justify-content: center; /* Center connection buttons */
+  align-items: center;
+  gap: 10px; /* Space between buttons/tags */
+  border-bottom: 1px solid #eee;
+  background-color: #fcfcfc;
+}
+
+.profile-status-tag {
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9em;
+  text-transform: capitalize;
+}
+
+.profile-status-tag.self-profile {
+  background-color: #e6f2ff;
+  color: #0a66c2;
+}
+
+.profile-status-tag.error {
+  background-color: #fcebeb;
+  color: #c0392b;
+}
+
+.profile-status-tag.loading {
+  background-color: #f0f0f0;
+  color: #555;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .profile-page-container {
+    padding: 10px;
+  }
+
+  .profile-card {
+    margin-top: 10px;
+    border-radius: 0; /* Full width on smaller screens */
+  }
+
+  .profile-header {
+    padding: 20px;
+  }
+
+  .profile-avatar-large,
+  .profile-avatar-placeholder-large {
+    width: 120px;
+    height: 120px;
+    font-size: 2.5rem;
+  }
+
+  .profile-name {
+    font-size: 1.8rem;
+  }
+
+  .profile-designation {
+    font-size: 1.1rem;
+  }
+
+  .profile-details-section {
+    padding: 20px;
+  }
+
+  .profile-details-section h2 {
+    font-size: 1.3rem;
+  }
+
+  .btn {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+
+  .profile-actions-footer,
+  .profile-actions-header {
+    flex-wrap: wrap; /* Allow buttons to wrap */
+    justify-content: center;
+  }
+}

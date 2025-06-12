@@ -280,6 +280,7 @@ const MyProfile = () => {
 
   return (
     <>
+      <ConnectionsHeader />
       <div className="user-profile-page-wrapper">
         <div className="profile-section-card profile-header-area">
           <div className="profile-banner-image"></div>
