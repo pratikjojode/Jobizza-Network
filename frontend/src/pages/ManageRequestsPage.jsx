@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import "../styles/ManageRequestsPage.css";
+import ConnectionsHeader from "../components/ConnectionsHeader";
 
 function ManageRequestsPage() {
   const { user, logout } = useAuth();
@@ -191,9 +192,11 @@ function ManageRequestsPage() {
 
   if (loading) {
     return (
-      <div className="manage-requests-dashboard">
-        <div className="page-container">
-          <div className="loading-spinner">Loading connection data...</div>
+      <div className="manage-requests-dashboard-container">
+        <div className="manage-requests-page-wrapper">
+          <div className="loading-state-indicator">
+            Loading connection data...
+          </div>
         </div>
       </div>
     );
@@ -201,14 +204,14 @@ function ManageRequestsPage() {
 
   if (error) {
     return (
-      <div className="manage-requests-dashboard">
-        <div className="page-container">
-          <div className="error-message">
-            <h2>Error</h2>
-            <p>{error}</p>
+      <div className="manage-requests-dashboard-container">
+        <div className="manage-requests-page-wrapper">
+          <div className="error-display-card">
+            <h2 className="error-title">Error</h2>
+            <p className="error-message-text">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="retry-button"
+              className="retry-action-button"
             >
               Retry
             </button>
@@ -219,53 +222,22 @@ function ManageRequestsPage() {
   }
 
   return (
-    <div className="manage-requests-dashboard">
-      <div className="page-container">
-        <header className="connections-header">
-          <div className="header-left">
-            <Link to="/" className="header-logo">
-              Jobizaa Network || Home
-            </Link>
-          </div>
-          <div className="header-right">
-            {user && (
-              <Link to="/profile" className="header-profile-link">
-                {user.profilePic ? (
-                  <img
-                    src={user.profilePic}
-                    alt="Profile"
-                    className="header-profile-avatar"
-                  />
-                ) : (
-                  <div className="header-profile-avatar-placeholder">
-                    {user.fullName?.charAt(0)?.toUpperCase()}
-                  </div>
-                )}
-                <span>My Profile</span>
-              </Link>
-            )}
-            <Link to="/settings" className="header-icon-link">
-              <i className="fas fa-cog"></i>
-            </Link>
-            <button className="btn-logout-header" onClick={logout}>
-              Logout
-            </button>
-          </div>
-        </header>
-
-        <div className="main-layout">
-          <aside className="left-sidebar">
-            <div className="sidebar-card">
-              <div className="profile-summary">
+    <div className="manage-requests-dashboard-container">
+      <ConnectionsHeader />
+      <div className="manage-requests-page-wrapper">
+        <div className="main-content-layout">
+          <aside className="left-navigation-sidebar">
+            <div className="sidebar-profile-card">
+              <div className="user-profile-overview">
                 {user?.profilePic ? (
                   <img
                     src={user.profilePic}
                     alt={`${user.fullName}'s profile`}
-                    className="profile-avatar"
+                    className="profile-display-avatar"
                   />
                 ) : (
                   <div
-                    className="profile-avatar"
+                    className="profile-display-avatar"
                     style={{
                       background: "linear-gradient(135deg, #0a66c2, #004d96)",
                       display: "flex",
@@ -279,91 +251,97 @@ function ManageRequestsPage() {
                     {user?.fullName?.charAt(0)?.toUpperCase()}
                   </div>
                 )}
-                <div className="profile-info">
-                  <h3>{user?.fullName}</h3>
-                  <p className="profile-title">
+                <div className="profile-details-info">
+                  <h3 className="profile-full-name">{user?.fullName}</h3>
+                  <p className="profile-designation">
                     {user?.designation || "Professional"}
                   </p>
-                  <p className="profile-company">{user?.company}</p>
+                  <p className="profile-company-name">{user?.company}</p>
                 </div>
               </div>
             </div>
 
-            <div className="sidebar-card">
-              <h3 className="card-title">Quick Actions</h3>
-              <nav className="quick-nav">
-                <Link to="/connections" className="nav-link">
+            <div className="sidebar-quick-actions-card">
+              <h3 className="card-heading-title">Quick Actions</h3>
+              <nav className="quick-navigation-links">
+                <Link to="/connections" className="nav-link-item">
                   🌐 Discover People
                 </Link>
                 {user && user.role === "admin" && (
                   <Link
                     to="/admin/manage-all-connections"
-                    className="nav-link admin-link"
+                    className="nav-link-item admin-portal-link"
                   >
                     ⚙️ Manage All Connections
                   </Link>
                 )}
-                <Link to="/" className="nav-link">
+                <Link to="/" className="nav-link-item">
                   🏠 Go to Home
                 </Link>
               </nav>
             </div>
 
-            <div className="sidebar-card">
-              <h3 className="card-title">My Request Stats</h3>
-              <div className="stats">
-                <div className="stat-item">
-                  <span className="stat-number">{receivedRequests.length}</span>
-                  <span className="stat-label">Incoming</span>
+            <div className="sidebar-stats-card">
+              <h3 className="card-heading-title">My Request Stats</h3>
+              <div className="connection-stats-grid">
+                <div className="stat-item-display">
+                  <span className="stat-numeric-value">
+                    {receivedRequests.length}
+                  </span>
+                  <span className="stat-label-text">Incoming</span>
                 </div>
-                <div className="stat-item">
-                  <span className="stat-number">{sentRequests.length}</span>
-                  <span className="stat-label">Outgoing</span>
+                <div className="stat-item-display">
+                  <span className="stat-numeric-value">
+                    {sentRequests.length}
+                  </span>
+                  <span className="stat-label-text">Outgoing</span>
                 </div>
-                <div className="stat-item">
-                  <span className="stat-number">
+                <div className="stat-item-display">
+                  <span className="stat-numeric-value">
                     {acceptedConnections.length}
                   </span>
-                  <span className="stat-label">Connections</span>
+                  <span className="stat-label-text">Connections</span>
                 </div>
               </div>
             </div>
           </aside>
 
-          <main className="main-content">
+          <main className="central-content-area">
             {/* Received Pending Requests */}
-            <div className="content-card">
-              <div className="card-header">
-                <h2 className="section-title">
+            <div className="content-section-card">
+              <div className="section-header-details">
+                <h2 className="section-main-title">
                   Incoming Connection Requests ({receivedRequests.length})
                 </h2>
-                <p className="section-subtitle">
+                <p className="section-sub-heading">
                   Review requests from other professionals.
                 </p>
               </div>
               {receivedRequests.length === 0 ? (
-                <div className="empty-state">
-                  <div className="empty-icon">✉️</div>
-                  <h3>No incoming requests</h3>
-                  <p>You're all caught up!</p>
+                <div className="empty-state-message">
+                  <div className="empty-state-icon">✉️</div>
+                  <h3 className="empty-state-title">No incoming requests</h3>
+                  <p className="empty-state-description">
+                    You're all caught up!
+                  </p>
                 </div>
               ) : (
-                <div className="requests-grid">
+                <div className="connection-cards-grid">
                   {receivedRequests.map((request) => (
-                    <div key={request._id} className="request-card">
-                      <div className="request-user-info">
+                    <div key={request._id} className="connection-request-card">
+                      <div className="request-sender-info">
                         {request.sender?.profilePic ? (
                           <img
                             src={request.sender.profilePic}
                             alt={`${request.sender.fullName}'s profile`}
-                            className="user-avatar"
+                            className="sender-profile-avatar"
                             onError={(e) => {
                               e.target.style.display = "none";
                             }}
                           />
                         ) : (
                           <div
-                            className="user-avatar"
+                            className="sender-profile-avatar"
                             style={{
                               background:
                                 "linear-gradient(135deg, #0077B5, #005682)",
@@ -379,28 +357,30 @@ function ManageRequestsPage() {
                           </div>
                         )}
                         <div>
-                          <h3 className="user-name">
+                          <h3 className="sender-full-name">
                             {request.sender?.fullName}
                           </h3>
-                          <p className="user-title">
+                          <p className="sender-designation-title">
                             {request.sender?.designation}
                           </p>
-                          <p className="user-company">
+                          <p className="sender-company-name">
                             {request.sender?.company}
                           </p>
-                          <p className="user-email">{request.sender?.email}</p>
+                          <p className="sender-email-address">
+                            {request.sender?.email}
+                          </p>
                         </div>
                       </div>
-                      <div className="request-actions">
+                      <div className="request-action-buttons">
                         <button
                           onClick={() => handleAcceptRequest(request._id)}
-                          className="btn btn-accept"
+                          className="action-button-primary"
                         >
                           Accept
                         </button>
                         <button
                           onClick={() => handleDeclineRequest(request._id)}
-                          className="btn btn-decline"
+                          className="action-button-secondary"
                         >
                           Decline
                         </button>
@@ -412,38 +392,40 @@ function ManageRequestsPage() {
             </div>
 
             {/* Sent Pending Requests */}
-            <div className="content-card mt-8">
-              <div className="card-header">
-                <h2 className="section-title">
+            <div className="content-section-card mt-8">
+              <div className="section-header-details">
+                <h2 className="section-main-title">
                   Outgoing Connection Requests ({sentRequests.length})
                 </h2>
-                <p className="section-subtitle">
+                <p className="section-sub-heading">
                   Requests you've sent that are pending.
                 </p>
               </div>
               {sentRequests.length === 0 ? (
-                <div className="empty-state">
-                  <div className="empty-icon">📤</div>
-                  <h3>No outgoing requests</h3>
-                  <p>Send a new connection request to discover others.</p>
+                <div className="empty-state-message">
+                  <div className="empty-state-icon">📤</div>
+                  <h3 className="empty-state-title">No outgoing requests</h3>
+                  <p className="empty-state-description">
+                    Send a new connection request to discover others.
+                  </p>
                 </div>
               ) : (
-                <div className="requests-grid">
+                <div className="connection-cards-grid">
                   {sentRequests.map((request) => (
-                    <div key={request._id} className="request-card">
-                      <div className="request-user-info">
+                    <div key={request._id} className="connection-request-card">
+                      <div className="request-receiver-info">
                         {request.receiver?.profilePic ? (
                           <img
                             src={request.receiver.profilePic}
                             alt={`${request.receiver.fullName}'s profile`}
-                            className="user-avatar"
+                            className="receiver-profile-avatar"
                             onError={(e) => {
                               e.target.style.display = "none";
                             }}
                           />
                         ) : (
                           <div
-                            className="user-avatar"
+                            className="receiver-profile-avatar"
                             style={{
                               background:
                                 "linear-gradient(135deg, #FF6F61, #E04D38)",
@@ -461,24 +443,24 @@ function ManageRequestsPage() {
                           </div>
                         )}
                         <div>
-                          <h3 className="user-name">
+                          <h3 className="receiver-full-name">
                             {request.receiver?.fullName}
                           </h3>
-                          <p className="user-title">
+                          <p className="receiver-designation-title">
                             {request.receiver?.designation}
                           </p>
-                          <p className="user-company">
+                          <p className="receiver-company-name">
                             {request.receiver?.company}
                           </p>
-                          <p className="user-email">
+                          <p className="receiver-email-address">
                             {request.receiver?.email}
                           </p>
                         </div>
                       </div>
-                      <div className="request-actions">
+                      <div className="request-action-buttons">
                         <button
                           onClick={() => handleCancelRequest(request._id)}
-                          className="btn btn-cancel"
+                          className="action-button-cancel"
                         >
                           Cancel Request
                         </button>
@@ -490,38 +472,43 @@ function ManageRequestsPage() {
             </div>
 
             {/* My Established Connections */}
-            <div className="content-card mt-8">
-              <div className="card-header">
-                <h2 className="section-title">
+            <div className="content-section-card mt-8">
+              <div className="section-header-details">
+                <h2 className="section-main-title">
                   My Connections ({acceptedConnections.length})
                 </h2>
-                <p className="section-subtitle">
+                <p className="section-sub-heading">
                   Professionals you are connected with.
                 </p>
               </div>
               {acceptedConnections.length === 0 ? (
-                <div className="empty-state">
-                  <div className="empty-icon">🔗</div>
-                  <h3>No connections yet</h3>
-                  <p>Send or accept requests to grow your network!</p>
+                <div className="empty-state-message">
+                  <div className="empty-state-icon">🔗</div>
+                  <h3 className="empty-state-title">No connections yet</h3>
+                  <p className="empty-state-description">
+                    Send or accept requests to grow your network!
+                  </p>
                 </div>
               ) : (
-                <div className="requests-grid">
+                <div className="connection-cards-grid">
                   {acceptedConnections.map((connection) => (
-                    <div key={connection._id} className="request-card">
-                      <div className="request-user-info">
+                    <div
+                      key={connection._id}
+                      className="connection-request-card"
+                    >
+                      <div className="connected-user-info">
                         {connection.connectedUser?.profilePic ? (
                           <img
                             src={connection.connectedUser.profilePic}
                             alt={`${connection.connectedUser.fullName}'s profile`}
-                            className="user-avatar"
+                            className="connected-user-avatar"
                             onError={(e) => {
                               e.target.style.display = "none";
                             }}
                           />
                         ) : (
                           <div
-                            className="user-avatar"
+                            className="connected-user-avatar"
                             style={{
                               background:
                                 "linear-gradient(135deg, #4CAF50, #2E8B57)",
@@ -539,24 +526,24 @@ function ManageRequestsPage() {
                           </div>
                         )}
                         <div>
-                          <h3 className="user-name">
+                          <h3 className="connected-user-full-name">
                             {connection.connectedUser?.fullName}
                           </h3>
-                          <p className="user-title">
+                          <p className="connected-user-designation-title">
                             {connection.connectedUser?.designation}
                           </p>
-                          <p className="user-company">
+                          <p className="connected-user-company-name">
                             {connection.connectedUser?.company}
                           </p>
-                          <p className="user-email">
+                          <p className="connected-user-email-address">
                             {connection.connectedUser?.email}
                           </p>
                         </div>
                       </div>
-                      <div className="request-actions">
+                      <div className="connection-action-buttons">
                         <button
                           onClick={() => handleRemoveConnection(connection._id)}
-                          className="btn btn-remove"
+                          className="action-button-remove"
                         >
                           Remove Connection
                         </button>
@@ -568,10 +555,10 @@ function ManageRequestsPage() {
             </div>
           </main>
 
-          <aside className="right-sidebar">
-            <div className="sidebar-card">
-              <h3 className="card-title">Network Tips</h3>
-              <ul className="tips-list">
+          <aside className="right-utility-sidebar">
+            <div className="sidebar-tips-card">
+              <h3 className="card-heading-title">Network Tips</h3>
+              <ul className="tips-list-items">
                 <li>🎯 Keep your profile updated for better visibility.</li>
                 <li>🤝 Connect with people from diverse industries.</li>
                 <li>✉️ Personalize your connection requests.</li>
@@ -579,20 +566,22 @@ function ManageRequestsPage() {
                 <li>🗓️ Schedule virtual coffee chats.</li>
               </ul>
             </div>
-            <div className="sidebar-card">
-              <h3 className="card-title">Need Help?</h3>
-              <p className="help-text">
+            <div className="sidebar-help-card">
+              <h3 className="card-heading-title">Need Help?</h3>
+              <p className="help-text-content">
                 If you encounter any issues or have questions, feel free to
                 contact our support team.
               </p>
-              <button className="btn btn-primary">Contact Support</button>
+              <button className="support-contact-button">
+                Contact Support
+              </button>
             </div>
           </aside>
         </div>
 
-        <footer className="page-footer">
-          <div className="footer-content">
-            <button className="btn btn-logout" onClick={logout}>
+        <footer className="page-bottom-footer">
+          <div className="footer-content-wrapper">
+            <button className="footer-logout-button" onClick={logout}>
               Logout
             </button>
           </div>

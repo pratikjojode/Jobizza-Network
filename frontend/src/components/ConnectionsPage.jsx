@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import "../styles/ConnectionsPage.css";
+import ConnectionsHeader from "./ConnectionsHeader";
 
-// Constants
 const CONNECTION_STATUSES = {
   NOT_CONNECTED: "not_connected",
   ACCEPTED: "accepted",
@@ -21,7 +21,6 @@ const API_ENDPOINTS = {
   CONNECTIONS: "/api/v1/connections",
 };
 
-// Custom hooks
 const useConnectionData = (user, logout) => {
   const [state, setState] = useState({
     users: [],
@@ -77,7 +76,6 @@ const useConnectionData = (user, logout) => {
       const sentPendingRequests = sentPendingResponse.data.data || [];
       const receivedPendingRequests = receivedPendingResponse.data.data || [];
 
-      // Build status map efficiently
       const statusMap = filteredUsers.reduce((acc, u) => {
         acc[String(u._id)] = {
           status: CONNECTION_STATUSES.NOT_CONNECTED,
@@ -86,7 +84,6 @@ const useConnectionData = (user, logout) => {
         return acc;
       }, {});
 
-      // Process connections
       [
         {
           data: currentConnections,
@@ -157,7 +154,6 @@ const useConnectionData = (user, logout) => {
   return { ...state, fetchData, refresh, updateState, getAuthHeaders };
 };
 
-// Component for user action buttons
 const UserActionButtons = ({
   userId,
   status,
@@ -237,7 +233,6 @@ const UserActionButtons = ({
   }
 };
 
-// User card component
 const UserCard = ({ user, status, actionLoading, actions }) => {
   const userInitial = user.fullName?.charAt(0)?.toUpperCase() || "?";
 
@@ -247,44 +242,99 @@ const UserCard = ({ user, status, actionLoading, actions }) => {
       role="article"
       aria-labelledby={`user-${user._id}`}
     >
-      <div className="user-header">
-        {user.profilePic ? (
-          <img
-            src={user.profilePic}
-            alt={`${user.fullName}'s profile`}
-            className="user-avatar"
-            onError={(e) => {
-              e.target.style.display = "none";
-              e.target.nextElementSibling.style.display = "flex";
+      <div className="user-card-header">
+        <Link to={`/profile/${user._id}`} className="user-profile-link">
+          {user.profilePic ? (
+            <img
+              src={user.profilePic}
+              alt={`${user.fullName}'s profile`}
+              className="user-avatar"
+              onError={(e) => {
+                e.target.style.display = "none";
+                if (e.target.nextElementSibling) {
+                  e.target.nextElementSibling.style.display = "flex";
+                }
+              }}
+            />
+          ) : null}
+          <div
+            className="user-avatar-placeholder"
+            style={{
+              background: "linear-gradient(135deg, #6b7280, #4b5563)",
+              display: user.profilePic ? "none" : "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "1.5rem",
+              color: "white",
+              fontWeight: "bold",
             }}
-          />
-        ) : null}
-        <div
-          className="user-avatar"
-          style={{
-            background: "linear-gradient(135deg, #6b7280, #4b5563)",
-            display: user.profilePic ? "none" : "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "1.5rem",
-            color: "white",
-            fontWeight: "bold",
-          }}
-          aria-hidden="true"
-        >
-          {userInitial}
-        </div>
-        <div className="user-info">
-          <h3 className="user-name" id={`user-${user._id}`}>
-            {user.fullName}
-          </h3>
-          <p className="user-title">{user.designation}</p>
-          <p className="user-company">{user.company}</p>
-          <p className="user-email">{user.email}</p>
-        </div>
+            aria-hidden="true"
+          >
+            {userInitial}
+          </div>
+          <div className="user-info-text">
+            <h3 className="user-name" id={`user-${user._id}`}>
+              {user.fullName}
+            </h3>
+            {user.designation && (
+              <p className="user-detail user-designation">{user.designation}</p>
+            )}
+            {user.company && (
+              <p className="user-detail user-company">{user.company}</p>
+            )}
+          </div>
+        </Link>
       </div>
 
-      <div className="user-actions">
+      <div className="user-card-body">
+        {user.yearsOfFinanceExperience && (
+          <p className="user-detail">
+            <strong>Experience:</strong> {user.yearsOfFinanceExperience} years
+          </p>
+        )}
+        {user.financialCertifications?.length > 0 && (
+          <p className="user-detail">
+            <strong>Certifications:</strong>{" "}
+            {user.financialCertifications.join(", ")}
+          </p>
+        )}
+        {user.industrySpecializations?.length > 0 && (
+          <p className="user-detail">
+            <strong>Industries:</strong>{" "}
+            {user.industrySpecializations.join(", ")}
+          </p>
+        )}
+        {user.keyFinancialSkills?.length > 0 && (
+          <p className="user-detail">
+            <strong>Skills:</strong> {user.keyFinancialSkills.join(", ")}
+          </p>
+        )}
+        {user.budgetManaged && (
+          <p className="user-detail">
+            <strong>Budget Managed:</strong> {user.budgetManaged}
+          </p>
+        )}
+        {user.linkedin && (
+          <p className="user-detail user-linkedin">
+            <a
+              href={user.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="linkedin-link"
+              aria-label={`LinkedIn profile of ${user.fullName}`}
+            >
+              LinkedIn Profile
+            </a>
+          </p>
+        )}
+        {typeof user.isVerified === "boolean" && (
+          <p className="user-detail">
+            <strong>Verified:</strong> {user.isVerified ? "Yes ✅" : "No ❌"}
+          </p>
+        )}
+      </div>
+
+      <div className="user-card-actions-footer">
         <UserActionButtons
           userId={user._id}
           status={status}
@@ -296,7 +346,6 @@ const UserCard = ({ user, status, actionLoading, actions }) => {
   );
 };
 
-// Main component
 function ConnectionsPage() {
   const { user, logout } = useAuth();
   const {
@@ -312,7 +361,6 @@ function ConnectionsPage() {
     getAuthHeaders,
   } = useConnectionData(user, logout);
 
-  // Memoized computed values
   const networkStats = useMemo(() => {
     const statuses = Object.values(userConnectionStatuses);
     return {
@@ -329,18 +377,15 @@ function ConnectionsPage() {
   }, [userConnectionStatuses]);
 
   const suggestedUsers = useMemo(() => {
-    return users
-      .filter((u) => {
-        const status = userConnectionStatuses[u._id]?.status;
-        return (
-          status === CONNECTION_STATUSES.NOT_CONNECTED ||
-          status === CONNECTION_STATUSES.DECLINED
-        );
-      })
-      .slice(0, 3);
+    return users.filter((u) => {
+      const status = userConnectionStatuses[u._id]?.status;
+      return (
+        status === CONNECTION_STATUSES.NOT_CONNECTED ||
+        status === CONNECTION_STATUSES.DECLINED
+      );
+    });
   }, [users, userConnectionStatuses]);
 
-  // Action handlers with better error handling
   const createActionHandler = useCallback(
     (action, endpoint, successMessage) => {
       return async (userId, additionalData = {}) => {
@@ -398,7 +443,6 @@ function ConnectionsPage() {
     [getAuthHeaders, logout, updateState, fetchData]
   );
 
-  // Connection action handlers
   const handleConnect = createActionHandler(
     {
       name: "Connect",
@@ -484,7 +528,6 @@ function ConnectionsPage() {
     await actionHandler(userId);
   };
 
-  // Loading state
   if (loading) {
     return (
       <div className="page-container">
@@ -496,7 +539,6 @@ function ConnectionsPage() {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="page-container">
@@ -521,41 +563,7 @@ function ConnectionsPage() {
 
   return (
     <div className="page-container">
-      <header className="connections-header">
-        <div className="header-left">
-          <Link to="/" className="header-logo">
-            Jobizaa Network || Home
-          </Link>
-        </div>
-        <div className="header-right">
-          {user && (
-            <Link to="/profile" className="header-profile-link">
-              {user.profilePic ? (
-                <img
-                  src={user.profilePic}
-                  alt="Profile"
-                  className="header-profile-avatar"
-                />
-              ) : (
-                <div className="header-profile-avatar-placeholder">
-                  {user.fullName?.charAt(0)?.toUpperCase()}
-                </div>
-              )}
-              <span>My Profile</span>
-            </Link>
-          )}
-          <Link
-            to="/settings"
-            className="header-icon-link"
-            aria-label="Settings"
-          >
-            <i className="fas fa-cog"></i>
-          </Link>
-          <button className="btn-logout-header" onClick={logout}>
-            Logout
-          </button>
-        </div>
-      </header>
+      <ConnectionsHeader />
 
       <div className="main-layout">
         <aside className="left-sidebar">
@@ -668,107 +676,13 @@ function ConnectionsPage() {
                     CONNECTION_STATUSES.NOT_CONNECTED;
 
                   return (
-                    <div key={userItem._id} className="user-profile-card">
-                      {userItem.profilePic && (
-                        <img
-                          src={userItem.profilePic}
-                          alt={`${userItem.fullName}'s profile`}
-                          className="user-avatar"
-                        />
-                      )}
-
-                      {userItem.fullName && <h3>{userItem.fullName}</h3>}
-
-                      {userItem.company && (
-                        <p>
-                          <strong>Company:</strong> {userItem.company}
-                        </p>
-                      )}
-                      {userItem.designation && (
-                        <p>
-                          <strong>Designation:</strong> {userItem.designation}
-                        </p>
-                      )}
-                      {userItem.role && (
-                        <p>
-                          <strong>Position:</strong> {userItem.role}
-                        </p>
-                      )}
-
-                      {userItem.linkedin && (
-                        <p>
-                          <strong>LinkedIn:</strong>{" "}
-                          <a
-                            href={userItem.linkedin}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {userItem.linkedin}
-                          </a>
-                        </p>
-                      )}
-
-                      {userItem.yearsOfFinanceExperience && (
-                        <p>
-                          <strong>Experience:</strong>{" "}
-                          {userItem.yearsOfFinanceExperience} years
-                        </p>
-                      )}
-
-                      {userItem.financialCertifications?.length > 0 && (
-                        <p>
-                          <strong>Certifications:</strong>{" "}
-                          {userItem.financialCertifications.join(", ")}
-                        </p>
-                      )}
-
-                      {userItem.industrySpecializations?.length > 0 && (
-                        <p>
-                          <strong>Industries:</strong>{" "}
-                          {userItem.industrySpecializations.join(", ")}
-                        </p>
-                      )}
-
-                      {userItem.keyFinancialSkills?.length > 0 && (
-                        <p>
-                          <strong>Skills:</strong>{" "}
-                          {userItem.keyFinancialSkills.join(", ")}
-                        </p>
-                      )}
-
-                      {userItem.budgetManaged && (
-                        <p>
-                          <strong>Budget:</strong> {userItem.budgetManaged}
-                        </p>
-                      )}
-
-                      {typeof userItem.isVerified === "boolean" && (
-                        <p>
-                          <strong>Verified:</strong>{" "}
-                          {userItem.isVerified ? "Yes" : "No"}
-                        </p>
-                      )}
-
-                      <p>
-                        <strong>Status:</strong> {userStatus}
-                      </p>
-
-                      {userItem.createdAt && (
-                        <small>
-                          <strong>Joined:</strong>{" "}
-                          {new Date(userItem.createdAt).toLocaleDateString()}
-                        </small>
-                      )}
-
-                      <div className="user-card-actions">
-                        <UserActionButtons
-                          userId={userItem._id}
-                          status={userStatus}
-                          actionLoading={actionLoading}
-                          {...userActions}
-                        />
-                      </div>
-                    </div>
+                    <UserCard
+                      key={userItem._id}
+                      user={userItem}
+                      status={userStatus}
+                      actionLoading={actionLoading}
+                      actions={userActions}
+                    />
                   );
                 })}
               </div>
@@ -819,26 +733,32 @@ function ConnectionsPage() {
           <div className="sidebar-card">
             <h3 className="card-title">People You May Know</h3>
             <div className="suggestions">
-              {suggestedUsers.map((suggestedUser) => (
-                <div key={suggestedUser._id} className="suggestion-item">
-                  <div className="suggestion-info">
-                    <h4>{suggestedUser.fullName}</h4>
-                    <p>{suggestedUser.designation}</p>
+              {suggestedUsers.length === 0 ? (
+                <p className="no-suggestions">
+                  No new suggestions at the moment.
+                </p>
+              ) : (
+                suggestedUsers.map((suggestedUser) => (
+                  <div key={suggestedUser._id} className="suggestion-item">
+                    <div className="suggestion-info">
+                      <h4>{suggestedUser.fullName}</h4>
+                      <p>{suggestedUser.designation}</p>
+                    </div>
+                    <button
+                      className="btn-small btn-connect"
+                      onClick={() =>
+                        handleConnect(suggestedUser._id, {
+                          receiverId: suggestedUser._id,
+                        })
+                      }
+                      disabled={actionLoading[suggestedUser._id]}
+                      aria-label={`Connect with ${suggestedUser.fullName}`}
+                    >
+                      {actionLoading[suggestedUser._id] ? "..." : "Connect"}
+                    </button>
                   </div>
-                  <button
-                    className="btn-small btn-connect"
-                    onClick={() =>
-                      handleConnect(suggestedUser._id, {
-                        receiverId: suggestedUser._id,
-                      })
-                    }
-                    disabled={actionLoading[suggestedUser._id]}
-                    aria-label={`Connect with ${suggestedUser.fullName}`}
-                  >
-                    {actionLoading[suggestedUser._id] ? "..." : "Connect"}
-                  </button>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
 
