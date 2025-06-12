@@ -14,8 +14,7 @@ import ResetPasswordForm from "./pages/ResetPasswordForm";
 import UserProfilePage from "./pages/UserProfilePage";
 import SearchResultsPage from "./pages/SearchResultsPage";
 
-// Import ToastContainer and its CSS
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, Bounce } from "react-toastify"; // Import Bounce transition
 import "react-toastify/dist/ReactToastify.css";
 
 import AdminProfile from "./Admin/AdminProfile";
@@ -112,17 +111,20 @@ function App() {
           <Route path="/profile" element={<MyProfile />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-        {/* Place ToastContainer inside Router, typically after Routes or AuthProvider */}
+
         <ToastContainer
-          position="bottom-right"
-          autoClose={5000}
+          position="top-center"
+          autoClose={3000}
           hideProgressBar={false}
-          newestOnTop={false}
+          newestOnTop={true}
           closeOnClick
           rtl={false}
           pauseOnFocusLoss
           draggable
           pauseOnHover
+          theme="colored"
+          transition={Bounce}
+          limit={3}
         />
       </AuthProvider>
     </Router>
