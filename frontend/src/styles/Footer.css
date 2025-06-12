@@ -1,7 +1,7 @@
 .footer {
   background: linear-gradient(135deg, #003366, #006699);
   color: #ffffff;
-  padding: 3rem 0 1rem;
+  padding: 2.5rem 1rem 1rem;
   width: 100%;
   position: relative;
   z-index: 9999;
@@ -11,10 +11,7 @@
 .footer::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: rgba(255, 255, 255, 0.02);
   pointer-events: none;
   z-index: 0;
@@ -26,41 +23,29 @@
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem;
   z-index: 10;
   position: relative;
+  gap: 2rem;
 }
 
-.footer-top {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+.footer-logo {
   text-align: center;
-  margin-bottom: 2rem;
 }
 
-.footer-brand {
-  margin-bottom: 2rem;
-  color: #ffffff; /* ensure visibility */
-}
-
-.footer-brand h3 {
+.footer-logo h2 {
   font-size: 1.8rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  color: #ffffff; /* override darker tone */
+  margin-bottom: 0.3rem;
 }
 
-.footer-brand p {
+.footer-tagline {
   font-size: 1rem;
-  margin-bottom: 1.2rem;
   color: #e0e0e0;
 }
 
 .social-icons {
   display: flex;
   justify-content: center;
-  gap: 1.2rem;
+  gap: 1rem;
   font-size: 1.4rem;
   margin-top: 0.8rem;
 }
@@ -78,15 +63,16 @@
 .footer-links {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 2rem;
   width: 100%;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
 }
 
 .links-column {
   text-align: center;
 }
 
+.links-column h3,
 .links-column h4 {
   color: #ffc107;
   font-weight: 700;
@@ -120,7 +106,7 @@
   text-align: center;
   padding-top: 2rem;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
-  margin-top: 2.5rem;
+  margin-top: 2rem;
 }
 
 /* DESKTOP VIEW */
@@ -128,31 +114,22 @@
   .footer-container {
     align-items: flex-start;
     text-align: left;
+    padding: 0 2rem;
   }
 
-  .footer-top {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
+  .footer-logo {
     text-align: left;
-  }
-
-  .footer-brand {
-    flex: 1.2;
-    margin-right: 2.5rem;
   }
 
   .footer-links {
     flex-direction: row;
     justify-content: space-between;
-    width: 100%;
-    text-align: left;
-    margin-top: 0;
   }
 
   .links-column {
     flex: 1;
-    padding-left: 1rem;
+    text-align: left;
+    padding-left: 1.5rem;
   }
 
   .social-icons {
