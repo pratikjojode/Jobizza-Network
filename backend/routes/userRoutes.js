@@ -8,10 +8,12 @@ import {
   updateUserProfile,
 } from "../controllers/userController.js";
 import upload from "../middlewares/uploadMiddleware.js";
+import { getUserBlogs } from "../controllers/blogController.js";
 
 const router = express.Router();
 
 router.get("/profile", protect, getUserProfileById);
+router.get("/:userId/blogs", getUserBlogs);
 router.put(
   "/updateProfile",
   protect,

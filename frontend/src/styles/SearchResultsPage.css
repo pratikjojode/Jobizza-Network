@@ -1,19 +1,19 @@
+/* SearchResultsPage.css */
+
 .search-results-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding: 20px;
-  background-color: #f4f2ee;
-  min-height: calc(100vh - 60px);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
+  max-width: 900px;
+  margin: 20px auto;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
 .search-results-container h2 {
-  font-size: 2rem;
-  color: #0a66c2;
+  color: #333;
   margin-bottom: 25px;
-  text-align: center;
+  font-size: 1.8em;
 }
 
 @keyframes spin {
@@ -25,64 +25,126 @@
   }
 }
 
-.error-message,
-.no-results-state {
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
-  width: 90%;
+.loading-state p {
+  color: #555;
+  font-size: 1.1em;
+}
+
+/* Error State */
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: #dc3545;
+}
+
+.error-message {
+  background-color: #ffe9ec;
+  border: 1px solid #dc3545;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
 }
 
 .error-message h2 {
-  color: #c0392b;
-  margin-bottom: 15px;
+  color: #dc3545;
+  margin-bottom: 10px;
+}
+
+.error-message p {
+  margin-bottom: 20px;
+  font-size: 1.1em;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-back {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-back:hover {
+  background-color: #5a6268;
+}
+
+/* No Results State */
+.no-results-state {
+  padding: 40px 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .no-results-state p {
-  font-size: 1.1rem;
-  color: #555;
-  margin-bottom: 20px;
+  font-size: 1.2em;
+  color: #666;
+  margin-bottom: 30px;
 }
 
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+/* Search Results List */
 .results-list {
-  width: 100%;
-  max-width: 800px;
   display: grid;
-  grid-template-columns: 1fr;
   gap: 20px;
+  grid-template-columns: 1fr;
 }
 
 .search-result-card {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  padding: 20px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  text-align: left;
 }
 
-.result-avatar img {
+.search-result-card:hover {
+  transform: translateY(-3px);
+}
+
+.result-avatar {
+  flex-shrink: 0;
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #eee;
-}
-
-.result-avatar .avatar-placeholder {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: #0a66c2;
-  color: #fff;
+  overflow: hidden;
+  margin-right: 15px;
+  background-color: #e9ecef;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 1.8em;
+  color: #6c757d;
   font-weight: bold;
+}
+
+.result-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .result-info {
@@ -91,13 +153,12 @@
 
 .result-info h3 {
   margin: 0 0 5px 0;
-  font-size: 1.3rem;
+  font-size: 1.3em;
 }
 
 .result-name {
+  color: #007bff;
   text-decoration: none;
-  color: #0a66c2;
-  font-weight: 600;
 }
 
 .result-name:hover {
@@ -105,85 +166,128 @@
 }
 
 .result-meta {
-  font-size: 0.95rem;
-  color: #555;
-  margin-bottom: 3px;
+  font-size: 0.9em;
+  color: #666;
+  margin: 0 0 3px 0;
 }
 
 .result-contact {
-  font-size: 0.9rem;
-  color: #777;
+  font-size: 0.9em;
+  color: #888;
+  margin: 0;
 }
 
-.result-actions .btn-view-profile {
-  background-color: #0a66c2;
-  color: #fff;
+.result-actions {
+  flex-shrink: 0;
+  margin-left: 15px;
+}
+
+.btn-view-profile {
+  background-color: #28a745;
+  color: white;
   padding: 8px 15px;
-  border-radius: 20px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: background-color 0.2s ease;
+  font-size: 0.9em;
   white-space: nowrap;
 }
 
-.result-actions .btn-view-profile:hover {
-  background-color: #004d96;
+.btn-view-profile:hover {
+  background-color: #218838;
 }
 
-.btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
-  font-weight: 600;
-  margin: 5px;
-}
-
-.btn-primary {
-  background-color: #0a66c2;
-  color: #fff;
-}
-
-.btn-primary:hover {
-  background-color: #004d96;
-}
-
-.btn-back {
-  background-color: #e0e0e0;
-  color: #333;
-}
-
-.btn-back:hover {
-  background-color: #d0d0d0;
-}
-
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .search-results-container {
-    padding: 10px;
+    padding: 15px;
+    margin: 15px auto;
   }
 
   .search-results-container h2 {
-    font-size: 1.5rem;
+    font-size: 1.5em;
     margin-bottom: 20px;
   }
 
   .search-result-card {
     flex-direction: column;
-    text-align: center;
-    padding: 15px;
+    align-items: flex-start;
+    padding: 15px 10px;
   }
 
   .result-avatar {
-    margin-bottom: 10px;
+    width: 50px;
+    height: 50px;
+    margin: 0 0 10px 0;
+    font-size: 1.5em;
   }
 
   .result-info {
-    text-align: center;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .result-info h3 {
+    font-size: 1.1em;
+  }
+
+  .result-meta,
+  .result-contact {
+    font-size: 0.85em;
   }
 
   .result-actions {
-    margin-top: 15px;
+    margin-left: 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  .btn-view-profile {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .no-results-state,
+  .error-message {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-results-container {
+    padding: 10px;
+    margin: 10px auto;
+  }
+
+  .search-results-container h2 {
+    font-size: 1.3em;
+    margin-bottom: 15px;
+  }
+
+  .loading-spinner {
+    width: 30px;
+    height: 30px;
+  }
+
+  .loading-state p,
+  .error-message p,
+  .no-results-state p {
+    font-size: 1em;
+  }
+
+  .btn {
+    padding: 8px 15px;
+    font-size: 0.9em;
+  }
+
+  .search-result-card {
+    padding: 10px;
+  }
+
+  .result-avatar {
+    width: 45px;
+    height: 45px;
+    font-size: 1.3em;
+  }
+
+  .result-info h3 {
+    font-size: 1em;
   }
 }

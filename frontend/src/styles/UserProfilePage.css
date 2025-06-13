@@ -1,44 +1,230 @@
-/* UserProfilePage.css */
-
-/* General page container */
 .profile-page-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  background-color: #f0f2f5;
-  min-height: calc(100vh - 60px); /* Adjust based on your header height */
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
-}
-
-/* Loading and Error States */
-.loading-state,
-.error-state,
-.not-found-state {
-  display: flex;
   justify-content: center;
-  align-items: center;
-  min-height: 80vh;
-  text-align: center;
+  padding: 20px;
+  min-height: calc(100vh - 60px); /* Adjust based on header height */
+  background-color: #f0f2f5;
+  box-sizing: border-box;
 }
 
-.loading-spinner {
+.profile-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 800px;
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+.profile-header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 1.1em;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.profile-avatar-large {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #0a66c2;
+  margin-bottom: 15px;
+  flex-shrink: 0;
+}
+
+.profile-avatar-placeholder-large {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: white;
+  font-weight: bold;
+  background: linear-gradient(135deg, #0a66c2, #004d96);
+  margin-bottom: 15px;
+  flex-shrink: 0;
+}
+
+.profile-name {
+  font-size: 2.2rem;
+  color: #333;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.profile-designation {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 3px;
+}
+
+.profile-company {
+  font-size: 1rem;
+  color: #777;
+  margin-bottom: 0;
+}
+
+.profile-details-section {
+  margin-bottom: 25px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.profile-detail-item {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 8px;
+  font-size: 1rem;
   color: #555;
 }
 
-.spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: #0a66c2;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin-bottom: 15px;
+.detail-label {
+  font-weight: 500;
+  color: #333;
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+.detail-value {
+  flex-grow: 1;
+}
+
+.profile-detail-list {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+  margin-top: 5px;
+}
+
+.user-blogs-list {
+  display: grid;
+  gap: 20px;
+}
+
+.blog-item {
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 15px;
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.blog-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.blog-item-image {
+  width: 100px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.blog-item-content {
+  flex-grow: 1;
+}
+
+.blog-title {
+  font-size: 1.2rem;
+  color: #0a66c2;
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.blog-snippet {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.no-blogs-message {
+  text-align: center;
+  color: #777;
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+.profile-linkedin-link-wrapper {
+  margin-top: 10px;
+}
+
+.linkedin-link-profile {
+  display: inline-block;
+  background-color: #0a66c2;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.linkedin-link-profile:hover {
+  background-color: #004d96;
+}
+
+.profile-actions-footer {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #0a66c2;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #004d96;
+}
+
+.btn-secondary {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background-color: #c9c9c9;
+}
+
+.btn-back {
+  background-color: #f0f0f0;
+  color: #555;
+}
+
+.btn-back:hover {
+  background-color: #e0e0e0;
 }
 
 @keyframes spin {
@@ -50,12 +236,21 @@
   }
 }
 
+.error-state,
+.not-found-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 60px);
+  text-align: center;
+}
+
 .error-message,
 .empty-state {
-  background-color: #fff;
-  padding: 30px;
+  background-color: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 40px;
   max-width: 500px;
   width: 100%;
 }
@@ -63,245 +258,64 @@
 .error-message h2,
 .empty-state h3 {
   color: #d32f2f;
-  margin-bottom: 10px;
-  font-size: 1.8em;
+  margin-bottom: 15px;
+  font-size: 1.8rem;
 }
 
 .empty-state h3 {
-  color: #333;
+  color: #555;
 }
 
 .error-message p,
 .empty-state p {
-  margin-bottom: 20px;
-  line-height: 1.6;
+  color: #777;
+  margin-bottom: 25px;
+  font-size: 1.1rem;
 }
 
 .empty-icon {
-  font-size: 4em;
+  font-size: 4rem;
   margin-bottom: 20px;
 }
 
-/* Profile Card Styling */
-.profile-card {
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 800px;
-  margin: 20px auto;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.profile-header {
-  background: linear-gradient(135deg, #0a66c2, #004d96);
-  color: #ffffff;
-  padding: 40px 20px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  position: relative;
-}
-
-.profile-avatar-large {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 5px solid #fff;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  margin-bottom: 15px;
-}
-
-.profile-avatar-placeholder-large {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  border: 5px solid #fff;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
-  color: white;
-  font-weight: bold;
-}
-
-.profile-name {
-  margin: 0;
-  font-size: 2.5em;
-  font-weight: 700;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.profile-designation {
-  font-size: 1.2em;
-  margin: 5px 0 0;
-  opacity: 0.9;
-}
-
-.profile-company {
-  font-size: 1.1em;
-  margin: 5px 0 0;
-  opacity: 0.8;
-}
-
-/* Profile Details Sections */
-.profile-details-section {
-  padding: 25px 30px;
-  border-bottom: 1px solid #eee;
-}
-
-.profile-details-section:last-of-type {
-  border-bottom: none;
-}
-
-.section-title {
-  font-size: 1.6em;
-  color: #0a66c2;
-  margin-top: 0;
-  margin-bottom: 15px;
-  border-bottom: 2px solid #e0e0e0;
-  padding-bottom: 8px;
-  font-weight: 600;
-}
-
-.profile-detail-item {
-  margin-bottom: 10px;
-  font-size: 1.05em;
-  line-height: 1.6;
-}
-
-.detail-label {
-  color: #555;
-  min-width: 120px; /* Aligns labels if needed */
-  display: inline-block;
-  font-weight: 600;
-}
-
-.detail-value {
-  color: #333;
-}
-
-.profile-detail-list {
-  margin: 0;
-  padding: 0;
-  list-style: none; /* If you change to ul/li later */
-  line-height: 1.7;
-  font-size: 1.05em;
-}
-
-.linkedin-link-profile {
-  color: #0a66c2;
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.2s ease-in-out, text-decoration 0.2s ease-in-out;
-  font-size: 1.1em;
-}
-
-.linkedin-link-profile:hover {
-  color: #004d96;
-  text-decoration: underline;
-}
-
-.profile-linkedin-link-wrapper {
-  margin-top: 10px;
-}
-
-/* Action Buttons */
-.profile-actions-footer {
-  padding: 20px 30px;
-  display: flex;
-  justify-content: flex-end;
-  background-color: #f9f9f9;
-  border-top: 1px solid #eee;
-}
-
-/* Generic Button Styles (if not already defined globally) */
-.btn {
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1em;
-  font-weight: 600;
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out,
-    border-color 0.2s ease-in-out;
-  text-decoration: none; /* For button acting as a link */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-primary {
-  background-color: #0a66c2;
-  color: #fff;
-  border: 1px solid #0a66c2;
-}
-
-.btn-primary:hover {
-  background-color: #004d96;
-  border-color: #004d96;
-}
-
-.btn-secondary {
-  background-color: #f0f2f5;
-  color: #0a66c2;
-  border: 1px solid #0a66c2;
-  margin-left: 10px;
-}
-
-.btn-secondary:hover {
-  background-color: #e0e6ec;
-  color: #004d96;
-  border-color: #004d96;
-}
-
-.btn-back {
-  background-color: #6c757d;
-  color: #fff;
-  border: 1px solid #6c757d;
-}
-
-.btn-back:hover {
-  background-color: #5a6268;
-  border-color: #545b62;
-}
-
-/* Responsive adjustments */
+/* Responsive Adjustments */
 @media (max-width: 768px) {
   .profile-card {
-    margin: 15px;
+    padding: 20px;
   }
 
   .profile-name {
-    font-size: 2em;
+    font-size: 1.8rem;
   }
 
-  .profile-designation,
-  .profile-company {
-    font-size: 1em;
+  .profile-designation {
+    font-size: 1rem;
   }
 
   .section-title {
-    font-size: 1.4em;
+    font-size: 1.3rem;
   }
 
-  .profile-details-section {
-    padding: 20px 25px;
+  .profile-detail-item {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  .profile-actions-footer {
-    padding: 15px 25px;
-    justify-content: center;
+  .detail-label {
+    min-width: auto;
+    margin-bottom: 5px;
   }
 
-  .btn {
-    padding: 8px 15px;
-    font-size: 0.95em;
+  .blog-item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .blog-item-image {
+    width: 100%;
+    height: 150px;
+    margin-bottom: 10px;
   }
 }
 
@@ -311,26 +325,25 @@
   }
 
   .profile-card {
-    border-radius: 8px;
+    padding: 15px;
   }
 
   .profile-avatar-large,
   .profile-avatar-placeholder-large {
     width: 100px;
     height: 100px;
-    font-size: 2.5rem;
   }
 
   .profile-name {
-    font-size: 1.8em;
+    font-size: 1.6rem;
   }
 
-  .profile-details-section {
-    padding: 15px 20px;
+  .btn {
+    width: 100%;
+    margin-top: 10px;
   }
 
-  .profile-detail-item,
-  .profile-detail-list {
-    font-size: 0.95em;
+  .linkedin-link-profile {
+    width: calc(100% - 40px); /* Adjust for padding */
   }
 }

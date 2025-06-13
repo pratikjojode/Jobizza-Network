@@ -3,18 +3,24 @@ import { Link } from "react-router-dom";
 import "../styles/NotFound.css";
 import Header from "./Header";
 import Footer from "./Footer";
-
+import notFoundImage from "../assets/Jobizza-logo.jpeg";
 function NotFound() {
   return (
     <>
       <Header />
       <div className="not-found-container">
-        <h1 className="not-found-heading">404 - Page Not Found</h1>
+        <img
+          src={notFoundImage}
+          alt="Page not found"
+          className="not-found-image"
+        />
+        <h1 className="not-found-heading">Oops! Page Not Found</h1>
         <p className="not-found-text">
-          The page you are looking for does not exist.
+          We can't find the page you're looking for. It might have been removed
+          or you may have mistyped the URL.
         </p>
-        <Link to="/" className="not-found-link">
-          Go to Home
+        <Link to="/" className="not-found-button">
+          Back to Homepage
         </Link>
       </div>
       <Footer />

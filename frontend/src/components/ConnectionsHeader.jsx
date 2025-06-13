@@ -149,6 +149,17 @@ function ConnectionsHeader() {
             <FaBlog />
             <span className="nav-item-text">View Blog</span>
           </NavLink>
+          <NavLink
+            to="/network/createNetwork"
+            className={({ isActive }) =>
+              isActive ? "nav-item-icon-link active" : "nav-item-icon-link"
+            }
+            title="Crete Network"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <FaBlog />
+            <span className="nav-item-text">Network</span>
+          </NavLink>
         </nav>
       </div>
 

@@ -279,19 +279,73 @@ export const getAllConnectionRequests = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 export const getAllUsersForConnection = async (req, res) => {
   try {
-    const users = await User.find({});
+    const currentUserId = req.user.id;
+
+    // Get all users except the current user
+    const users = await User.find({ _id: { $ne: currentUserId } });
+
+    // Get all connection requests involving the current user
+    const connectionRequests = await ConnectionRequest.find({
+      $or: [{ sender: currentUserId }, { receiver: currentUserId }],
+    });
+
+    // Create a map of user connections for quick lookup
+    const connectionMap = new Map();
+
+    connectionRequests.forEach((request) => {
+      const otherUserId =
+        request.sender.toString() === currentUserId
+          ? request.receiver.toString()
+          : request.sender.toString();
+
+      let connectionStatus;
+
+      if (request.status === "pending") {
+        // Determine if it's sent or received
+        if (request.sender.toString() === currentUserId) {
+          connectionStatus = "pending_sent";
+        } else {
+          connectionStatus = "pending_received";
+        }
+      } else if (request.status === "accepted") {
+        connectionStatus = "connected";
+      } else if (request.status === "declined") {
+        connectionStatus = "not_connected"; // Treat declined as not connected
+      }
+
+      connectionMap.set(otherUserId, {
+        connectionStatus,
+        connectionId: request._id.toString(),
+      });
+    });
+
+    // Map users with their connection status
+    const usersWithConnectionStatus = users.map((user) => {
+      const userId = user._id.toString();
+      const connectionInfo = connectionMap.get(userId);
+
+      return {
+        _id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        profilePic: user.profilePic,
+        designation: user.designation,
+        company: user.company,
+        connectionStatus: connectionInfo?.connectionStatus || "not_connected",
+        connectionId: connectionInfo?.connectionId || null,
+      };
+    });
 
     res.status(200).json({
       success: true,
-      count: users.length,
-      data: users,
+      count: usersWithConnectionStatus.length,
+      data: usersWithConnectionStatus,
     });
   } catch (error) {
     console.log("Error fetching all users for connection:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
-

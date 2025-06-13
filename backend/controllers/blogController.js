@@ -236,3 +236,35 @@ export const getLatestBlogs = async (req, res) => {
     });
   }
 };
+
+export const getUserBlogs = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+
+    const blogs = await Blog.find({ userId: userId });
+
+    if (!blogs || blogs.length === 0) {
+      return res.status(200).json({
+        status: "success",
+        results: 0,
+        data: {
+          blogs: [],
+        },
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      results: blogs.length,
+      data: {
+        blogs,
+      },
+    });
+  } catch (err) {
+    console.error("Error fetching user blogs:", err);
+    res.status(500).json({
+      status: "error",
+      message: "Something went wrong on the server.",
+    });
+  }
+};

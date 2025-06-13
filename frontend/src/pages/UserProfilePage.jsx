@@ -11,8 +11,11 @@ const UserProfilePage = () => {
   const { logout } = useAuth();
 
   const [userProfile, setUserProfile] = useState(null);
+  const [userBlogs, setUserBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [blogsLoading, setBlogsLoading] = useState(true);
+  const [blogsError, setBlogsError] = useState(null);
 
   const getAuthHeaders = useCallback(() => {
     const token = localStorage.getItem("token");
@@ -28,14 +31,22 @@ const UserProfilePage = () => {
       setError("Please log in to view user profiles.");
       setLoading(false);
       logout();
-      return;
+      return null;
+    }
+
+    if (!userId) {
+      setLoading(false);
+      setError("No user ID provided in the URL.");
+      return null;
     }
 
     try {
-      const response = await axios.get(`/api/v1/users/${userId}`, {
+      const profileResponse = await axios.get(`/api/v1/users/${userId}`, {
         headers,
       });
-      setUserProfile(response.data.data.user);
+      setUserProfile(profileResponse.data.data.user);
+      setLoading(false);
+      return profileResponse.data.data.user;
     } catch (err) {
       console.error("Error fetching user profile:", err);
       const errorMessage =
@@ -50,67 +61,120 @@ const UserProfilePage = () => {
       } else {
         setError(errorMessage);
       }
-    } finally {
       setLoading(false);
+      return null;
     }
   }, [userId, getAuthHeaders, logout]);
 
-  useEffect(() => {
-    if (userId) {
-      fetchUserProfile();
-    } else {
-      setLoading(false);
-      setError("No user ID provided in the URL.");
+  const fetchUserBlogs = useCallback(async () => {
+    setBlogsLoading(true);
+    setBlogsError(null);
+    const headers = getAuthHeaders();
+
+    if (!headers) {
+      setBlogsError("Authentication required to load blogs.");
+      setBlogsLoading(false);
+      return;
     }
-  }, [userId, fetchUserProfile]);
+
+    if (!userId) {
+      setBlogsError("No user ID provided to fetch blogs.");
+      setBlogsLoading(false);
+      return;
+    }
+
+    try {
+      const blogsResponse = await axios.get(`/api/v1/users/${userId}/blogs`, {
+        headers,
+      });
+      setUserBlogs(blogsResponse.data.data.blogs || []);
+    } catch (err) {
+      console.error("Error fetching user blogs:", err);
+      if (err.response?.status === 404) {
+        setUserBlogs([]);
+        setBlogsError("No blogs found for this user.");
+      } else {
+        setBlogsError(
+          err.response?.data?.message || "Failed to load user blogs."
+        );
+      }
+      setUserBlogs([]);
+    } finally {
+      setBlogsLoading(false);
+    }
+  }, [userId, getAuthHeaders]);
+
+  useEffect(() => {
+    fetchUserProfile().then((profile) => {
+      if (profile) {
+        fetchUserBlogs();
+      }
+    });
+  }, [fetchUserProfile, fetchUserBlogs]);
 
   const userInitial = userProfile?.fullName?.charAt(0)?.toUpperCase() || "?";
 
+  const handleBlogClick = useCallback(
+    (blogId) => {
+      navigate(`/blogs/${blogId}`);
+    },
+    [navigate]
+  );
+
   if (loading) {
     return (
-      <div className="profile-page-container loading-state">
-        <div className="loading-spinner" role="status" aria-live="polite">
-          <div className="spinner"></div>
-          <p>Loading user profile...</p>
+      <>
+        <ConnectionsHeader />
+        <div className="profile-page-container loading-state">
+          <div className="loading-spinner" role="status" aria-live="polite">
+            <div className="spinner"></div>
+            <p>Loading user profile and content...</p>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (error) {
     return (
-      <div className="profile-page-container error-state">
-        <div className="error-message" role="alert">
-          <h2>Error</h2>
-          <p>{error}</p>
-          <button onClick={() => navigate(-1)} className="btn btn-back">
-            Go Back
-          </button>
+      <>
+        <ConnectionsHeader />
+        <div className="profile-page-container error-state">
+          <div className="error-message" role="alert">
+            <h2>Error</h2>
+            <p>{error}</p>
+            <button onClick={() => navigate(-1)} className="btn btn-back">
+              Go Back
+            </button>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (!userProfile) {
     return (
-      <div className="profile-page-container not-found-state">
-        <div className="empty-state">
-          <div className="empty-icon" aria-hidden="true">
-            🚫
+      <>
+        <ConnectionsHeader />
+        <div className="profile-page-container not-found-state">
+          <div className="empty-state">
+            <div className="empty-icon" aria-hidden="true">
+              🚫
+            </div>
+            <h3>Profile Not Found</h3>
+            <p>
+              The user profile you are looking for does not exist or is
+              unavailable.
+            </p>
+            <button
+              onClick={() => navigate("/connections")}
+              className="btn btn-primary"
+            >
+              Browse Connections
+            </button>
           </div>
-          <h3>Profile Not Found</h3>
-          <p>
-            The user profile you are looking for does not exist or is
-            unavailable.
-          </p>
-          <button
-            onClick={() => navigate("/connections")}
-            className="btn btn-primary"
-          >
-            Browse Connections
-          </button>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -219,9 +283,46 @@ const UserProfilePage = () => {
             </div>
           )}
 
+          <div className="profile-details-section">
+            <h2 className="section-title">Blogs & Articles</h2>
+            {blogsLoading ? (
+              <p className="loading-blogs-message">Loading blogs...</p>
+            ) : blogsError ? (
+              <p className="error-blogs-message">{blogsError}</p>
+            ) : userBlogs.length > 0 ? (
+              <div className="user-blogs-list">
+                {userBlogs.map((blog) => (
+                  <div
+                    key={blog._id}
+                    className="blog-item"
+                    onClick={() => handleBlogClick(blog._id)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {blog.imageUrl && (
+                      <img
+                        src={blog.imageUrl}
+                        alt={blog.title}
+                        className="blog-item-image"
+                      />
+                    )}
+                    <div className="blog-item-content">
+                      <h3 className="blog-title">{blog.title}</h3>
+                      {blog.description && (
+                        <p className="blog-snippet">{blog.description}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="no-blogs-message">
+                <p>This user has no public blogs or articles yet.</p>
+              </div>
+            )}
+          </div>
+
           {userProfile.linkedin && (
             <div className="profile-details-section">
-              <h2 className="section-title">Connect</h2>
               <p className="profile-linkedin-link-wrapper">
                 <a
                   href={userProfile.linkedin}

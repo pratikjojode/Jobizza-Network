@@ -27,6 +27,7 @@ import ManageRequestsPage from "./pages/ManageRequestsPage";
 import CreateBlogPost from "./pages/CreateBlogPost";
 import BlogsOverview from "./pages/BlogsOverview";
 import BlogDetail from "./pages/BlogDetail";
+import CreateNetwork from "./pages/CreateNetwork";
 
 function App() {
   return (
@@ -113,6 +114,7 @@ function App() {
           />
           <Route path="/profile/:userId" element={<UserProfilePage />} />
           <Route path="/blogs/:blogId" element={<BlogDetail />} />
+          <Route path="/network/createNetwork" element={<CreateNetwork />} />
           <Route path="/my-connections" element={<ManageRequestsPage />} />
           <Route path="/search" element={<SearchResultsPage />} />
           <Route path="/profile" element={<MyProfile />} />

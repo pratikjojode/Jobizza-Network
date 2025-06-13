@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
-import "../styles/ConnectionsPage.css";
+import "../styles/ConnectionsPage.css"; // Ensure this CSS file is linked
 import ConnectionsHeader from "./ConnectionsHeader";
 import { toast } from "react-toastify";
 
@@ -48,7 +48,7 @@ const useConnectionData = (user, logout) => {
   }, []);
 
   const fetchData = useCallback(async () => {
-    if (state.refreshing) return;
+    if (state.refreshing) return; // Prevent multiple simultaneous fetches
 
     updateState({
       loading: true,
@@ -64,6 +64,7 @@ const useConnectionData = (user, logout) => {
         loading: false,
         blogsLoading: false,
       });
+      // Do not logout immediately if user?.id is null, as it might be initial render
       return;
     }
 
@@ -85,6 +86,7 @@ const useConnectionData = (user, logout) => {
       ]);
 
       const allUsers = usersResponse.data.data || [];
+      // Filter out the current user from the list if the backend doesn't already do it
       const filteredUsers = allUsers.filter(
         (u) => String(u._id) !== String(user.id)
       );
@@ -95,6 +97,7 @@ const useConnectionData = (user, logout) => {
       const currentUserFullProfile = myProfileResponse.data.data.user || null;
       const latestBlogs = latestBlogsResponse.data.data || [];
 
+      // Initialize status map for all potential users
       const statusMap = filteredUsers.reduce((acc, u) => {
         acc[String(u._id)] = {
           status: CONNECTION_STATUSES.NOT_CONNECTED,
@@ -103,27 +106,28 @@ const useConnectionData = (user, logout) => {
         return acc;
       }, {});
 
+      // Update statuses based on fetched connection data
       [
         {
           data: currentConnections,
           status: CONNECTION_STATUSES.ACCEPTED,
-          key: "connectedUser",
+          key: "connectedUser", // Key to identify the other user in a 'connected' object
         },
         {
           data: sentPendingRequests,
           status: CONNECTION_STATUSES.PENDING_SENT,
-          key: "receiver",
+          key: "receiver", // Key to identify the receiver in a 'sent pending' object
         },
         {
           data: receivedPendingRequests,
           status: CONNECTION_STATUSES.PENDING_RECEIVED,
-          key: "sender",
+          key: "sender", // Key to identify the sender in a 'received pending' object
         },
       ].forEach(({ data, status, key }) => {
         data.forEach((item) => {
           const userId = String(item[key]?._id);
           if (userId && statusMap[userId]) {
-            statusMap[userId] = { status, requestId: item._id };
+            statusMap[userId] = { status, requestId: item._id }; // Store the connection/request ID
           }
         });
       });
@@ -148,7 +152,7 @@ const useConnectionData = (user, logout) => {
           loading: false,
           blogsLoading: false,
         });
-        logout();
+        logout(); // Perform logout on authentication error
       } else {
         toast.error(err.response?.data?.message || "Failed to fetch data.");
         updateState({
@@ -168,6 +172,7 @@ const useConnectionData = (user, logout) => {
   }, [fetchData, updateState]);
 
   useEffect(() => {
+    // Fetch data only if a user is logged in
     if (user?.id) {
       fetchData();
     } else {
@@ -247,11 +252,11 @@ const UserActionButtons = ({
         </div>
       );
 
-    default:
+    default: // CONNECTION_STATUSES.NOT_CONNECTED or CONNECTION_STATUSES.DECLINED
       return (
         <button
           onClick={() => onConnect(userId)}
-          disabled={isLoading || status === CONNECTION_STATUSES.PENDING_SENT}
+          disabled={isLoading} // Removed `status === PENDING_SENT` from here as it's handled by cases above
           className={`btn btn-connect ${isLoading ? "disabled" : ""}`}
           aria-label="Send connection request"
         >
@@ -289,7 +294,7 @@ const UserCard = ({ user, status, actionLoading, actions }) => {
             className="user-avatar-placeholder"
             style={{
               background: "linear-gradient(135deg, #6b7280, #4b5563)",
-              display: user.profilePic ? "none" : "flex",
+              display: user.profilePic ? "none" : "flex", // Show placeholder only if no profile pic
               alignItems: "center",
               justifyContent: "center",
               fontSize: "1.5rem",
@@ -420,9 +425,10 @@ function ConnectionsPage() {
     });
   }, [users, userConnectionStatuses]);
 
+  // Generic handler creator for all connection actions
   const createActionHandler = useCallback(
     (action, endpoint, successMessage) => {
-      return async (userId, additionalData = {}) => {
+      return async (userId, dataPayload = {}) => {
         const headers = getAuthHeaders();
         if (!headers) {
           toast.error("Session expired. Please log in again.");
@@ -435,11 +441,30 @@ function ConnectionsPage() {
         }));
 
         try {
-          await axios[action.method || "post"](
-            typeof endpoint === "function" ? endpoint(userId) : endpoint,
-            additionalData,
-            { headers }
-          );
+          const url =
+            typeof endpoint === "function" ? endpoint(userId) : endpoint;
+          const method = action.method || "post"; // Default to 'post' if not specified
+          let requestPromise;
+
+          if (method === "post" || method === "put") {
+            // For POST/PUT, dataPayload is the second argument, config is the third
+            requestPromise = axios[method](url, dataPayload, { headers });
+          } else if (method === "delete") {
+            // For DELETE, if there's a body (rare but possible), it goes in config.data
+            // Otherwise, it's just url and config (containing headers)
+            const deleteConfig = { headers };
+            if (Object.keys(dataPayload).length > 0) {
+              deleteConfig.data = dataPayload; // Axios convention for DELETE with a request body
+            }
+            requestPromise = axios.delete(url, deleteConfig);
+          } else if (method === "get") {
+            // Include GET for completeness if it were ever used here
+            requestPromise = axios.get(url, { headers });
+          } else {
+            throw new Error(`Unsupported HTTP method: ${method}`);
+          }
+
+          await requestPromise; // Await the prepared request
 
           if (action.updateStatus) {
             updateState((prev) => ({
@@ -453,19 +478,19 @@ function ConnectionsPage() {
           }
 
           toast.success(successMessage);
-          await fetchData();
+          await fetchData(); // Re-fetch all data to ensure UI reflects the absolute latest state
         } catch (err) {
           console.error(`Error in ${action.name}:`, err);
           const errorMessage = err.response?.data?.message || err.message;
 
           if (err.response?.status === 401) {
             toast.error("Session expired. Please log in again.");
-            logout();
+            logout(); // Auto-logout on authentication error
           } else {
             toast.error(
               `Failed to ${action.name.toLowerCase()}: ${errorMessage}`
             );
-            await fetchData();
+            await fetchData(); // Re-fetch even on other errors to refresh state
           }
         } finally {
           updateState((prev) => {
@@ -485,7 +510,7 @@ function ConnectionsPage() {
       method: "post",
       updateStatus: () => ({
         status: CONNECTION_STATUSES.PENDING_SENT,
-        requestId: null,
+        requestId: null, // RequestId will be populated on next fetchData
       }),
     },
     API_ENDPOINTS.CONNECTIONS,
@@ -503,6 +528,7 @@ function ConnectionsPage() {
     },
     (userId) => {
       const requestId = userConnectionStatuses[userId]?.requestId;
+      if (!requestId) throw new Error("Missing request ID for accept action.");
       return `${API_ENDPOINTS.CONNECTIONS}/${requestId}/accept`;
     },
     "Connection request accepted!"
@@ -513,12 +539,13 @@ function ConnectionsPage() {
       name: "Decline Request",
       method: "put",
       updateStatus: () => ({
-        status: CONNECTION_STATUSES.DECLINED,
+        status: CONNECTION_STATUSES.NOT_CONNECTED, // Or DECLINED if you want a specific "Declined" state
         requestId: null,
       }),
     },
     (userId) => {
       const requestId = userConnectionStatuses[userId]?.requestId;
+      if (!requestId) throw new Error("Missing request ID for decline action.");
       return `${API_ENDPOINTS.CONNECTIONS}/${requestId}/decline`;
     },
     "Connection request declined!"
@@ -535,12 +562,14 @@ function ConnectionsPage() {
     },
     (userId) => {
       const requestId = userConnectionStatuses[userId]?.requestId;
-      return `${API_ENDPOINTS.CONNECTIONS}/${requestId}`;
+      if (!requestId) throw new Error("Missing request ID for cancel action.");
+      return `${API_ENDPOINTS.CONNECTIONS}/${requestId}`; // Matches DELETE /api/v1/connections/:id
     },
     "Connection request cancelled!"
   );
 
   const handleRemoveConnection = async (userId) => {
+    // Added a confirmation dialog for removing a connection
     if (!window.confirm("Are you sure you want to remove this connection?")) {
       return;
     }
@@ -556,6 +585,8 @@ function ConnectionsPage() {
       },
       (userId) => {
         const requestId = userConnectionStatuses[userId]?.requestId;
+        if (!requestId)
+          throw new Error("Missing connection ID for remove action.");
         return `${API_ENDPOINTS.CONNECTIONS}/${requestId}/remove`;
       },
       "Connection removed successfully!"
@@ -564,6 +595,7 @@ function ConnectionsPage() {
     await actionHandler(userId);
   };
 
+  // --- Render Logic (Loading, Error, Empty States) ---
   if (loading) {
     return (
       <div className="page-container">
@@ -590,7 +622,7 @@ function ConnectionsPage() {
   }
 
   const userActions = {
-    onConnect: (userId) => handleConnect(userId, { receiverId: userId }),
+    onConnect: (userId) => handleConnect(userId, { receiverId: userId }), // Pass receiverId for connect
     onAccept: handleAcceptRequest,
     onDecline: handleDeclineRequest,
     onCancel: handleCancelRequest,
