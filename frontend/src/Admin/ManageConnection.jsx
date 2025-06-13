@@ -10,8 +10,8 @@ const ManageConnection = () => {
   const [loggedInUserId, setLoggedInUserId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedConnection, setSelectedConnection] = useState(null);
-  const [viewMode, setViewMode] = useState("table"); // 'table' or 'card'
-  const [selectedConnectionIds, setSelectedConnectionIds] = useState([]); // For bulk delete
+  const [viewMode, setViewMode] = useState("table"); 
+  const [selectedConnectionIds, setSelectedConnectionIds] = useState([]); 
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");

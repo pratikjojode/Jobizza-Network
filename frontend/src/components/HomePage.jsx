@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Header from "./Header";
 import Footer from "./Footer";
-import "../styles/HomePage.css";
+import "../styles/Homepage.css";
 
 function HomePage() {
   const { user } = useAuth();

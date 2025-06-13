@@ -10,6 +10,7 @@ import connectionRoutes from "./routes/connectionRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import searchRoutes from "./routes/searchRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
+import eventRoutes from "./routes/eventRoutes.js";
 dotenv.config();
 
 // Connect to MongoDB
@@ -28,6 +29,7 @@ app.use("/api/v1/connections", connectionRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/search", searchRoutes);
 app.use("/api/v1/blogs", blogRoutes);
+app.use("/api/v1/events", eventRoutes);
 
 app.get("/", (req, res) => {
   res.status(200).send("🌐 Jobizaaa Network API is operational.");

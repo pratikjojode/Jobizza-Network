@@ -284,15 +284,12 @@ export const getAllUsersForConnection = async (req, res) => {
   try {
     const currentUserId = req.user.id;
 
-    // Get all users except the current user
     const users = await User.find({ _id: { $ne: currentUserId } });
 
-    // Get all connection requests involving the current user
     const connectionRequests = await ConnectionRequest.find({
       $or: [{ sender: currentUserId }, { receiver: currentUserId }],
     });
 
-    // Create a map of user connections for quick lookup
     const connectionMap = new Map();
 
     connectionRequests.forEach((request) => {
@@ -304,7 +301,6 @@ export const getAllUsersForConnection = async (req, res) => {
       let connectionStatus;
 
       if (request.status === "pending") {
-        // Determine if it's sent or received
         if (request.sender.toString() === currentUserId) {
           connectionStatus = "pending_sent";
         } else {
@@ -313,7 +309,7 @@ export const getAllUsersForConnection = async (req, res) => {
       } else if (request.status === "accepted") {
         connectionStatus = "connected";
       } else if (request.status === "declined") {
-        connectionStatus = "not_connected"; // Treat declined as not connected
+        connectionStatus = "not_connected";
       }
 
       connectionMap.set(otherUserId, {
@@ -322,7 +318,6 @@ export const getAllUsersForConnection = async (req, res) => {
       });
     });
 
-    // Map users with their connection status
     const usersWithConnectionStatus = users.map((user) => {
       const userId = user._id.toString();
       const connectionInfo = connectionMap.get(userId);

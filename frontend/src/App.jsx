@@ -28,6 +28,7 @@ import CreateBlogPost from "./pages/CreateBlogPost";
 import BlogsOverview from "./pages/BlogsOverview";
 import BlogDetail from "./pages/BlogDetail";
 import CreateNetwork from "./pages/CreateNetwork";
+import ManageEvents from "./pages/ManageEvents";
 
 function App() {
   return (
@@ -101,6 +102,7 @@ function App() {
             <Route path="profile" element={<AdminProfile />} />
             <Route path="users" element={<ManageUsers />} />
             <Route path="blogs" element={<ManageBlogs />} />
+            <Route path="events" element={<ManageEvents />} />
             <Route path="connections" element={<ManageConnections />} />
           </Route>
 

@@ -1,4 +1,3 @@
-import Blog from "../models/blogModel.js";
 import User from "../models/User.js";
 
 export const getUserProfileById = async (req, res) => {
@@ -173,35 +172,6 @@ export const getUserProfile = async (req, res) => {
     res.status(500).json({
       status: "error",
       message: "An error occurred while fetching the user profile.",
-    });
-  }
-};
-
-export const getUserBlogs = async (req, res, next) => {
-  try {
-    const { userId } = req.params;
-
-    const blogs = await Blog.find({ author: userId });
-
-    if (!blogs || blogs.length === 0) {
-      return res.status(404).json({
-        status: "fail",
-        message: "No blogs found for this user",
-      });
-    }
-
-    res.status(200).json({
-      status: "success",
-      results: blogs.length,
-      data: {
-        blogs,
-      },
-    });
-  } catch (err) {
-    console.error("Error fetching user blogs:", err);
-    res.status(500).json({
-      status: "error",
-      message: "Something went wrong on the server.",
     });
   }
 };
