@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-// Assuming useAuth context is correctly implemented and provides login, isAuthenticated, user
 import { useAuth } from "../context/AuthContext";
-import '../styles/AuthForm.css'; // Import the new CSS file
+import '../styles/AuthForm.css'; 
 import Header from "./Header";
-import Footer from "./Footer"; // Import Footer component
-// Removed Header and Footer imports as they were causing issues in the previous context
-// If you intend to use them, ensure they are imported and used correctly in your App.js or parent component.
+import Footer from "./Footer"; 
 
-
-// Consider a default profile pic path if you want to show a preview
-const DEFAULT_PROFILE_PIC = "/profile-pic-dummy.png"; // Make sure you have this image in your public folder or accessible path
+const DEFAULT_PROFILE_PIC = "/profile-pic-dummy.png"; 
 
 function AuthForm({ isRegister }) {
   const [email, setEmail] = useState("");
@@ -18,7 +13,7 @@ function AuthForm({ isRegister }) {
   const [fullName, setFullName] = useState("");
   const [company, setCompany] = useState("");
   const [designation, setDesignation] = useState("");
-  const [role, setRole] = useState("CXO"); // Default role
+  const [role, setRole] = useState("CXO"); 
   const [linkedin, setLinkedin] = useState("");
   const [financialCertifications, setFinancialCertifications] = useState("");
   const [yearsOfFinanceExperience, setYearsOfFinanceExperience] = useState("");
@@ -31,7 +26,6 @@ function AuthForm({ isRegister }) {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  // Destructure login, isAuthenticated, and user from the useAuth context
   const { login, isAuthenticated, user } = useAuth();
 
   const cLevelRoles = [
@@ -39,7 +33,7 @@ function AuthForm({ isRegister }) {
     "CPO", "CLO", "CCO", "CDO", "CRO", "CISO", "CXO", "Admin",
   ];
 
-  // Effect to redirect authenticated users
+  
   useEffect(() => {
     if (isAuthenticated && user) {
       if (user.role === "Admin") {
@@ -48,22 +42,19 @@ function AuthForm({ isRegister }) {
         navigate("/connections", { replace: true });
       }
     }
-  }, [isAuthenticated, user, navigate]); // Dependencies for the effect
-
-  // Handler for profile picture file input change
+  }, [isAuthenticated, user, navigate]); 
   const handleFileChange = (e) => {
     setProfileImageFile(e.target.files[0]);
   };
 
-  // Handler for form submission
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
-    setError(""); // Clear previous errors
-    setSuccessMessage(""); // Clear previous success messages
-    setLoading(true); // Set loading state to true
+    e.preventDefault(); 
+    setError(""); 
+    setSuccessMessage(""); 
+    setLoading(true); 
 
     if (isRegister) {
-      // Logic for user registration
+      
       const industrySpecializationsArray = industrySpecializations
         .split(",")
         .map((s) => s.trim())
@@ -115,9 +106,9 @@ function AuthForm({ isRegister }) {
         if (response.ok) {
           setSuccessMessage(data.message + " Redirecting to login...");
           setTimeout(() => {
-            navigate("/login"); // Redirect to login after successful registration
+            navigate("/login"); 
           }, 2000);
-          // Clear form fields
+        
           setEmail("");
           setPassword("");
           setFullName("");
@@ -138,12 +129,12 @@ function AuthForm({ isRegister }) {
         console.error("Registration error:", err);
         setError("Network error or server unreachable.");
       } finally {
-        setLoading(false); // Reset loading state
+        setLoading(false); 
       }
     } else {
-      // Logic for user login
+      
       try {
-        const res = await login(email, password, role); // Call login function from context
+        const res = await login(email, password, role);
         if (!res.success) {
           setError(res.message);
         }
@@ -151,12 +142,12 @@ function AuthForm({ isRegister }) {
         console.error("Login error:", err);
         setError("Network error or server unreachable.");
       } finally {
-        setLoading(false); // Reset loading state
+        setLoading(false); 
       }
     }
   };
 
-  // Don't render the form if the user is already authenticated
+  
   if (isAuthenticated) {
     return null;
   }
@@ -213,8 +204,7 @@ function AuthForm({ isRegister }) {
           </div>
 
           {isRegister && (
-            <div className="jobizaaa-scroll-panel"> {/* Scrollable panel for registration fields */}
-              {/* Registration specific fields */}
+            <div className="jobizaaa-scroll-panel"> 
               <div className="jobizaaa-form-group">
                 <label htmlFor="fullName" className="jobizaaa-form-label">
                   Full Name:
@@ -375,7 +365,7 @@ function AuthForm({ isRegister }) {
                   name="profilePic"
                   accept="image/*"
                   onChange={handleFileChange}
-                  className="jobizaaa-form-input-file" // A slightly different class for file input
+                  className="jobizaaa-form-input-file" 
                   aria-label="Profile Picture Upload"
                 />
                 {profileImageFile && (
@@ -391,21 +381,21 @@ function AuthForm({ isRegister }) {
               </div>
             </div> 
           )}
-          {/* End of scrollable panel */}
+          
 
           {!isRegister && (
             <>
               <p className="jobizaaa-form-label jobizaaa-role-selection-label">Login as Role:</p>
               <div className="jobizaaa-role-cards-container">
-                {/* Removed the filter so Admin role is also displayed */}
+                
                 {cLevelRoles.map((r) => (
                   <div
                     key={r}
                     className={`jobizaaa-role-card ${role === r ? "jobizaaa-role-card-selected" : ""}`}
                     onClick={() => setRole(r)}
-                    tabIndex="0" // Make it focusable
-                    role="button" // Indicate it's a button
-                    aria-pressed={role === r} // For accessibility
+                    tabIndex="0" 
+                    role="button" 
+                    aria-pressed={role === r} 
                     aria-label={`Login as ${r}`}
                   >
                     {r}

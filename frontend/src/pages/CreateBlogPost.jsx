@@ -283,8 +283,7 @@ const CreateBlogPost = () => {
                   type="button"
                   className="btn btn-secondary"
                   onClick={() => {
-                    // This window.confirm is preserved from your provided file.
-                    // For production, consider replacing with a custom modal for better UI/UX.
+                    
                     if (window.confirm('Are you sure you want to cancel? All changes will be lost.')) {
                       window.history.back();
                     }

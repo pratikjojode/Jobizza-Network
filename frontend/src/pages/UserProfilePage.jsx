@@ -1,9 +1,28 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useAuth } from "../context/AuthContext";
-import "../styles/UserProfilePage.css";
-import ConnectionsHeader from "../components/ConnectionsHeader";
+import { toast } from "react-toastify"; // Import toast for notifications
+import { useAuth } from "../context/AuthContext"; // Adjusted path to '../context/AuthContext'
+import ConnectionsHeader from "../components/ConnectionsHeader"; // Adjusted path to '../components/ConnectionsHeader'
+import Footer from "../components/Footer"; // Import your Footer component (adjusted path)
+import "../styles/UserProfilePage.css"; // Adjusted path to '../styles/UserProfilePage.css'
+import {
+  FaLinkedin,
+  FaEnvelope,
+  FaBriefcase,
+  FaBuilding,
+  FaUser,
+  FaInfoCircle,
+  FaCalendarAlt,
+  FaMapMarkerAlt, // For location
+  FaPhone, // For phone number
+  FaUsers, // For mutual connections
+  FaGraduationCap, // For certifications
+  FaIndustry, // For specializations
+  FaLightbulb, // For key skills
+  FaCheckCircle, // For verified status
+  FaTimesCircle // For unverified status
+} from "react-icons/fa"; // Icons for profile details
 
 const UserProfilePage = () => {
   const { userId } = useParams();
@@ -16,6 +35,9 @@ const UserProfilePage = () => {
   const [error, setError] = useState(null);
   const [blogsLoading, setBlogsLoading] = useState(true);
   const [blogsError, setBlogsError] = useState(null);
+  const [isSelfProfile, setIsSelfProfile] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState("not_connected"); // Added connection status state
+  const [connectionActionLoading, setConnectionActionLoading] = useState(false); // Loading state for connection actions
 
   const getAuthHeaders = useCallback(() => {
     const token = localStorage.getItem("token");
@@ -25,10 +47,11 @@ const UserProfilePage = () => {
   const fetchUserProfile = useCallback(async () => {
     setLoading(true);
     setError(null);
-    const headers = getAuthHeaders();
+    setUserProfile(null); // Clear previous profile data
 
+    const headers = getAuthHeaders();
     if (!headers) {
-      setError("Please log in to view user profiles.");
+      toast.error("Please log in to view user profiles.");
       setLoading(false);
       logout();
       return null;
@@ -44,9 +67,29 @@ const UserProfilePage = () => {
       const profileResponse = await axios.get(`/api/v1/users/${userId}`, {
         headers,
       });
-      setUserProfile(profileResponse.data.data.user);
+      const profileData = profileResponse.data.data.user;
+      setUserProfile(profileData);
+
+      // Set connection status from backend data if available, otherwise default
+      setConnectionStatus(profileData.connectionStatus || "not_connected");
+
+      // Check if this is the current user's profile
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const decodedToken = JSON.parse(atob(token.split('.')[1]));
+          const currentUserId = decodedToken.id; // Assuming 'id' is the user ID field in your JWT payload
+          setIsSelfProfile(currentUserId === userId);
+        } catch (decodeError) {
+          console.error("Error decoding token for self-profile check:", decodeError);
+          setIsSelfProfile(false);
+        }
+      } else {
+        setIsSelfProfile(false);
+      }
+
       setLoading(false);
-      return profileResponse.data.data.user;
+      return profileData;
     } catch (err) {
       console.error("Error fetching user profile:", err);
       const errorMessage =
@@ -112,6 +155,62 @@ const UserProfilePage = () => {
     });
   }, [fetchUserProfile, fetchUserBlogs]);
 
+  // Handle connection actions (connect, accept, remove, cancel, decline)
+  const handleConnectionAction = useCallback(async (action) => {
+    setConnectionActionLoading(true);
+    const headers = getAuthHeaders();
+    if (!headers) {
+      toast.error("Please log in to perform connection actions.");
+      setConnectionActionLoading(false);
+      return;
+    }
+
+    try {
+      let message;
+      // You'll need to adapt these API calls based on your backend logic
+      // Ensure your backend provides the connection ID for operations like accept, decline, remove, cancel
+      switch (action) {
+        case "connect":
+          await axios.post("/api/v1/connections", { receiverId: userId }, { headers });
+          message = "Connection request sent!";
+          setConnectionStatus("pending_sent");
+          break;
+        case "accept":
+          // Assuming the backend has a way to identify the request by receiverId or senderId
+          await axios.put(`/api/v1/connections/${userId}/accept`, {}, { headers });
+          message = "Connection request accepted!";
+          setConnectionStatus("connected");
+          break;
+        case "decline":
+          await axios.put(`/api/v1/connections/${userId}/decline`, {}, { headers });
+          message = "Connection request declined.";
+          setConnectionStatus("not_connected");
+          break;
+        case "cancel":
+          await axios.delete(`/api/v1/connections/${userId}/cancel`, { headers }); // Assuming API to cancel request by receiverId
+          message = "Connection request cancelled.";
+          setConnectionStatus("not_connected");
+          break;
+        case "remove":
+          await axios.delete(`/api/v1/connections/${userId}/remove`, { headers }); // Assuming API to remove connection by target user ID
+          message = "Connection removed.";
+          setConnectionStatus("not_connected");
+          break;
+        default:
+          console.warn("Unknown connection action:", action);
+          return;
+      }
+      toast.success(message);
+    } catch (error) {
+      console.error("Error performing connection action:", error);
+      const errorMessage = error.response?.data?.message || `Failed to perform ${action} action.`;
+      toast.error(errorMessage);
+    } finally {
+      setConnectionActionLoading(false);
+    }
+  }, [userId, getAuthHeaders]);
+
+
   const userInitial = userProfile?.fullName?.charAt(0)?.toUpperCase() || "?";
 
   const handleBlogClick = useCallback(
@@ -121,6 +220,7 @@ const UserProfilePage = () => {
     [navigate]
   );
 
+  // Render components based on loading/error/empty states
   if (loading) {
     return (
       <>
@@ -131,6 +231,7 @@ const UserProfilePage = () => {
             <p>Loading user profile and content...</p>
           </div>
         </div>
+        <Footer />
       </>
     );
   }
@@ -141,18 +242,21 @@ const UserProfilePage = () => {
         <ConnectionsHeader />
         <div className="profile-page-container error-state">
           <div className="error-message" role="alert">
-            <h2>Error</h2>
+            <h2>Error Loading Profile</h2>
             <p>{error}</p>
             <button onClick={() => navigate(-1)} className="btn btn-back">
               Go Back
             </button>
           </div>
         </div>
+        <Footer />
       </>
     );
   }
 
   if (!userProfile) {
+    // This state is typically handled by 'error' if profile fetching failed,
+    // but added for robustness if 'userProfile' becomes null unexpectedly.
     return (
       <>
         <ConnectionsHeader />
@@ -174,6 +278,7 @@ const UserProfilePage = () => {
             </button>
           </div>
         </div>
+        <Footer />
       </>
     );
   }
@@ -199,40 +304,85 @@ const UserProfilePage = () => {
             ) : (
               <div
                 className="profile-avatar-placeholder-large"
-                style={{
-                  background: "linear-gradient(135deg, #0a66c2, #004d96)",
-                  display: userProfile.profilePic ? "none" : "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "3rem",
-                  color: "white",
-                  fontWeight: "bold",
-                }}
+                // The inline style for background gradient should be moved to CSS for consistency
+                // and the display property is handled by CSS classes for visibility
                 aria-hidden="true"
               >
                 {userInitial}
               </div>
             )}
             <h1 className="profile-name">{userProfile.fullName}</h1>
-            {userProfile.designation && (
-              <p className="profile-designation">{userProfile.designation}</p>
+            {userProfile.designation && userProfile.company && (
+              <p className="profile-detail-item">
+                <FaBriefcase className="profile-icon" /> {userProfile.designation} at <FaBuilding className="profile-icon" /> {userProfile.company}
+              </p>
             )}
-            {userProfile.company && (
-              <p className="profile-company">at {userProfile.company}</p>
+            {userProfile.location && (
+              <p className="profile-detail-item">
+                <FaMapMarkerAlt className="profile-icon" /> {userProfile.location}
+              </p>
             )}
           </div>
 
+          {!isSelfProfile && (
+            <div className="profile-actions">
+              {connectionStatus === "not_connected" && (
+                <button onClick={() => handleConnectionAction("connect")} className="btn btn-primary" disabled={connectionActionLoading}>
+                  {connectionActionLoading ? "Sending..." : "Connect"}
+                </button>
+              )}
+              {connectionStatus === "pending_sent" && (
+                <>
+                  <button className="btn btn-secondary" disabled>Request Sent</button>
+                  <button onClick={() => handleConnectionAction("cancel")} className="btn btn-danger" disabled={connectionActionLoading}>
+                    {connectionActionLoading ? "Cancelling..." : "Cancel Request"}
+                  </button>
+                </>
+              )}
+              {connectionStatus === "pending_received" && (
+                <>
+                  <button onClick={() => handleConnectionAction("accept")} className="btn btn-primary" disabled={connectionActionLoading}>
+                    {connectionActionLoading ? "Accepting..." : "Accept Request"}
+                  </button>
+                  <button onClick={() => handleConnectionAction("decline")} className="btn btn-danger" disabled={connectionActionLoading}>
+                    {connectionActionLoading ? "Declining..." : "Decline"}
+                  </button>
+                </>
+              )}
+              {connectionStatus === "connected" && (
+                <>
+                  <button className="btn btn-success" disabled>Connected ✔️</button>
+                  <button onClick={() => handleConnectionAction("remove")} className="btn btn-danger" disabled={connectionActionLoading}>
+                    {connectionActionLoading ? "Removing..." : "Remove Connection"}
+                  </button>
+                </>
+              )}
+              <button onClick={() => toast.info("Messaging functionality coming soon!")} className="btn btn-outline" disabled={connectionActionLoading}>
+                <FaEnvelope /> Message
+              </button>
+            </div>
+          )}
+
           <div className="profile-details-section">
-            <h2 className="section-title">About</h2>
+            <h2 className="section-title"><FaInfoCircle className="section-icon" /> About</h2>
+            <p className="profile-bio">
+              {userProfile.bio || "No bio available."}
+            </p>
             {userProfile.email && (
               <p className="profile-detail-item">
-                <strong className="detail-label">Email:</strong>{" "}
-                <span className="detail-value">{userProfile.email}</span>
+                <strong className="detail-label"><FaEnvelope className="profile-icon" /> Email:</strong>{" "}
+                <span className="detail-value"><a href={`mailto:${userProfile.email}`}>{userProfile.email}</a></span>
+              </p>
+            )}
+            {userProfile.phone && (
+              <p className="profile-detail-item">
+                <strong className="detail-label"><FaPhone className="profile-icon" /> Phone:</strong>{" "}
+                <span className="detail-value">{userProfile.phone}</span>
               </p>
             )}
             {userProfile.yearsOfFinanceExperience && (
               <p className="profile-detail-item">
-                <strong className="detail-label">Experience:</strong>{" "}
+                <strong className="detail-label"><FaBriefcase className="profile-icon" /> Experience:</strong>{" "}
                 <span className="detail-value">
                   {userProfile.yearsOfFinanceExperience} years in finance
                 </span>
@@ -240,7 +390,7 @@ const UserProfilePage = () => {
             )}
             {userProfile.budgetManaged && (
               <p className="profile-detail-item">
-                <strong className="detail-label">Budget Managed:</strong>{" "}
+                <strong className="detail-label"><FaBuilding className="profile-icon" /> Budget Managed:</strong>{" "}
                 <span className="detail-value">
                   {userProfile.budgetManaged}
                 </span>
@@ -248,9 +398,11 @@ const UserProfilePage = () => {
             )}
             {typeof userProfile.isVerified === "boolean" && (
               <p className="profile-detail-item">
-                <strong className="detail-label">Verified:</strong>{" "}
+                <strong className="detail-label">
+                  {userProfile.isVerified ? <FaCheckCircle className="profile-icon verified-icon" /> : <FaTimesCircle className="profile-icon unverified-icon" />} Verified:
+                </strong>{" "}
                 <span className="detail-value">
-                  {userProfile.isVerified ? "Yes ✅" : "No ❌"}
+                  {userProfile.isVerified ? "Yes" : "No"}
                 </span>
               </p>
             )}
@@ -258,33 +410,39 @@ const UserProfilePage = () => {
 
           {userProfile.financialCertifications?.length > 0 && (
             <div className="profile-details-section">
-              <h2 className="section-title">Certifications</h2>
-              <p className="profile-detail-list">
-                {userProfile.financialCertifications.join(", ")}
-              </p>
+              <h2 className="section-title"><FaGraduationCap className="section-icon" /> Certifications</h2>
+              <ul className="profile-detail-list">
+                {userProfile.financialCertifications.map((cert, index) => (
+                  <li key={index}>{cert}</li>
+                ))}
+              </ul>
             </div>
           )}
 
           {userProfile.industrySpecializations?.length > 0 && (
             <div className="profile-details-section">
-              <h2 className="section-title">Industry Specializations</h2>
-              <p className="profile-detail-list">
-                {userProfile.industrySpecializations.join(", ")}
-              </p>
+              <h2 className="section-title"><FaIndustry className="section-icon" /> Industry Specializations</h2>
+              <ul className="profile-detail-list">
+                {userProfile.industrySpecializations.map((spec, index) => (
+                  <li key={index}>{spec}</li>
+                ))}
+              </ul>
             </div>
           )}
 
           {userProfile.keyFinancialSkills?.length > 0 && (
             <div className="profile-details-section">
-              <h2 className="section-title">Key Skills</h2>
-              <p className="profile-detail-list">
-                {userProfile.keyFinancialSkills.join(", ")}
-              </p>
+              <h2 className="section-title"><FaLightbulb className="section-icon" /> Key Skills</h2>
+              <ul className="profile-detail-list skills-list">
+                {userProfile.keyFinancialSkills.map((skill, index) => (
+                  <li key={index} className="skill-tag">{skill}</li>
+                ))}
+              </ul>
             </div>
           )}
 
           <div className="profile-details-section">
-            <h2 className="section-title">Blogs & Articles</h2>
+            <h2 className="section-title"><FaCalendarAlt className="section-icon" /> Blogs & Articles</h2>
             {blogsLoading ? (
               <p className="loading-blogs-message">Loading blogs...</p>
             ) : blogsError ? (
@@ -296,7 +454,8 @@ const UserProfilePage = () => {
                     key={blog._id}
                     className="blog-item"
                     onClick={() => handleBlogClick(blog._id)}
-                    style={{ cursor: "pointer" }}
+                    tabIndex="0" // Make clickable with keyboard
+                    role="link" // Indicate it's a link
                   >
                     {blog.imageUrl && (
                       <img
@@ -331,7 +490,7 @@ const UserProfilePage = () => {
                   className="linkedin-link-profile"
                   aria-label={`Visit ${userProfile.fullName}'s LinkedIn profile`}
                 >
-                  View LinkedIn Profile
+                  <FaLinkedin /> View LinkedIn Profile
                 </a>
               </p>
             </div>
@@ -344,6 +503,7 @@ const UserProfilePage = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

@@ -119,7 +119,7 @@
 
 .form-input::placeholder,
 .form-textarea::placeholder {
-  color: #99aab5; /* Softer placeholder color */
+  color: #d9e4eb; /* Softer placeholder color */
   font-style: italic;
 }
 

@@ -1,141 +1,347 @@
+/* UserProfilePage.css */
+
+/* Variables for theme colors (consistent with other blue/white themed components) */
+:root {
+  --primary-blue: #003366; /* Dark blue */
+  --secondary-blue: #006699; /* Medium blue */
+  --light-blue: #e6f2ff; /* Very light blue for backgrounds */
+  --accent-blue: #87CEEB; /* Sky blue for highlights */
+  --text-dark: #1f2937;
+  --text-medium: #4b5563;
+  --text-light: #6b7280;
+  --white: #ffffff;
+  --shadow-light: rgba(0, 0, 0, 0.05);
+  --shadow-medium: rgba(0, 0, 0, 0.08);
+  --shadow-strong: rgba(0, 0, 0, 0.15);
+}
+
+/* Main Profile Container */
 .profile-page-container {
   display: flex;
   justify-content: center;
-  padding: 20px;
-  min-height: calc(100vh - 60px); /* Adjust based on header height */
-  background-color: #f0f2f5;
+  padding: 2.5rem 1.5rem;
+  min-height: calc(100vh - 140px); /* Adjust based on header and footer height */
+  background-color: var(--light-blue); /* Light blue background for the page */
   box-sizing: border-box;
+  margin: 100px auto 40px; /* Top margin for header, bottom for footer */
+  font-family: "Inter", Arial, sans-serif;
+  color: var(--text-dark);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
+/* Profile Card */
 .profile-card {
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background-color: var(--white);
+  border-radius: 16px; /* More rounded corners */
+  box-shadow: 0 10px 30px var(--shadow-medium); /* Deeper shadow for main card */
+  padding: 2.5rem;
   width: 100%;
-  max-width: 800px;
-  padding: 30px;
-  box-sizing: border-box;
-}
-
-.profile-header {
+  max-width: 800px; /* Max width for the card itself */
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: 30px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-5px); /* Subtle lift on hover */
+  box-shadow: 0 15px 45px var(--shadow-strong);
+}
+
+/* Profile Header Section */
+.profile-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+  width: 100%;
 }
 
 .profile-avatar-large {
-  width: 120px;
-  height: 120px;
+  width: 130px; /* Slightly larger avatar */
+  height: 130px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #0a66c2;
-  margin-bottom: 15px;
+  border: 5px solid var(--accent-blue); /* Accent blue border */
+  box-shadow: 0 0 0 5px rgba(135, 206, 235, 0.3); /* Subtle outer glow */
+  margin-bottom: 1.5rem;
   flex-shrink: 0;
 }
 
 .profile-avatar-placeholder-large {
-  width: 120px;
-  height: 120px;
+  width: 130px;
+  height: 130px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3rem;
-  color: white;
+  font-size: 4rem; /* Larger font for initial */
   font-weight: bold;
-  background: linear-gradient(135deg, #0a66c2, #004d96);
-  margin-bottom: 15px;
+  color: var(--white);
+  background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue)); /* Blue gradient */
+  margin-bottom: 1.5rem;
   flex-shrink: 0;
 }
 
 .profile-name {
-  font-size: 2.2rem;
-  color: #333;
-  margin-bottom: 5px;
-  font-weight: 600;
+  font-size: 2.8rem; /* Large name */
+  color: var(--primary-blue);
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
-.profile-designation {
+/* Common style for designation, company, location within header */
+.profile-detail-item {
   font-size: 1.1rem;
-  color: #555;
-  margin-bottom: 3px;
+  color: var(--text-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 0.5rem; /* Space between items */
 }
 
-.profile-company {
-  font-size: 1rem;
-  color: #777;
-  margin-bottom: 0;
+/* General Icons for Profile Details and Sections */
+.profile-icon {
+  color: var(--secondary-blue); /* Medium blue for icons */
+  font-size: 1.2rem;
 }
 
+.section-icon {
+  font-size: 1.6rem; /* Larger icons for section titles */
+  color: var(--accent-blue);
+}
+
+.verified-icon { color: #28a745; /* Green for verified */ }
+.unverified-icon { color: #dc3545; /* Red for unverified */ }
+
+
+/* Profile Actions (Buttons) */
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping on small screens */
+  justify-content: center;
+  gap: 1rem; /* Space between buttons */
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 600px; /* Limit action section width */
+}
+
+/* Reusing .btn styles from CreateNetwork.css for consistency */
+/* Ensure these styles are in sync with your global button styles if used elsewhere */
+.btn {
+  padding: 0.8rem 1.8rem;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.1s ease;
+  text-decoration: none;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid transparent; /* Default border */
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+/* Primary Button (Connect, Accept) */
+.btn-primary {
+  background-color: var(--secondary-blue);
+  color: var(--white);
+  border-color: var(--secondary-blue);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-blue);
+  border-color: var(--primary-blue);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Secondary Button (Request Sent, Back to Connections) */
+.btn-secondary {
+  background-color: #607d8b; /* Blue-gray */
+  color: var(--white);
+  border-color: #607d8b;
+  /* cursor: default; */ /* Removed for "Back" button */
+  box-shadow: none;
+}
+.profile-actions-footer .btn-secondary {
+  background-color: var(--white);
+  color: var(--secondary-blue);
+  border: 2px solid var(--secondary-blue);
+}
+.profile-actions-footer .btn-secondary:hover {
+  background-color: var(--light-blue);
+  color: var(--primary-blue);
+  border-color: var(--primary-blue);
+}
+
+
+/* Danger Button (Remove, Decline, Cancel) */
+.btn-danger {
+  background-color: #d32f2f; /* Deeper red */
+  color: var(--white);
+  border-color: #d32f2f;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: #b71c1c;
+  border-color: #b71c1c;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Success Button (Connected) */
+.btn-success {
+  background-color: #4CAF50; /* Green */
+  color: var(--white);
+  border-color: #4CAF50;
+  cursor: default;
+  box-shadow: none;
+}
+
+/* Outline Button (Message) */
+.btn-outline {
+  background-color: transparent;
+  color: var(--secondary-blue);
+  border: 2px solid var(--secondary-blue); /* Thicker border */
+  box-shadow: none;
+}
+
+.btn-outline:hover:not(:disabled) {
+  background-color: var(--light-blue);
+  color: var(--primary-blue);
+  border-color: var(--primary-blue);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Disabled Button State */
+.btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+
+/* Profile Details Sections */
 .profile-details-section {
   margin-bottom: 25px;
   padding-top: 15px;
   border-top: 1px solid #eee;
+  width: 100%;
+  text-align: left; /* Align content left */
+}
+
+.profile-details-section:first-of-type {
+  border-top: none; /* No top border for the first section after header/actions */
 }
 
 .section-title {
-  font-size: 1.5rem;
-  color: #333;
-  margin-bottom: 15px;
-  font-weight: 600;
-}
-
-.profile-detail-item {
+  font-size: 1.8rem; /* Larger section titles */
+  color: var(--primary-blue);
+  margin-bottom: 1.2rem;
+  font-weight: 700;
   display: flex;
-  align-items: baseline;
-  margin-bottom: 8px;
-  font-size: 1rem;
-  color: #555;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 2px solid var(--accent-blue); /* Accent underline */
+  padding-bottom: 8px;
+  margin-top: 0; /* Reset default margin */
 }
 
-.detail-label {
+.profile-bio {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text-medium);
+  margin-bottom: 1rem;
+}
+
+.profile-contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-contact-list li {
+  font-size: 1.1rem;
+  color: var(--text-medium);
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-contact-list li a {
+  color: var(--secondary-blue);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.profile-contact-list li a:hover {
+  color: var(--primary-blue);
+  text-decoration: underline;
+}
+
+/* Skills list styling */
+.profile-detail-list.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-tag {
+  background-color: var(--light-blue);
+  color: var(--primary-blue);
+  padding: 6px 12px;
+  border-radius: 9999px; /* Pill shape */
+  font-size: 0.95rem;
   font-weight: 500;
-  color: #333;
-  min-width: 120px;
-  flex-shrink: 0;
+  white-space: nowrap; /* Prevent breaking */
+  transition: background-color 0.2s ease;
 }
 
-.detail-value {
-  flex-grow: 1;
+.skill-tag:hover {
+  background-color: var(--accent-blue);
+  color: var(--white);
 }
 
-.profile-detail-list {
-  font-size: 1rem;
-  color: #555;
-  line-height: 1.6;
-  margin-top: 5px;
-}
-
+/* Blogs & Articles Section */
 .user-blogs-list {
   display: grid;
   gap: 20px;
 }
 
 .blog-item {
-  background-color: #f9f9f9;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
+  background-color: #f9fbfc; /* Slightly off-white for blog items */
+  border: 1px solid #eef6ff;
+  border-radius: 12px; /* More rounded */
   padding: 15px;
   display: flex;
   align-items: flex-start;
   gap: 15px;
   transition: all 0.2s ease-in-out;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .blog-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px); /* More pronounced lift */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  background-color: #eef2f8; /* Darker on hover */
 }
 
 .blog-item-image {
-  width: 100px;
-  height: 80px;
+  width: 120px; /* Larger image */
+  height: 90px;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: 8px;
   flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
 .blog-item-content {
@@ -143,45 +349,70 @@
 }
 
 .blog-title {
-  font-size: 1.2rem;
-  color: #0a66c2;
+  font-size: 1.3rem; /* Larger title */
+  color: var(--secondary-blue); /* Medium blue */
   margin-top: 0;
   margin-bottom: 8px;
   font-weight: 600;
+  line-height: 1.4;
 }
 
 .blog-snippet {
   font-size: 0.95rem;
-  color: #666;
+  color: var(--text-medium);
   line-height: 1.5;
   margin-bottom: 0;
 }
 
-.no-blogs-message {
+.no-blogs-message,
+.loading-blogs-message,
+.error-blogs-message {
   text-align: center;
-  color: #777;
+  color: var(--text-light);
   padding: 20px;
-  background-color: #f0f0f0;
-  border-radius: 5px;
+  background-color: #f0f4f8; /* Light blue-gray */
+  border-radius: 8px;
+  font-style: italic;
+  margin-top: 15px;
+}
+
+.error-blogs-message {
+  color: #d32f2f;
+  background-color: #fee2e2;
+  border: 1px solid #fca5a5;
+}
+
+.loading-blogs-message {
+  color: var(--secondary-blue);
+  background-color: #f0f8ff;
 }
 
 .profile-linkedin-link-wrapper {
-  margin-top: 10px;
+  margin-top: 15px;
+  text-align: center;
 }
 
 .linkedin-link-profile {
-  display: inline-block;
-  background-color: #0a66c2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #0a66c2; /* LinkedIn blue */
   color: white;
-  padding: 10px 20px;
-  border-radius: 5px;
+  padding: 12px 25px; /* More padding */
+  border-radius: 8px;
   text-decoration: none;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
 .linkedin-link-profile:hover {
   background-color: #004d96;
+  transform: translateY(-2px);
+}
+
+.linkedin-link-profile:active {
+  transform: translateY(0);
 }
 
 .profile-actions-footer {
@@ -191,159 +422,311 @@
   border-top: 1px solid #eee;
 }
 
-.btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
 
-.btn-primary {
-  background-color: #0a66c2;
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: #004d96;
-}
-
-.btn-secondary {
-  background-color: #e0e0e0;
-  color: #333;
-}
-
-.btn-secondary:hover {
-  background-color: #c9c9c9;
-}
-
-.btn-back {
-  background-color: #f0f0f0;
-  color: #555;
-}
-
-.btn-back:hover {
-  background-color: #e0e0e0;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.error-state,
-.not-found-state {
+/* Status States (Loading, Error, Not Found) */
+.profile-page-container.loading-state,
+.profile-page-container.error-state,
+.profile-page-container.not-found-state {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 60px);
+  /* min-height is set on main container */
   text-align: center;
+  background-color: var(--light-blue);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
-.error-message,
-.empty-state {
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 40px;
-  max-width: 500px;
-  width: 100%;
+.profile-page-container .loading-spinner,
+.profile-page-container .error-message,
+.profile-page-container .empty-state {
+  max-width: 550px;
+  width: 90%;
+  margin: 0 auto; /* Center content within the container */
+  background-color: var(--white); /* White background for message boxes */
+  border-radius: 12px;
+  padding: 2.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
-.error-message h2,
-.empty-state h3 {
-  color: #d32f2f;
-  margin-bottom: 15px;
-  font-size: 1.8rem;
+.profile-page-container .loading-spinner .spinner {
+  border: 6px solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--secondary-blue);
+  width: 50px;
+  height: 50px;
+}
+.profile-page-container .loading-spinner p {
+  font-size: 1.2rem;
+  color: var(--text-medium);
 }
 
-.empty-state h3 {
-  color: #555;
+.profile-page-container .error-message h2 {
+  color: #dc3545;
+  font-size: 2rem;
+  margin-bottom: 1rem;
 }
 
-.error-message p,
-.empty-state p {
-  color: #777;
-  margin-bottom: 25px;
+.profile-page-container .error-message p {
   font-size: 1.1rem;
+  line-height: 1.5;
+  color: var(--text-medium);
 }
 
-.empty-icon {
-  font-size: 4rem;
-  margin-bottom: 20px;
+.profile-page-container .empty-icon {
+  font-size: 5rem;
+  margin-bottom: 1.2rem;
+  color: #b0bec5;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-  .profile-card {
-    padding: 20px;
-  }
-
-  .profile-name {
-    font-size: 1.8rem;
-  }
-
-  .profile-designation {
-    font-size: 1rem;
-  }
-
-  .section-title {
-    font-size: 1.3rem;
-  }
-
-  .profile-detail-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .detail-label {
-    min-width: auto;
-    margin-bottom: 5px;
-  }
-
-  .blog-item {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .blog-item-image {
-    width: 100%;
-    height: 150px;
-    margin-bottom: 10px;
-  }
+.profile-page-container .empty-state h3 {
+  color: var(--text-dark);
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
 }
 
-@media (max-width: 480px) {
+.profile-page-container .empty-state p {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: var(--text-medium);
+}
+
+
+/* --- Responsive Adjustments --- */
+
+/* Tablets (max-width 1024px) */
+@media (max-width: 1024px) {
   .profile-page-container {
-    padding: 10px;
+    padding: 2rem 1rem;
+    margin: 80px auto 30px;
+    min-height: calc(100vh - 110px);
   }
 
   .profile-card {
-    padding: 15px;
+    padding: 2rem;
   }
 
   .profile-avatar-large,
   .profile-avatar-placeholder-large {
+    width: 110px;
+    height: 110px;
+    border-width: 4px;
+    font-size: 3.5rem;
+  }
+
+  .profile-name {
+    font-size: 2.4rem;
+  }
+
+  .profile-detail-item,
+  .profile-contact-list li {
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+  }
+
+  .profile-actions .btn {
+    padding: 0.7rem 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .blog-item-image {
     width: 100px;
-    height: 100px;
+    height: 75px;
+  }
+
+  .blog-title {
+    font-size: 1.15rem;
+  }
+  .blog-snippet {
+    font-size: 0.9rem;
+  }
+  .linkedin-link-profile {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+  }
+}
+
+/* Mobile Devices (max-width 767px) */
+@media (max-width: 767px) {
+  .profile-page-container {
+    padding: 1.5rem 0.8rem;
+    margin: 70px auto 20px;
+    min-height: calc(100vh - 90px);
+  }
+
+  .profile-card {
+    padding: 1.5rem;
+  }
+
+  .profile-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .profile-avatar-large,
+  .profile-avatar-placeholder-large {
+    width: 90px;
+    height: 90px;
+    border-width: 3px;
+    margin-bottom: 1rem;
+    font-size: 3rem;
+  }
+
+  .profile-name {
+    font-size: 2rem;
+  }
+
+  .profile-detail-item {
+    flex-direction: column; /* Stack details vertically */
+    align-items: flex-start; /* Align text to start */
+    gap: 4px; /* Smaller gap when stacked */
+    font-size: 0.95rem;
+  }
+  .profile-detail-item .profile-icon {
+      margin-bottom: 5px; /* Add small margin if icon is above text */
+  }
+  .profile-detail-item strong {
+      width: 100%; /* Full width for label when stacked */
+      text-align: left;
+  }
+  .profile-detail-item .detail-value {
+      width: 100%; /* Full width for value when stacked */
+      text-align: left;
+  }
+
+
+  .profile-actions {
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .profile-actions .btn {
+    width: 100%; /* Full width buttons */
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .profile-details-section {
+    padding: 1rem 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    padding-bottom: 6px;
+    gap: 8px;
+  }
+
+  .profile-bio,
+  .profile-contact-list li {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .profile-contact-list li {
+    flex-direction: column; /* Stack contact info vertically */
+    align-items: flex-start;
+    gap: 5px;
+  }
+  .profile-contact-list li .profile-icon {
+      margin-right: 0;
+      align-self: flex-start; /* Align icon to start when stacked */
+  }
+
+  .skill-tag {
+    font-size: 0.85rem;
+    padding: 5px 10px;
+  }
+
+  .blog-item {
+    flex-direction: column; /* Stack blog image and content */
+    align-items: center;
+    text-align: center;
+    padding: 12px;
+  }
+
+  .blog-item-image {
+    width: 100%;
+    height: 120px;
+    margin-bottom: 10px;
+  }
+
+  .blog-title {
+    font-size: 1.1rem;
+  }
+
+  .blog-snippet {
+    font-size: 0.85rem;
+  }
+
+  .linkedin-link-profile {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.9rem;
+    justify-content: center;
+  }
+
+  .profile-actions-footer {
+    margin-top: 20px;
+    padding-top: 15px;
+  }
+}
+
+/* Smaller mobile devices (max-width 480px) */
+@media (max-width: 480px) {
+  .profile-page-container {
+    padding: 1rem 0.5rem;
+    margin: 60px auto 15px;
+    min-height: calc(100vh - 75px);
+  }
+
+  .profile-card {
+    padding: 1rem;
+  }
+
+  .profile-avatar-large,
+  .profile-avatar-placeholder-large {
+    width: 80px;
+    height: 80px;
+    font-size: 2.5rem;
   }
 
   .profile-name {
     font-size: 1.6rem;
   }
 
-  .btn {
-    width: 100%;
-    margin-top: 10px;
+  .profile-detail-item {
+    font-size: 0.85rem;
   }
 
-  .linkedin-link-profile {
-    width: calc(100% - 40px); /* Adjust for padding */
+  .section-title {
+    font-size: 1.2rem;
+  }
+
+  .profile-bio,
+  .profile-contact-list li {
+    font-size: 0.85rem;
+  }
+
+  .skill-tag {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+  }
+
+  .blog-item-image {
+    height: 100px;
+  }
+
+  .blog-title {
+    font-size: 1rem;
+  }
+
+  .blog-snippet {
+    font-size: 0.8rem;
   }
 }

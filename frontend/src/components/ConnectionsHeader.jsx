@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom"; // Changed Link to NavLink
+import { NavLink, useNavigate } from "react-router-dom"; 
 import { useAuth } from "../context/AuthContext";
-//import Footer from "./Footer"; // Import Footer component if needed
 import {
   FaUsers,
   FaBell,
@@ -14,7 +13,7 @@ import {
   FaSearch,
 } from "react-icons/fa";
 
-import "../styles/ConnectionsHeader.css"; // Ensure this path is correct
+import "../styles/ConnectionsHeader.css"; 
 
 function ConnectionsHeader() {
   const { user, logout } = useAuth();
@@ -36,7 +35,7 @@ function ConnectionsHeader() {
         )}&filter=${searchFilter}`
       );
       setSearchTerm("");
-      setIsMenuOpen(false); // Close menu after search on mobile
+      setIsMenuOpen(false); 
     }
   };
 
@@ -57,7 +56,7 @@ function ConnectionsHeader() {
         <nav
           className={`header-navigation-menu ${isMenuOpen ? "menu-open" : ""}`}
         >
-          {/* Mobile Search Form - visible only when menu is open on mobile */}
+          
           <form
             onSubmit={handleSearch}
             className="header-search-form mobile-search"
@@ -86,7 +85,7 @@ function ConnectionsHeader() {
             </button>
           </form>
 
-          {/* Navigation Links */}
+          
           <NavLink
             to="/connections"
             className={({ isActive }) =>
@@ -161,11 +160,11 @@ function ConnectionsHeader() {
             title="Create Network"
             onClick={() => setIsMenuOpen(false)}
           >
-            <FaUsers /> {/* Changed from FaBlog to FaUsers for Network icon */}
+            <FaUsers /> 
             <span className="nav-item-text">Network</span>
           </NavLink>
 
-          {/* Mobile User Actions - visible only when menu is open on mobile */}
+          
           {user && (
             <NavLink
               to="/profile"
@@ -209,7 +208,7 @@ function ConnectionsHeader() {
       </div>
 
       <div className="header-right-user-actions">
-        {/* Desktop Search Form - visible only on desktop */}
+        
         <form
           onSubmit={handleSearch}
           className="header-search-form desktop-search"

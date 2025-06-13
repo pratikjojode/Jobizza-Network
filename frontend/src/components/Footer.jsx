@@ -1,6 +1,6 @@
 import React from "react";
 import { FaLinkedin, FaTwitter, FaInstagram, FaFacebook, FaYoutube } from "react-icons/fa";
-import "../styles/Footer.css"; // Ensure this path is correct relative to your project structure
+import "../styles/Footer.css"; 
 
 const Footer = () => {
   return (
@@ -10,7 +10,7 @@ const Footer = () => {
           <h2>Jobizza Network</h2>
           <p className="footer-tagline">The Exclusive Platform for C-Suite Leaders</p>
           <div className="social-icons">
-            {/* Social media links with icons */}
+            
             <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
               <FaLinkedin className="icon" />
             </a>
@@ -30,7 +30,7 @@ const Footer = () => {
         </div>
 
         <div className="footer-links">
-          {/* Quick Links section, updated based on navbar */}
+          
           <div className="links-column">
             <h3>Quick Links</h3>
             <ul>
@@ -41,7 +41,7 @@ const Footer = () => {
               <li><a href="/pre-demo">Pre-Demo</a></li>
             </ul>
           </div>
-          {/* Resources section */}
+     
           <div className="links-column">
             <h3>Resources</h3>
             <ul>
@@ -51,7 +51,7 @@ const Footer = () => {
               <li><a href="/webinars">Webinars</a></li>
             </ul>
           </div>
-          {/* Company section */}
+          ]
           <div className="links-column">
             <h3>Company</h3>
             <ul>
@@ -64,9 +64,9 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Footer bottom section with copyright */}
+      
       <div className="footer-bottom">
-        <p>&copy; {new Date().getFullYear()} Jobizza Network. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Jobizza Network. All rights reserved.</p>
       </div>
     </footer>
   );

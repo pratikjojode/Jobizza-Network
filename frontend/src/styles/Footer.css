@@ -1,6 +1,6 @@
 .footer {
-  background: linear-gradient(135deg, #003366, #006699);
-  color: #ffffff;
+  background: linear-gradient(135deg, #003366, #006699); 
+  color: #ffffff; 
   padding: 2.5rem 1rem 1rem;
   width: 100%;
   position: relative;
@@ -35,11 +35,12 @@
 .footer-logo h2 {
   font-size: 1.8rem;
   margin-bottom: 0.3rem;
+  color: #ffffff; 
 }
 
 .footer-tagline {
   font-size: 1rem;
-  color: #e0e0e0;
+  color: #e0e0e0; 
 }
 
 .social-icons {
@@ -51,13 +52,13 @@
 }
 
 .social-icons a {
-  color: #ffffff;
+  color: #ffffff; 
   transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .social-icons a:hover {
   transform: scale(1.2);
-  color: #ffc107;
+  color: #87CEEB; 
 }
 
 .footer-links {
@@ -74,7 +75,7 @@
 
 .links-column h3,
 .links-column h4 {
-  color: #ffc107;
+  color: #87CEEB; 
   font-weight: 700;
   margin-bottom: 0.8rem;
   font-size: 1.1rem;
@@ -91,13 +92,13 @@
 }
 
 .links-column ul li a {
-  color: #ffffff;
+  color: #ffffff; 
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .links-column ul li a:hover {
-  color: #ffc107;
+  color: #87CEEB; 
 }
 
 .footer-bottom {
@@ -109,7 +110,7 @@
   margin-top: 2rem;
 }
 
-/* DESKTOP VIEW */
+
 @media (min-width: 768px) {
   .footer-container {
     align-items: flex-start;
@@ -121,6 +122,10 @@
     text-align: left;
   }
 
+  .social-icons {
+    justify-content: flex-start;
+  }
+
   .footer-links {
     flex-direction: row;
     justify-content: space-between;
@@ -130,9 +135,5 @@
     flex: 1;
     text-align: left;
     padding-left: 1.5rem;
-  }
-
-  .social-icons {
-    justify-content: flex-start;
   }
 }
