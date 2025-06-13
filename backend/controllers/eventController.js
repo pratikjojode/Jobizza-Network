@@ -1,14 +1,16 @@
-// Assuming you have a userModel.js for 'User' reference
-
 import Event from "../models/eventModel.js";
-
+import cloudinary from "cloudinary";
 export const createEvent = async (req, res) => {
   try {
     const { title, description, date, location } = req.body;
-    let imageUrl = null;
-
+    let imageUrl = "";
     if (req.file) {
-      imageUrl = req.file.path;
+      const b64 = Buffer.from(req.file.buffer).toString("base64");
+      let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+      const cloudinaryResult = await cloudinary.v2.uploader.upload(dataURI, {
+        folder: "blog_images",
+      });
+      imageUrl = cloudinaryResult.secure_url;
     }
 
     const newEvent = new Event({
@@ -16,7 +18,7 @@ export const createEvent = async (req, res) => {
       description,
       date,
       location,
-      imageUrl: imageUrl,
+      imageUrl,
       organizer: req.user._id,
     });
 
@@ -37,15 +39,46 @@ export const getAllEvents = async (req, res) => {
   }
 };
 
+export const getAllEventsForUser = async (req, res) => {
+  try {
+    const events = await Event.find({}).populate(
+      "organizer",
+      "fullName email profilePic role company designation"
+    );
+
+    if (!events || events.length === 0) {
+      return res.status(404).send({
+        success: false,
+        message: "No events found.",
+      });
+    }
+
+    res.status(200).send({
+      success: true,
+      message: "Events fetched successfully!",
+      events,
+    });
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    res.status(500).send({
+      success: false,
+      message: "Something went wrong while fetching events.",
+      error: error.message,
+    });
+  }
+};
+
 export const getEventById = async (req, res) => {
   try {
     const event = await Event.findById(req.params.id).populate(
       "organizer",
-      "username"
+      "fullName designation company role profilePic linkedin"
     );
+
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
     }
+
     res.status(200).json(event);
   } catch (err) {
     res.status(500).json({ error: err.message });

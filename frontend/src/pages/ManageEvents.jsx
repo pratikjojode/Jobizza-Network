@@ -2,16 +2,16 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import EditEventModal from "./EditEventModal"; // Assuming EditEventModal is in the same directory for this example
+import EditEventModal from "./EditEventModal";
 
 const ManageEvents = () => {
-  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { isAuthenticated, loading: authLoading } = useAuth();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editingEvent, setEditingEvent] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'table'
+  const [viewMode, setViewMode] = useState("grid");
   const navigate = useNavigate();
 
   // Helper function to escape CSV fields
@@ -29,29 +29,36 @@ const ManageEvents = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get("/api/v1/events");
+      // Set up axios with auth token
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const response = await axios.get("/api/v1/events", config);
+
+      // Your backend returns events directly as an array
       let fetchedData = response.data;
 
-      // Adapt to various backend response structures
-      if (fetchedData && fetchedData.data && Array.isArray(fetchedData.data)) {
-        fetchedData = fetchedData.data;
-      } else if (
-        fetchedData &&
-        fetchedData.events &&
-        Array.isArray(fetchedData.events)
-      ) {
-        fetchedData = fetchedData.events;
-      } else if (!Array.isArray(fetchedData)) {
-        fetchedData = [];
+      if (!Array.isArray(fetchedData)) {
         console.warn(
           "Backend /api/v1/events did not return an array as expected. Received:",
           response.data
         );
+        fetchedData = [];
       }
-      setEvents(fetchedData); // Set all fetched events for admin view
+
+      setEvents(fetchedData);
     } catch (err) {
       console.error("Failed to fetch events:", err);
-      setError("Failed to load all events. Please try again.");
+      if (err.response?.status === 401) {
+        setError("Authentication failed. Please log in again.");
+        navigate("/login");
+      } else {
+        setError("Failed to load events. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -63,51 +70,83 @@ const ManageEvents = () => {
     }
 
     if (!isAuthenticated) {
-      navigate("/login"); // Redirect if not authenticated (should eventually include admin role check)
+      navigate("/login");
       return;
     }
 
     fetchAllEvents();
-  }, [isAuthenticated, authLoading, navigate]); // Removed 'user' from dependency as we fetch all events now
-
-  const handleDelete = async (eventId) => {
-    if (
-      !window.confirm(
-        "Are you sure you want to delete this event? This action cannot be undone."
-      )
-    ) {
-      return;
-    }
-    try {
-      setLoading(true);
-      await axios.delete(`/api/v1/events/${eventId}`);
-      setEvents((prevEvents) =>
-        prevEvents.filter((event) => event._id !== eventId)
-      );
-      alert("Event deleted successfully!");
-    } catch (err) {
-      console.error(
-        "Failed to delete event:",
-        err.response?.data?.message || err.message
-      );
-      setError("Failed to delete event. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [isAuthenticated, authLoading, navigate]);
 
   const handleEdit = (event) => {
     setEditingEvent(event);
     setIsEditModalOpen(true);
   };
 
-  const handleUpdate = async () => {
-    // This function is called by the modal when an update is successful.
-    // We close the modal and re-fetch all events to ensure the list is up-to-date.
-    setIsEditModalOpen(false);
-    setEditingEvent(null);
-    await fetchAllEvents(); // Re-fetch all events after an update
-    alert("Event updated successfully!");
+  const handleUpdate = async (updatedEventData) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      // Create FormData for file upload support
+      const formData = new FormData();
+
+      // Add text fields
+      if (updatedEventData.title)
+        formData.append("title", updatedEventData.title);
+      if (updatedEventData.description)
+        formData.append("description", updatedEventData.description);
+      if (updatedEventData.date) formData.append("date", updatedEventData.date);
+      if (updatedEventData.location)
+        formData.append("location", updatedEventData.location);
+      if (typeof updatedEventData.isVerified === "boolean") {
+        formData.append("isVerified", updatedEventData.isVerified);
+      }
+
+      // Handle image upload (your backend expects 'profilePic' field name)
+      if (updatedEventData.image instanceof File) {
+        formData.append("profilePic", updatedEventData.image);
+      } else if (updatedEventData.removeImage) {
+        formData.append("imageUrl", ""); // Send empty string to remove image
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      const response = await axios.put(
+        `/api/v1/events/${editingEvent._id}`,
+        formData,
+        config
+      );
+
+      setIsEditModalOpen(false);
+      setEditingEvent(null);
+      await fetchAllEvents();
+      alert("Event updated successfully!");
+
+      return response.data;
+    } catch (err) {
+      console.error("Failed to update event:", err);
+
+      let errorMessage = "Failed to update event. Please try again.";
+
+      if (err.response?.status === 403) {
+        errorMessage =
+          "You are not authorized to edit this event. Only the organizer can edit their events.";
+      } else if (err.response?.status === 404) {
+        errorMessage = "Event not found.";
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err.response?.data?.error) {
+        errorMessage = err.response.data.error;
+      }
+
+      setError(errorMessage);
+      alert(errorMessage);
+      throw err;
+    }
   };
 
   const handleExportCsv = () => {
@@ -125,7 +164,7 @@ const ManageEvents = () => {
       "Image URL",
       "Is Verified",
       "Organizer ID",
-      "Organizer Name", // If organizer is populated with name
+      "Organizer Name",
       "Created At",
       "Updated At",
     ];
@@ -134,20 +173,28 @@ const ManageEvents = () => {
       escapeCsvField(event._id || ""),
       escapeCsvField(event.title || ""),
       escapeCsvField(event.description || ""),
-      escapeCsvField(new Date(event.date).toLocaleString() || ""),
+      escapeCsvField(event.date ? new Date(event.date).toLocaleString() : ""),
       escapeCsvField(event.location || ""),
       escapeCsvField(event.imageUrl || ""),
       escapeCsvField(event.isVerified ? "Yes" : "No"),
       escapeCsvField(
-        event.organizer ? event.organizer._id || event.organizer : ""
-      ), // Handle populated or plain ID
+        event.organizer
+          ? typeof event.organizer === "object"
+            ? event.organizer._id
+            : event.organizer
+          : ""
+      ),
       escapeCsvField(
         event.organizer && typeof event.organizer === "object"
           ? event.organizer.username || event.organizer.email || ""
           : ""
-      ), // Assuming username/email if populated
-      escapeCsvField(new Date(event.createdAt).toLocaleString() || ""),
-      escapeCsvField(new Date(event.updatedAt).toLocaleString() || ""),
+      ),
+      escapeCsvField(
+        event.createdAt ? new Date(event.createdAt).toLocaleString() : ""
+      ),
+      escapeCsvField(
+        event.updatedAt ? new Date(event.updatedAt).toLocaleString() : ""
+      ),
     ]);
 
     const csvContent = [
@@ -158,18 +205,30 @@ const ManageEvents = () => {
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.setAttribute("download", "all_events.csv");
+    link.setAttribute(
+      "download",
+      `all_events_${new Date().toISOString().split("T")[0]}.csv`
+    );
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
   if (authLoading || loading) {
-    return <div>Loading events...</div>;
+    return (
+      <div className="loading-container">
+        <div>Loading events...</div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <div className="error-container">
+        <div className="error-message">{error}</div>
+        <button onClick={() => window.location.reload()}>Retry</button>
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
@@ -177,110 +236,174 @@ const ManageEvents = () => {
   }
 
   return (
-    <div>
-      <h1>Admin: Manage All Events</h1>
+    <>
+      <div className="manage-events-container">
+        <h1>Admin: Manage All Events</h1>
 
-      <div>
-        <div>
-          <button onClick={() => setViewMode("grid")}>Grid View</button>
-          <button onClick={() => setViewMode("table")}>Table View</button>
+        <div className="controls">
+          <div className="view-controls">
+            <button
+              onClick={() => setViewMode("grid")}
+              className={viewMode === "grid" ? "active" : ""}
+            >
+              Grid View
+            </button>
+            <button
+              onClick={() => setViewMode("table")}
+              className={viewMode === "table" ? "active" : ""}
+            >
+              Table View
+            </button>
+          </div>
+          <button onClick={handleExportCsv} className="export-btn">
+            Export to CSV
+          </button>
         </div>
-        <button onClick={handleExportCsv}>Export to CSV</button>
-      </div>
 
-      {events.length === 0 ? (
-        <p>No events found in the system.</p>
-      ) : (
-        <>
-          {viewMode === "grid" && (
-            <div>
-              {events.map((event) => (
-                <div key={event._id}>
-                  <h2>{event.title}</h2>
-                  <p>{event.description}</p>
-                  <p>
-                    <strong>Date:</strong>{" "}
-                    {new Date(event.date).toLocaleDateString(undefined, {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                  <p>
-                    <strong>Location:</strong> {event.location}
-                  </p>
-                  {event.imageUrl && (
-                    <img
-                      src={`http://localhost:3000/${event.imageUrl.replace(
-                        /\\/g,
-                        "/"
-                      )}`}
-                      alt={event.title}
-                    />
-                  )}
-                  <div>
-                    <button onClick={() => handleEdit(event)}>Edit</button>
-                    <button onClick={() => handleDelete(event._id)}>
-                      Delete
-                    </button>
+        {events.length === 0 ? (
+          <div className="no-events">
+            <p>No events found in the system.</p>
+          </div>
+        ) : (
+          <>
+            {viewMode === "grid" && (
+              <div className="events-grid">
+                {events.map((event) => (
+                  <div key={event._id} className="event-card">
+                    <h2>{event.title}</h2>
+                    <p className="description">{event.description}</p>
+                    <div className="event-details">
+                      <p>
+                        <strong>Date:</strong>{" "}
+                        {event.date
+                          ? new Date(event.date).toLocaleDateString(undefined, {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })
+                          : "No date specified"}
+                      </p>
+                      <p>
+                        <strong>Location:</strong>{" "}
+                        {event.location || "No location specified"}
+                      </p>
+                      <p>
+                        <strong>Organizer:</strong>{" "}
+                        {event.organizer && typeof event.organizer === "object"
+                          ? event.organizer.username || "Unknown"
+                          : "Unknown"}
+                      </p>
+                      <p>
+                        <strong>Status:</strong>{" "}
+                        <span
+                          className={`status ${
+                            event.isVerified ? "verified" : "unverified"
+                          }`}
+                        >
+                          {event.isVerified ? "Verified" : "Unverified"}
+                        </span>
+                      </p>
+                    </div>
+
+                    {event.imageUrl && (
+                      <div className="event-image">
+                        <img
+                          src={`http://localhost:3000/${event.imageUrl.replace(
+                            /\\/g,
+                            "/"
+                          )}`}
+                          alt={event.title}
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                          }}
+                        />
+                      </div>
+                    )}
+
+                    <div className="event-actions">
+                      <button
+                        onClick={() => handleEdit(event)}
+                        className="edit-btn"
+                      >
+                        Edit
+                      </button>
+                      <button className="delete-btn">Delete</button>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
 
-          {viewMode === "table" && (
-            <div>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Title</th>
-                    <th>Date</th>
-                    <th>Location</th>
-                    <th>Organizer ID</th>
-                    <th>Is Verified</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {events.map((event) => (
-                    <tr key={event._id}>
-                      <td>{event.title}</td>
-                      <td>{new Date(event.date).toLocaleDateString()}</td>
-                      <td>{event.location}</td>
-                      <td>
-                        {event.organizer
-                          ? event.organizer._id || event.organizer
-                          : "N/A"}
-                      </td>
-                      <td>{event.isVerified ? "Yes" : "No"}</td>
-                      <td>
-                        <div>
-                          <button onClick={() => handleEdit(event)}>
-                            Edit
-                          </button>
-                          <button onClick={() => handleDelete(event._id)}>
-                            Delete
-                          </button>
-                        </div>
-                      </td>
+            {viewMode === "table" && (
+              <div className="events-table-container">
+                <table className="events-table">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Date</th>
+                      <th>Location</th>
+                      <th>Organizer</th>
+                      <th>Status</th>
+                      <th>Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </>
-      )}
+                  </thead>
+                  <tbody>
+                    {events.map((event) => (
+                      <tr key={event._id}>
+                        <td className="title-cell">{event.title}</td>
+                        <td>
+                          {event.date
+                            ? new Date(event.date).toLocaleDateString()
+                            : "No date"}
+                        </td>
+                        <td>{event.location || "No location"}</td>
+                        <td>
+                          {event.organizer &&
+                          typeof event.organizer === "object"
+                            ? event.organizer.username || "Unknown"
+                            : "Unknown"}
+                        </td>
+                        <td>
+                          <span
+                            className={`status ${
+                              event.isVerified ? "verified" : "unverified"
+                            }`}
+                          >
+                            {event.isVerified ? "Verified" : "Unverified"}
+                          </span>
+                        </td>
+                        <td>
+                          <div className="table-actions">
+                            <button
+                              onClick={() => handleEdit(event)}
+                              className="edit-btn small"
+                            >
+                              Edit
+                            </button>
+                            <button className="delete-btn small">Delete</button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </>
+        )}
 
-      {isEditModalOpen && editingEvent && (
-        <EditEventModal
-          event={editingEvent}
-          onClose={() => setIsEditModalOpen(false)}
-          onUpdate={handleUpdate}
-        />
-      )}
-    </div>
+        {isEditModalOpen && editingEvent && (
+          <EditEventModal
+            event={editingEvent}
+            onClose={() => {
+              setIsEditModalOpen(false);
+              setEditingEvent(null);
+            }}
+            onUpdate={handleUpdate}
+          />
+        )}
+      </div>
+    </>
   );
 };
 

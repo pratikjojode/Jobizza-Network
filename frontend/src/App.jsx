@@ -29,6 +29,9 @@ import BlogsOverview from "./pages/BlogsOverview";
 import BlogDetail from "./pages/BlogDetail";
 import CreateNetwork from "./pages/CreateNetwork";
 import ManageEvents from "./pages/ManageEvents";
+import CreateEvents from "./pages/CreateEvents";
+import ViewAllEvents from "./pages/ViewAllEvents";
+import EventDetail from "./pages/EventDetail";
 
 function App() {
   return (
@@ -36,7 +39,7 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          
+
           <Route
             path="/login"
             element={
@@ -116,6 +119,9 @@ function App() {
           />
           <Route path="/profile/:userId" element={<UserProfilePage />} />
           <Route path="/blogs/:blogId" element={<BlogDetail />} />
+          <Route path="/events/:id" element={<EventDetail />} />
+          <Route path="/events/create" element={<CreateEvents />} />
+          <Route path="/events/viewAllEvents" element={<ViewAllEvents />} />
           <Route path="/network/createNetwork" element={<CreateNetwork />} />
           <Route path="/my-connections" element={<ManageRequestsPage />} />
           <Route path="/search" element={<SearchResultsPage />} />

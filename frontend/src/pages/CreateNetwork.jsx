@@ -13,7 +13,7 @@ const CreateNetwork = () => {
   const [error, setError] = useState(null);
   const [connectionActionLoading, setConnectionActionLoading] = useState({});
 
-  const { currentUser, logout } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   // Memoized function to get authorization headers
@@ -40,7 +40,9 @@ const CreateNetwork = () => {
 
       // Check if data is valid and an array
       if (!res.data.data || !Array.isArray(res.data.data)) {
-        toast.error("Something went wrong while fetching connections or data format is incorrect.");
+        toast.error(
+          "Something went wrong while fetching connections or data format is incorrect."
+        );
         setNetwork([]);
         return;
       }
@@ -49,7 +51,8 @@ const CreateNetwork = () => {
       // Removed success toast here to avoid overwhelming the user on initial load
     } catch (error) {
       console.error("Error fetching connections:", error);
-      const errorMessage = error.response?.data?.message || "Failed to fetch connections.";
+      const errorMessage =
+        error.response?.data?.message || "Failed to fetch connections.";
       setError(errorMessage);
       toast.error(errorMessage);
 
@@ -70,7 +73,10 @@ const CreateNetwork = () => {
       const headers = getAuthHeaders();
       if (!headers) {
         toast.error("Please log in to perform connection actions.");
-        setConnectionActionLoading((prev) => ({ ...prev, [targetUserId]: false }));
+        setConnectionActionLoading((prev) => ({
+          ...prev,
+          [targetUserId]: false,
+        }));
         return;
       }
 
@@ -79,31 +85,53 @@ const CreateNetwork = () => {
         // Perform API call based on the action
         switch (action) {
           case "connect":
-            await axios.post("/api/v1/connections", { receiverId: targetUserId }, { headers });
+            await axios.post(
+              "/api/v1/connections",
+              { receiverId: targetUserId },
+              { headers }
+            );
             message = "Connection request sent!";
             break;
 
           case "accept":
-            if (!connectionId) throw new Error("Connection ID is required to accept request.");
-            await axios.put(`/api/v1/connections/${connectionId}/accept`, {}, { headers });
+            if (!connectionId)
+              throw new Error("Connection ID is required to accept request.");
+            await axios.put(
+              `/api/v1/connections/${connectionId}/accept`,
+              {},
+              { headers }
+            );
             message = "Connection request accepted!";
             break;
 
           case "remove":
-            if (!connectionId) throw new Error("Connection ID is required to remove connection.");
-            await axios.delete(`/api/v1/connections/${connectionId}/remove`, { headers });
+            if (!connectionId)
+              throw new Error(
+                "Connection ID is required to remove connection."
+              );
+            await axios.delete(`/api/v1/connections/${connectionId}/remove`, {
+              headers,
+            });
             message = "Connection removed.";
             break;
 
           case "cancel":
-            if (!connectionId) throw new Error("Connection ID is required to cancel request.");
-            await axios.delete(`/api/v1/connections/${connectionId}`, { headers });
+            if (!connectionId)
+              throw new Error("Connection ID is required to cancel request.");
+            await axios.delete(`/api/v1/connections/${connectionId}`, {
+              headers,
+            });
             message = "Connection request cancelled.";
             break;
 
           case "decline":
-            if (!connectionId) throw new Error("Connection ID is required to decline request.");
-            await axios.put(`/api/v1/connections/${connectionId}/decline`, {}, { headers });
+            if (!connectionId)
+              throw new Error("Connection ID is required to decline request.");
+            await axios.put(
+              `/api/v1/connections/${connectionId}/decline`,
+              {},
+              { headers }
+            );
             message = "Connection request declined.";
             break;
 
@@ -116,10 +144,15 @@ const CreateNetwork = () => {
         fetchAllConnections(); // Re-fetch connections to update UI
       } catch (error) {
         console.error("Error performing connection action:", error);
-        const errorMessage = error.response?.data?.message || `Failed to perform connection action: ${action}`;
+        const errorMessage =
+          error.response?.data?.message ||
+          `Failed to perform connection action: ${action}`;
         toast.error(errorMessage);
       } finally {
-        setConnectionActionLoading((prev) => ({ ...prev, [targetUserId]: false })); // Reset loading state
+        setConnectionActionLoading((prev) => ({
+          ...prev,
+          [targetUserId]: false,
+        })); // Reset loading state
       }
     },
     [getAuthHeaders, fetchAllConnections] // Dependencies for useCallback
@@ -154,7 +187,9 @@ const CreateNetwork = () => {
             </button>
             {conn.connectionId && ( // Ensure connectionId exists before rendering cancel button
               <button
-                onClick={() => handleConnectionAction(conn._id, "cancel", conn.connectionId)}
+                onClick={() =>
+                  handleConnectionAction(conn._id, "cancel", conn.connectionId)
+                }
                 className="btn btn-danger"
                 disabled={isLoading}
               >
@@ -168,14 +203,18 @@ const CreateNetwork = () => {
         return (
           <>
             <button
-              onClick={() => handleConnectionAction(conn._id, "accept", conn.connectionId)}
+              onClick={() =>
+                handleConnectionAction(conn._id, "accept", conn.connectionId)
+              }
               className="btn btn-primary"
               disabled={isLoading}
             >
               {isLoading ? "Accepting..." : "Accept Request"}
             </button>
             <button
-              onClick={() => handleConnectionAction(conn._id, "decline", conn.connectionId)}
+              onClick={() =>
+                handleConnectionAction(conn._id, "decline", conn.connectionId)
+              }
               className="btn btn-danger"
               disabled={isLoading}
             >
@@ -192,7 +231,9 @@ const CreateNetwork = () => {
             </button>
             {conn.connectionId && ( // Ensure connectionId exists before rendering remove button
               <button
-                onClick={() => handleConnectionAction(conn._id, "remove", conn.connectionId)}
+                onClick={() =>
+                  handleConnectionAction(conn._id, "remove", conn.connectionId)
+                }
                 className="btn btn-danger"
                 disabled={isLoading}
               >
@@ -259,7 +300,10 @@ const CreateNetwork = () => {
             👥
           </div>
           <h3>No New Connections Found</h3>
-          <p>It seems there are no new users to connect with at the moment. Try again later!</p>
+          <p>
+            It seems there are no new users to connect with at the moment. Try
+            again later!
+          </p>
         </div>
         <Footer />
       </>
