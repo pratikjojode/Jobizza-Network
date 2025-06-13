@@ -1,38 +1,643 @@
-/* MyProfile.css - LinkedIn-inspired Design */
+/* MyProfile.css */
 
-/* General Body and Page Layout */
-body {
-  font-family: "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
-    "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  margin: 0;
-  background-color: #f4f2ee; /* LinkedIn-like light background */
+/* General Page Layout */
+.user-profile-page-wrapper {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  font-family: "Inter", sans-serif; /* Modern, clean font */
   color: #333;
 }
 
-.user-profile-page-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  max-width: 1200px; /* Max width for content */
-  margin: 0 auto; /* Center the wrapper */
-  background-color: #f4f2ee; /* Ensure background color extends */
-  box-sizing: border-box;
-  padding: 0 20px; /* Add some horizontal padding for larger screens */
+@media (min-width: 768px) {
+  .user-profile-page-wrapper {
+    grid-template-columns: 2fr 1fr; /* Example: main content wider than sidebar if desired */
+    gap: 30px;
+  }
 }
 
-/* --- Loading and Error States --- */
+/* Section Cards */
+.profile-section-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  padding: 30px;
+}
+
+/* Profile Header Area */
+.profile-header-area {
+  grid-column: 1 / -1; /* Spans full width */
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+}
+
+.profile-banner-image {
+  background: linear-gradient(
+    135deg,
+    #6a11cb 0%,
+    #2575fc 100%
+  ); /* Vibrant gradient */
+  height: 150px;
+  border-radius: 12px 12px 0 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+}
+
+.profile-header-content-area {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 80px; /* Space for the avatar to overlap the banner */
+}
+
+.profile-avatar-container {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 5px solid #fff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-top: -60px; /* Pull avatar up into the banner */
+  position: relative;
+  background-color: #fff; /* In case of default avatar */
+}
+
+.profile-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.profile-badges-wrapper {
+  position: absolute;
+  bottom: 5px;
+  right: -5px;
+  display: flex;
+  gap: 5px;
+}
+
+.profile-badge {
+  background-color: #4caf50; /* Green for verified */
+  color: white;
+  padding: 4px 8px;
+  border-radius: 15px;
+  font-size: 0.75em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.profile-badge-approved {
+  background-color: #2196f3; /* Blue for approved */
+}
+
+.profile-main-info {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.profile-full-name {
+  font-size: 2.2em;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: #2c3e50;
+}
+
+.profile-designation-text {
+  font-size: 1.1em;
+  color: #555;
+  margin-bottom: 3px;
+}
+
+.profile-company-text {
+  font-size: 1em;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.profile-role-text {
+  font-size: 0.9em;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 15px;
+}
+
+.profile-action-buttons {
+  margin-top: 20px;
+}
+
+.profile-edit-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 10px rgba(0, 123, 255, 0.2);
+}
+
+.profile-edit-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+/* About Section */
+.profile-about-section .profile-section-title {
+  margin-bottom: 25px;
+  font-size: 1.8em;
+  color: #2c3e50;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.profile-about-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.profile-about-detail-item {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.profile-about-label {
+  display: block;
+  font-size: 0.9em;
+  color: #777;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.profile-about-value {
+  font-size: 1.1em;
+  color: #333;
+  font-weight: 600;
+}
+
+.profile-linkedin-area {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.profile-linkedin-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #0077b5;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1em;
+  transition: color 0.3s ease;
+}
+
+.profile-linkedin-link:hover {
+  color: #00568a;
+}
+
+.profile-linkedin-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Skills & Certifications Section */
+.profile-skills-certifications-section .profile-section-title {
+  margin-bottom: 25px;
+  font-size: 1.8em;
+  color: #2c3e50;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.profile-subsection-title {
+  font-size: 1.4em;
+  color: #333;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  border-left: 4px solid #007bff;
+  padding-left: 10px;
+}
+
+.profile-skills-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.profile-skill-tag {
+  background-color: #e0f7fa;
+  color: #0077c2;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 0.9em;
+  font-weight: 500;
+  border: 1px solid #b3e5fc;
+}
+
+.profile-industry-tag {
+  background-color: #e8f5e9;
+  color: #388e3c;
+  border: 1px solid #c8e6c9;
+}
+
+.profile-certifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.profile-certification-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #f3f9f3;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: 1px solid #d4edda;
+}
+
+.profile-certification-icon {
+  font-size: 1.5em;
+  color: #fbc02d; /* Gold-like color for trophy */
+}
+
+.profile-certification-name {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #333;
+}
+
+/* My Blogs Section */
+.my-blogs-profile-section {
+  grid-column: 1 / -1; /* Spans full width */
+}
+
+.my-blogs-profile-section .profile-section-title {
+  margin-bottom: 25px;
+  font-size: 1.8em;
+  color: #2c3e50;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.blog-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+.blog-post-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.blog-post-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.card-header-content {
+  padding: 20px 20px 10px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.author-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #f0f0f0;
+}
+
+.author-name-date {
+  display: flex;
+  flex-direction: column;
+}
+
+.author-full-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95em;
+}
+
+.post-date {
+  font-size: 0.8em;
+  color: #888;
+}
+
+.blog-title {
+  font-size: 1.4em;
+  color: #2c3e50;
+  margin: 0 20px 15px;
+  line-height: 1.3;
+}
+
+.blog-main-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+
+.blog-description {
+  font-size: 0.95em;
+  color: #555;
+  line-height: 1.6;
+  padding: 0 20px;
+  margin-bottom: 20px;
+  flex-grow: 1; /* Allows description to take available space */
+}
+
+.blog-actions-row {
+  display: flex;
+  justify-content: space-around;
+  padding: 15px 20px 20px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.action-button {
+  padding: 8px 15px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 0.9em;
+  display: inline-block;
+  text-align: center;
+}
+
+.edit-button {
+  background-color: #ffc107;
+  color: #333;
+  border: 1px solid #ffc107;
+}
+.edit-button:hover {
+  background-color: #e0a800;
+  color: white;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+  border: 1px solid #dc3545;
+}
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+.view-button {
+  background-color: #28a745;
+  color: white;
+  border: 1px solid #28a745;
+}
+.view-button:hover {
+  background-color: #218838;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh; /* Limit height for scrollability */
+  overflow-y: auto; /* Enable scrolling for long forms */
+  position: relative;
+  animation: fadeInScale 0.3s ease-out forwards;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+}
+
+.modal-title {
+  font-size: 2em;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.modal-close-button {
+  background: none;
+  border: none;
+  font-size: 2.5em;
+  color: #999;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 5px;
+  transition: color 0.2s ease;
+}
+
+.modal-close-button:hover {
+  color: #333;
+}
+
+.modal-form .form-group {
+  margin-bottom: 20px;
+}
+
+.modal-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #555;
+  font-size: 0.95em;
+}
+
+.modal-form input[type="text"],
+.modal-form input[type="email"],
+.modal-form input[type="url"],
+.modal-form input[type="number"],
+.modal-form input[type="file"] {
+  width: calc(100% - 20px);
+  padding: 12px 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1em;
+  color: #333;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.modal-form input[type="file"] {
+  padding: 0; /* Remove padding for file input */
+  border: none;
+}
+
+.modal-form input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.profile-pic-preview {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.profile-pic-preview .preview-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-pic-preview p {
+  font-size: 0.8em;
+  color: #888;
+  margin-top: 5px;
+}
+
+.modal-message {
+  margin-top: 20px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.loading-message {
+  background-color: #e0f7fa;
+  color: #0077c2;
+  border: 1px solid #b3e5fc;
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #d32f2f;
+  border: 1px solid #ef9a9a;
+}
+
+.success-message {
+  background-color: #e8f5e9;
+  color: #388e3c;
+  border: 1px solid #c8e6c9;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.modal-save-button,
+.modal-cancel-button {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.modal-save-button {
+  background-color: #28a745;
+  color: white;
+  box-shadow: 0 2px 10px rgba(40, 167, 69, 0.2);
+}
+
+.modal-save-button:hover:not(:disabled) {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+.modal-save-button:disabled {
+  background-color: #a2d9a9;
+  cursor: not-allowed;
+}
+
+.modal-cancel-button {
+  background-color: #e0e0e0;
+  color: #555;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.modal-cancel-button:hover:not(:disabled) {
+  background-color: #c7c7c7;
+  transform: translateY(-2px);
+}
+
+.modal-cancel-button:disabled {
+  background-color: #ededed;
+  cursor: not-allowed;
+}
+
+/* Loading and Error States for Profile */
 .profile-loading-container,
 .profile-error-container,
 .profile-no-data-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 80vh; /* Occupy most of the viewport height */
+  min-height: 80vh;
   text-align: center;
   padding: 20px;
-  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
 }
 
 .profile-loading-spinner-wrapper {
@@ -40,20 +645,15 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 15px;
-  background-color: #ffffff;
-  border: 1px solid #dcdcdc; /* Subtle dark border */
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  padding: 40px;
 }
 
 .profile-loading-spinner {
-  border: 5px solid #f3f3f3; /* Light grey */
-  border-top: 5px solid #0a66c2; /* LinkedIn blue */
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #007bff;
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  animation: spin 1.2s linear infinite;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
@@ -65,802 +665,115 @@ body {
   }
 }
 
-.profile-loading-spinner-wrapper p {
-  font-size: 1.1rem;
-  color: #555;
-  margin: 0;
-}
-
 .profile-error-card,
-.profile-no-data-card {
+.profile-no-data-container .profile-error-card {
   background-color: #ffffff;
-  border: 1px solid #dcdcdc; /* Subtle dark border */
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   padding: 40px;
   max-width: 500px;
   width: 100%;
 }
 
 .profile-error-heading {
-  color: #dc3545; /* Red for error */
+  color: #dc3545;
+  font-size: 2em;
   margin-bottom: 15px;
-  font-size: 1.8rem;
 }
 
 .profile-error-message,
 .profile-no-data-message {
-  color: #666;
-  font-size: 1.1rem;
-  line-height: 1.5;
+  color: #555;
+  font-size: 1.1em;
   margin-bottom: 20px;
 }
 
 .profile-login-prompt {
-  font-size: 1rem;
-  color: #555;
+  font-size: 1em;
+  color: #777;
 }
 
 .profile-login-link {
-  color: #0a66c2;
+  color: #007bff;
   text-decoration: none;
   font-weight: 600;
-  transition: color 0.3s;
+  transition: color 0.3s ease;
 }
 
 .profile-login-link:hover {
-  color: #004d96;
   text-decoration: underline;
+  color: #0056b3;
 }
 
-/* --- Profile Content Sections --- */
-.profile-section-card {
-  background-color: #ffffff;
-  border: 1px solid #dcdcdc; /* Subtle dark border for all profile cards */
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  margin-bottom: 20px; /* Space between sections */
-  overflow: hidden; /* Ensures borders and shadows work well with internal content */
-}
-
-/* Header Area */
-.profile-header-area {
-  margin-top: 20px; /* Space from the ConnectionsHeader */
-  position: relative;
-}
-
-.profile-banner-image {
-  width: 100%;
-  height: 180px; /* Fixed height for the banner */
-  background: linear-gradient(
-    90deg,
-    #6a9acb,
-    #0073b1
-  ); /* LinkedIn-like gradient */
-  background-size: cover;
-  background-position: center;
-  border-bottom: 1px solid #ccc; /* Subtle separation for banner */
-}
-
-.profile-header-content-area {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center content horizontally for cleaner look */
-  padding: 0 24px 24px; /* Adjust padding around content */
-  margin-top: -90px; /* Pull content up over the banner */
-}
-
-.profile-avatar-container {
-  position: relative;
-  margin-bottom: 15px;
-}
-
-.profile-avatar-img {
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid #ffffff; /* White border around avatar */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Stronger shadow for avatar */
-}
-
-.profile-badges-wrapper {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  display: flex;
-  gap: 8px;
-  transform: translateY(50%); /* Position badges below avatar slightly */
-  z-index: 10;
-}
-
-.profile-badge {
-  background-color: #0a66c2;
-  color: #fff;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  white-space: nowrap;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.profile-badge-verified {
-  background-color: #28a745; /* Green for verified */
-}
-
-.profile-badge-approved {
-  background-color: #8b5cf6; /* Purple for approved */
-}
-
-.profile-main-info {
-  text-align: center;
-  width: 100%;
-  padding-top: 20px; /* Space from avatar */
-}
-
-.profile-full-name {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #222;
-  margin-bottom: 5px;
-  line-height: 1.2;
-}
-
-.profile-designation-text {
-  font-size: 1.2rem;
-  color: #555;
-  margin-bottom: 5px;
-}
-
-.profile-company-text {
-  font-size: 1rem;
-  color: #777;
-  margin-bottom: 8px;
-}
-
-.profile-role-text {
-  font-size: 0.9rem;
-  color: #888;
-  text-transform: capitalize; /* Capitalize role text */
-  margin-bottom: 15px;
-}
-
-.profile-action-buttons {
-  margin-top: 20px;
-}
-
-.profile-edit-button {
-  background-color: #0a66c2;
-  color: white;
-  border: none;
-  padding: 12px 25px;
-  border-radius: 28px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.profile-edit-button:hover {
-  background-color: #004d96;
-  transform: translateY(-2px);
-}
-
-/* About Section */
-.profile-about-section {
-  padding: 24px;
-}
-
-.profile-section-title {
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #f0f0f0; /* Subtle border below title */
-}
-
-.profile-about-details-grid {
-  display: grid;
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(200px, 1fr)
-  ); /* Responsive grid */
-  gap: 15px 25px;
-  margin-bottom: 20px;
-}
-
-.profile-about-detail-item {
-  display: flex;
-  flex-direction: column;
-}
-
-.profile-about-label {
-  font-size: 0.9rem;
-  color: #777;
-  margin-bottom: 5px;
-  font-weight: 500;
-}
-
-.profile-about-value {
-  font-size: 1rem;
-  color: #444;
-  font-weight: 400;
-}
-
-.profile-linkedin-area {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.profile-linkedin-link {
-  display: inline-flex; /* Use inline-flex for icon and text alignment */
-  align-items: center;
-  gap: 8px;
-  color: #0a66c2;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1rem;
-  padding: 10px 15px;
-  border: 1px solid #0a66c2;
-  border-radius: 24px;
-  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-}
-
-.profile-linkedin-link:hover {
-  background-color: #0a66c2;
-  color: white;
-}
-
-.profile-linkedin-link:hover .profile-linkedin-icon {
-  fill: white; /* Change icon color on hover */
-}
-
-.profile-linkedin-icon {
-  width: 20px;
-  height: 20px;
-  fill: #0a66c2; /* Icon color */
-  transition: fill 0.3s;
-}
-
-/* Skills & Certifications Section */
-.profile-skills-certifications-section {
-  padding: 24px;
-}
-
-.profile-subsection-title {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #333;
-  margin-top: 20px;
-  margin-bottom: 15px;
-}
-
-.profile-subsection-title:first-child {
-  margin-top: 0; /* No top margin for the first subsection title */
-}
-
-.profile-skills-tags-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 20px;
-}
-
-.profile-skill-tag {
-  background-color: #e0e0e0;
-  color: #555;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  border: 1px solid #ccc; /* Subtle dark border for tags */
-}
-
-.profile-industry-tag {
-  background-color: #e6f7ff; /* Lighter blue for industry tags */
-  color: #0a66c2;
-  border-color: #b3d9ff;
-}
-
-.profile-certifications-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.profile-certification-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background-color: #f9f9f9;
-  border: 1px solid #eee; /* Lighter border for certification items */
-  border-radius: 6px;
-  padding: 10px 15px;
-}
-
-.profile-certification-icon {
-  font-size: 1.5rem;
-}
-
-.profile-certification-name {
-  font-size: 1rem;
-  color: #444;
-}
-
-/* --- Modal Styles --- */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  padding: 10px; /* Add padding for small screens */
-}
-
-.modal-content {
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  width: 100%;
-  max-width: 600px; /* Max width for the modal */
-  max-height: 90vh; /* Limit modal height */
-  overflow-y: auto; /* Enable scrolling for modal content */
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #dcdcdc; /* Subtle dark border */
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 25px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.modal-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #333;
-}
-
-.modal-close-button {
-  background: none;
-  border: none;
-  font-size: 2rem;
-  color: #777;
-  cursor: pointer;
-  line-height: 1;
-  padding: 5px;
-  transition: color 0.3s;
-}
-
-.modal-close-button:hover {
-  color: #333;
-}
-
-.modal-form {
-  padding: 25px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  font-size: 0.95rem;
-  color: #555;
-  margin-bottom: 8px;
-  font-weight: 500;
-}
-
-.form-group input[type="text"],
-.form-group input[type="email"],
-.form-group input[type="url"],
-.form-group input[type="number"],
-.form-group textarea {
-  padding: 12px 15px;
-  border: 1px solid #ccc; /* Standard input border */
-  border-radius: 6px;
-  font-size: 1rem;
-  color: #333;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-  border-color: #0a66c2;
-  box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.2);
-  outline: none;
-}
-
-.form-group textarea {
-  min-height: 80px;
-  resize: vertical;
-}
-
-.profile-pic-preview {
-  margin-top: 15px;
-  text-align: center;
-}
-
-.profile-pic-preview .preview-image {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #0a66c2;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.profile-pic-preview p {
-  font-size: 0.9rem;
-  color: #666;
-  margin-top: 10px;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  padding-top: 10px;
-  border-top: 1px solid #f0f0f0;
-  margin-top: 15px;
-}
-
-.modal-save-button,
-.modal-cancel-button {
-  padding: 12px 25px;
-  border-radius: 28px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s ease, border-color 0.3s ease,
-    color 0.3s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.modal-save-button {
-  background-color: #0a66c2;
-  color: white;
-  border: 1px solid #0a66c2;
-}
-
-.modal-save-button:hover {
-  background-color: #004d96;
-  border-color: #004d96;
-}
-
-.modal-cancel-button {
-  background-color: #f0f2f5;
-  color: #555;
-  border: 1px solid #dcdcdc; /* Subtle dark border */
-}
-
-.modal-cancel-button:hover {
-  background-color: #e0e2e5;
-  border-color: #c0c0c0;
-}
-
-.modal-save-button:disabled,
-.modal-cancel-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-  background-color: #ccc !important;
-  border-color: #bbb !important;
-  color: #666 !important;
-}
-
-.modal-message {
-  padding: 10px 15px;
-  border-radius: 5px;
-  margin-bottom: 15px;
-  text-align: center;
-  font-weight: 500;
-}
-
-.loading-message {
-  background-color: #e0f2f7;
-  color: #0a66c2;
-  border: 1px solid #b3e0ed;
-}
-
-.error-message {
-  background-color: #ffebee;
-  color: #d32f2f;
-  border: 1px solid #ffcdd2;
-}
-
-.success-message {
-  background-color: #e8f5e9;
-  color: #28a745;
-  border: 1px solid #c8e6c9;
-}
-
-/* --- Responsive Adjustments --- */
-
-/* For screens smaller than 1024px (typical tablet landscape and smaller desktops) */
-@media (max-width: 1024px) {
+/* Responsive Adjustments */
+@media (max-width: 767px) {
   .user-profile-page-wrapper {
-    padding: 0 15px; /* Reduce horizontal padding */
+    padding: 15px;
   }
 
-  .profile-header-content-area {
-    margin-top: -70px; /* Adjust pull-up for smaller avatars */
-  }
-
-  .profile-avatar-img {
-    width: 140px;
-    height: 140px;
-  }
-
-  .profile-full-name {
-    font-size: 2rem;
-  }
-
-  .profile-designation-text {
-    font-size: 1.1rem;
-  }
-
-  .profile-section-title {
-    font-size: 1.5rem;
-  }
-
-  .profile-about-details-grid {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  }
-}
-
-/* For screens smaller than 768px (typical tablet portrait and large phones) */
-@media (max-width: 768px) {
   .profile-header-area {
-    margin-top: 15px; /* Less top margin if header is smaller */
-  }
-
-  .profile-banner-image {
-    height: 140px;
+    padding-bottom: 20px;
   }
 
   .profile-header-content-area {
-    margin-top: -60px;
-    padding: 0 15px 15px;
+    padding-top: 60px;
   }
 
-  .profile-avatar-img {
-    width: 120px;
-    height: 120px;
-    border-width: 3px;
-  }
-
-  .profile-badges-wrapper {
-    transform: translateY(20%); /* Adjust badge position */
-  }
-
-  .profile-full-name {
-    font-size: 1.8rem;
-  }
-
-  .profile-designation-text {
-    font-size: 1rem;
-  }
-
-  .profile-company-text,
-  .profile-role-text {
-    font-size: 0.9rem;
-  }
-
-  .profile-edit-button {
-    padding: 10px 20px;
-    font-size: 0.9rem;
-  }
-
-  .profile-section-card {
-    padding: 15px; /* Reduce padding for smaller screens */
-  }
-
-  .profile-section-title {
-    font-size: 1.4rem;
-    margin-bottom: 15px;
-  }
-
-  .profile-about-details-grid {
-    grid-template-columns: 1fr; /* Stack details vertically */
-    gap: 10px;
-  }
-
-  .profile-subsection-title {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-  }
-
-  .profile-skill-tag {
-    font-size: 0.85rem;
-    padding: 5px 10px;
-  }
-
-  .profile-certification-item {
-    padding: 8px 12px;
-  }
-
-  .profile-certification-name {
-    font-size: 0.9rem;
-  }
-
-  .modal-content {
-    max-width: 95%; /* Allow modal to take more width on smaller screens */
-  }
-
-  .modal-header {
-    padding: 15px 20px;
-  }
-
-  .modal-title {
-    font-size: 1.3rem;
-  }
-
-  .modal-form {
-    padding: 20px;
-    gap: 15px;
-  }
-
-  .form-group label {
-    font-size: 0.9rem;
-  }
-
-  .form-group input,
-  .form-group textarea {
-    padding: 10px 12px;
-    font-size: 0.95rem;
-  }
-
-  .modal-save-button,
-  .modal-cancel-button {
-    padding: 10px 20px;
-    font-size: 0.9rem;
-  }
-}
-
-/* For screens smaller than 480px (typical mobile devices) */
-@media (max-width: 480px) {
-  .user-profile-page-wrapper {
-    padding: 0 10px; /* Minimal horizontal padding */
-  }
-
-  .profile-banner-image {
+  .profile-avatar-container {
+    width: 100px;
     height: 100px;
-  }
-
-  .profile-header-content-area {
-    margin-top: -45px;
-    padding: 0 10px 10px;
-  }
-
-  .profile-avatar-img {
-    width: 90px;
-    height: 90px;
-    border-width: 2px;
-  }
-
-  .profile-badges-wrapper {
-    position: static; /* Stack badges below avatar */
-    transform: none;
-    margin-top: 10px;
-    justify-content: center;
-  }
-
-  .profile-badge {
-    font-size: 0.75rem;
-    padding: 3px 8px;
+    margin-top: -50px;
   }
 
   .profile-full-name {
-    font-size: 1.5rem;
+    font-size: 1.8em;
   }
 
   .profile-designation-text,
   .profile-company-text,
   .profile-role-text {
-    font-size: 0.85rem;
+    font-size: 0.9em;
   }
 
-  .profile-edit-button {
-    width: 100%; /* Full width button */
-    padding: 8px 15px;
-    font-size: 0.85rem;
-  }
-
-  .profile-section-card {
-    padding: 12px;
+  .profile-about-details-grid {
+    grid-template-columns: 1fr;
   }
 
   .profile-section-title {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-  }
-
-  .profile-about-label,
-  .profile-about-value {
-    font-size: 0.85rem;
-  }
-
-  .profile-linkedin-link {
-    font-size: 0.9rem;
-    padding: 8px 12px;
-  }
-
-  .profile-linkedin-icon {
-    width: 18px;
-    height: 18px;
+    font-size: 1.5em;
   }
 
   .profile-subsection-title {
-    font-size: 1.1rem;
+    font-size: 1.2em;
   }
 
-  .profile-skill-tag {
-    font-size: 0.8rem;
-    padding: 4px 8px;
+  .blog-cards-grid {
+    grid-template-columns: 1fr;
   }
 
-  .profile-certification-item {
-    padding: 6px 10px;
-    font-size: 0.85rem;
-  }
-
-  .modal-header {
-    padding: 10px 15px;
+  .modal-content {
+    padding: 20px;
+    margin: 15px;
   }
 
   .modal-title {
-    font-size: 1.1rem;
+    font-size: 1.8em;
   }
 
   .modal-close-button {
-    font-size: 1.8rem;
-  }
-
-  .modal-form {
-    padding: 15px;
-    gap: 10px;
-  }
-
-  .form-group label {
-    font-size: 0.85rem;
-  }
-
-  .form-group input,
-  .form-group textarea {
-    padding: 8px 10px;
-    font-size: 0.9rem;
-  }
-
-  .profile-pic-preview .preview-image {
-    width: 80px;
-    height: 80px;
+    font-size: 2em;
   }
 
   .modal-actions {
-    flex-direction: column; /* Stack buttons vertically */
-    gap: 8px;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .modal-save-button,
   .modal-cancel-button {
-    width: 100%; /* Full width buttons */
-    padding: 10px 15px;
-    font-size: 0.9rem;
+    width: 100%;
   }
 }
+
+/* Add Google Font Import if you don't have it globally */
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'); */

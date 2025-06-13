@@ -25,6 +25,8 @@ import ManageConnections from "./Admin/ManageConnection";
 import MyProfile from "./pages/MyProfile";
 import ManageRequestsPage from "./pages/ManageRequestsPage";
 import CreateBlogPost from "./pages/CreateBlogPost";
+import BlogsOverview from "./pages/BlogsOverview";
+import BlogDetail from "./pages/BlogDetail";
 
 function App() {
   return (
@@ -32,7 +34,7 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<HomePage />} />
-           <Route path="/about" element={<AboutUs />} />
+          <Route path="/about" element={<AboutUs />} />
           <Route
             path="/login"
             element={
@@ -49,7 +51,7 @@ function App() {
               </PublicRoute>
             }
           />
-          
+
           <Route
             path="/verify-otp"
             element={
@@ -110,10 +112,12 @@ function App() {
             }
           />
           <Route path="/profile/:userId" element={<UserProfilePage />} />
+          <Route path="/blogs/:blogId" element={<BlogDetail />} />
           <Route path="/my-connections" element={<ManageRequestsPage />} />
           <Route path="/search" element={<SearchResultsPage />} />
           <Route path="/profile" element={<MyProfile />} />
           <Route path="/blogs/create" element={<CreateBlogPost />} />
+          <Route path="/blogs/manageBlogs" element={<BlogsOverview />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
 

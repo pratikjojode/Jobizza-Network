@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useAuth } from "../context/AuthContext"; // Assuming you have an AuthContext for logout
-import "../styles/UserProfilePage.css"; // Don't forget to create this CSS file if you haven't already!
+import { useAuth } from "../context/AuthContext";
+import "../styles/UserProfilePage.css";
 import ConnectionsHeader from "../components/ConnectionsHeader";
 
 const UserProfilePage = () => {
-  const { userId } = useParams(); // Extracts the 'userId' from the URL (e.g., /profile/abc123def456)
+  const { userId } = useParams();
   const navigate = useNavigate();
-  const { logout } = useAuth(); // Access logout from your AuthContext
+  const { logout } = useAuth();
 
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,7 +27,7 @@ const UserProfilePage = () => {
     if (!headers) {
       setError("Please log in to view user profiles.");
       setLoading(false);
-      logout(); // Log out if no token is found
+      logout();
       return;
     }
 
@@ -43,10 +43,10 @@ const UserProfilePage = () => {
 
       if (err.response?.status === 401 || err.response?.status === 403) {
         setError("Session expired or unauthorized. Please log in again.");
-        logout(); // Log out if session is expired
+        logout();
       } else if (err.response?.status === 404) {
         setError("User profile not found.");
-        setUserProfile(null); // Explicitly set to null if not found
+        setUserProfile(null);
       } else {
         setError(errorMessage);
       }
@@ -126,7 +126,6 @@ const UserProfilePage = () => {
                 alt={`${userProfile.fullName}'s profile`}
                 className="profile-avatar-large"
                 onError={(e) => {
-                  // Fallback to placeholder if image fails to load
                   e.target.style.display = "none";
                   if (e.target.nextElementSibling) {
                     e.target.nextElementSibling.style.display = "flex";
@@ -160,56 +159,70 @@ const UserProfilePage = () => {
           </div>
 
           <div className="profile-details-section">
-            <h2>About</h2>
+            <h2 className="section-title">About</h2>
             {userProfile.email && (
-              <p>
-                <strong>Email:</strong> {userProfile.email}
+              <p className="profile-detail-item">
+                <strong className="detail-label">Email:</strong>{" "}
+                <span className="detail-value">{userProfile.email}</span>
               </p>
             )}
             {userProfile.yearsOfFinanceExperience && (
-              <p>
-                <strong>Experience:</strong>{" "}
-                {userProfile.yearsOfFinanceExperience} years in finance
+              <p className="profile-detail-item">
+                <strong className="detail-label">Experience:</strong>{" "}
+                <span className="detail-value">
+                  {userProfile.yearsOfFinanceExperience} years in finance
+                </span>
               </p>
             )}
             {userProfile.budgetManaged && (
-              <p>
-                <strong>Budget Managed:</strong> {userProfile.budgetManaged}
+              <p className="profile-detail-item">
+                <strong className="detail-label">Budget Managed:</strong>{" "}
+                <span className="detail-value">
+                  {userProfile.budgetManaged}
+                </span>
               </p>
             )}
             {typeof userProfile.isVerified === "boolean" && (
-              <p>
-                <strong>Verified:</strong>{" "}
-                {userProfile.isVerified ? "Yes ✅" : "No ❌"}
+              <p className="profile-detail-item">
+                <strong className="detail-label">Verified:</strong>{" "}
+                <span className="detail-value">
+                  {userProfile.isVerified ? "Yes ✅" : "No ❌"}
+                </span>
               </p>
             )}
           </div>
 
           {userProfile.financialCertifications?.length > 0 && (
             <div className="profile-details-section">
-              <h2>Certifications</h2>
-              <p>{userProfile.financialCertifications.join(", ")}</p>
+              <h2 className="section-title">Certifications</h2>
+              <p className="profile-detail-list">
+                {userProfile.financialCertifications.join(", ")}
+              </p>
             </div>
           )}
 
           {userProfile.industrySpecializations?.length > 0 && (
             <div className="profile-details-section">
-              <h2>Industry Specializations</h2>
-              <p>{userProfile.industrySpecializations.join(", ")}</p>
+              <h2 className="section-title">Industry Specializations</h2>
+              <p className="profile-detail-list">
+                {userProfile.industrySpecializations.join(", ")}
+              </p>
             </div>
           )}
 
           {userProfile.keyFinancialSkills?.length > 0 && (
             <div className="profile-details-section">
-              <h2>Key Skills</h2>
-              <p>{userProfile.keyFinancialSkills.join(", ")}</p>
+              <h2 className="section-title">Key Skills</h2>
+              <p className="profile-detail-list">
+                {userProfile.keyFinancialSkills.join(", ")}
+              </p>
             </div>
           )}
 
           {userProfile.linkedin && (
             <div className="profile-details-section">
-              <h2>Connect</h2>
-              <p>
+              <h2 className="section-title">Connect</h2>
+              <p className="profile-linkedin-link-wrapper">
                 <a
                   href={userProfile.linkedin}
                   target="_blank"

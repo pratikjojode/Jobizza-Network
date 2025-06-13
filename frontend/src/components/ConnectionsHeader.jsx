@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom"; // Changed Link to NavLink
 import { useAuth } from "../context/AuthContext";
 import {
   FaUsers,
@@ -42,9 +42,13 @@ function ConnectionsHeader() {
   return (
     <header className="connect-page-main-header">
       <div className="header-left-content-area">
-        <Link to="/" className="app-brand-logo-link">
+        <NavLink
+          to="/"
+          className="app-brand-logo-link"
+          onClick={() => setIsMenuOpen(false)}
+        >
           Jobizaa Network
-        </Link>
+        </NavLink>
         <div className="hamburger-menu-icon" onClick={toggleMenu}>
           {isMenuOpen ? <FaTimes /> : <FaBars />}
         </div>
@@ -79,51 +83,72 @@ function ConnectionsHeader() {
             </button>
           </form>
 
-          <Link
+          <NavLink
             to="/connections"
-            className="nav-item-icon-link"
+            className={({ isActive }) =>
+              isActive ? "nav-item-icon-link active" : "nav-item-icon-link"
+            }
             title="My Connections"
             onClick={() => setIsMenuOpen(false)}
           >
             <FaUsers />
             <span className="nav-item-text">Connections</span>
-          </Link>
-          <Link
+          </NavLink>
+          <NavLink
             to="/notifications"
-            className="nav-item-icon-link"
+            className={({ isActive }) =>
+              isActive ? "nav-item-icon-link active" : "nav-item-icon-link"
+            }
             title="Notifications"
             onClick={() => setIsMenuOpen(false)}
           >
             <FaBell />
             <span className="nav-item-text">Notifications</span>
-          </Link>
-          <Link
+          </NavLink>
+          <NavLink
             to="/events/create"
-            className="nav-item-icon-link"
+            className={({ isActive }) =>
+              isActive ? "nav-item-icon-link active" : "nav-item-icon-link"
+            }
             title="Create Event"
             onClick={() => setIsMenuOpen(false)}
           >
             <FaCalendarPlus />
             <span className="nav-item-text">Create Event</span>
-          </Link>
-          <Link
+          </NavLink>
+          <NavLink
             to="/posts/create"
-            className="nav-item-icon-link"
+            className={({ isActive }) =>
+              isActive ? "nav-item-icon-link active" : "nav-item-icon-link"
+            }
             title="Create Post"
             onClick={() => setIsMenuOpen(false)}
           >
             <FaEdit />
             <span className="nav-item-text">Create Post</span>
-          </Link>
-          <Link
+          </NavLink>
+          <NavLink
             to="/blogs/create"
-            className="nav-item-icon-link"
+            className={({ isActive }) =>
+              isActive ? "nav-item-icon-link active" : "nav-item-icon-link"
+            }
             title="Create Blog"
             onClick={() => setIsMenuOpen(false)}
           >
             <FaBlog />
             <span className="nav-item-text">Create Blog</span>
-          </Link>
+          </NavLink>
+          <NavLink
+            to="/blogs/manageBlogs"
+            className={({ isActive }) =>
+              isActive ? "nav-item-icon-link active" : "nav-item-icon-link"
+            }
+            title="View Blog"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <FaBlog />
+            <span className="nav-item-text">View Blog</span>
+          </NavLink>
         </nav>
       </div>
 
@@ -157,7 +182,15 @@ function ConnectionsHeader() {
         </form>
 
         {user && (
-          <Link to="/profile" className="user-profile-display-link">
+          <NavLink // Changed Link to NavLink
+            to="/profile"
+            className={({ isActive }) =>
+              isActive
+                ? "user-profile-display-link active"
+                : "user-profile-display-link"
+            }
+            onClick={() => setIsMenuOpen(false)}
+          >
             {user.profilePic ? (
               <img
                 src={user.profilePic}
@@ -170,11 +203,18 @@ function ConnectionsHeader() {
               </div>
             )}
             <span className="user-profile-name-text">My Profile</span>
-          </Link>
+          </NavLink>
         )}
-        <Link to="/settings" className="settings-icon-link" title="Settings">
+        <NavLink // Changed Link to NavLink
+          to="/settings"
+          className={({ isActive }) =>
+            isActive ? "settings-icon-link active" : "settings-icon-link"
+          }
+          title="Settings"
+          onClick={() => setIsMenuOpen(false)}
+        >
           <FaCog />
-        </Link>
+        </NavLink>
         <button onClick={logout} className="logout-action-button">
           Logout
         </button>

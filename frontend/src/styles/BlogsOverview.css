@@ -1,147 +1,234 @@
-.blogs-overview-container {
-  max-width: 960px;
-  margin: 30px auto;
-  padding: 25px;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+/* BlogsOverview.css */
+
+/* Main Container */
+.blogsOverviewContainer {
+  max-width: 1200px;
+  margin: 100px auto 40px;
+  padding: 0 20px;
+  font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #1f2937;
 }
 
-h2 {
+/* Section Card */
+.blogsSectionCard {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 40px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.blogsSectionCard:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* Section Title */
+.sectionTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 24px;
   text-align: center;
-  color: #333333;
-  margin-bottom: 25px;
-  font-size: 2em;
-  font-weight: 600;
 }
 
-.my-blogs-section,
-.all-blogs-section {
-  padding: 20px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  margin-bottom: 30px;
+/* Divider */
+.blogsSectionDivider {
+  margin: 50px auto;
+  border: none;
+  height: 1px;
+  background: #e5e7eb;
+  width: 80%;
 }
 
-.my-blogs-section h2,
-.all-blogs-section h2 {
-  margin-top: 0;
-  margin-bottom: 20px;
-  font-size: 1.6em;
-  color: #444;
-}
-
-.loading-message,
-.error-message {
+/* Status Messages */
+.loadingMessage,
+.errorMessage,
+.emptyMessage {
   text-align: center;
-  margin: 20px 0;
-  font-size: 1.1em;
+  font-size: 16px;
+  color: #6b7280;
 }
 
-.loading-message {
-  color: #007bff;
-}
-
-.error-message {
-  color: #dc3545;
-}
-
-.blog-list {
-  list-style: none;
-  padding: 0;
+/* Grid Layout */
+.blogsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
+  gap: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
 }
 
-.blog-item {
-  background-color: #fefefe;
-  border: 1px solid #e9e9e9;
-  border-radius: 7px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+/* Blog Card */
+.blogOverviewCard {
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease-in-out;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  transition: transform 0.2s ease;
 }
 
-.blog-item:hover {
-  transform: translateY(-5px);
+.blogOverviewCard:hover {
+  transform: translateY(-4px);
 }
 
-.blog-item h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  color: #333;
-  font-size: 1.3em;
-  font-weight: 600;
-  line-height: 1.3;
-}
-
-.blog-item .blog-description {
-  color: #666;
-  font-size: 0.9em;
-  line-height: 1.5;
-  flex-grow: 1;
-  margin-bottom: 15px;
-}
-
-.blog-author {
-  font-size: 0.85em;
-  color: #888;
-  margin-bottom: 15px;
-}
-
-.blog-item-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: auto;
-}
-
-.action-button {
-  padding: 8px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 0.9em;
-  font-weight: 500;
+/* Blog Content Link */
+.blogCardContentLink {
+  padding: 20px;
   text-decoration: none;
-  text-align: center;
-  transition: background-color 0.3s ease;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.edit-button {
-  background-color: #28a745;
-  color: white;
+/* Blog Header */
+.blogCardHeaderContent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.edit-button:hover {
-  background-color: #218838;
+.blogAuthorInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.delete-button {
-  background-color: #dc3545;
-  color: white;
+.blogAuthorAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #f3f4f6;
 }
 
-.delete-button:hover {
-  background-color: #c82333;
+.blogAuthorNameDate {
+  display: flex;
+  flex-direction: column;
 }
 
-.view-button {
-  background-color: #007bff;
-  color: white;
-  margin-left: auto; /* Pushes the view button to the right */
+.blogAuthorFullName {
+  font-weight: 600;
+  color: #1f2937;
 }
 
-.view-button:hover {
-  background-color: #0056b3;
+.blogPostDate {
+  font-size: 12px;
+  color: #6b7280;
 }
 
-.section-divider {
-  border: 0;
-  height: 1px;
-  background: #e0e0e0;
-  margin: 40px 0;
+/* Blog Title & Image */
+.blogCardTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin: 8px 0;
+}
+
+.blogCardMainImage {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #f3f4f6;
+}
+
+/* Blog Descriptions */
+.blogCardDescription,
+.blogCardMoreDescription {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #374151;
+}
+
+.blogCardMoreDescription {
+  margin-top: 8px;
+}
+
+/* Hashtags */
+.blogCardHashtags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.blogHashtag {
+  background-color: #f0f9ff;
+  color: #0284c7;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Blog Stats */
+.blogCardStats {
+  display: flex;
+  justify-content: start;
+  gap: 16px;
+  font-size: 14px;
+  color: #4b5563;
+  margin-top: 12px;
+}
+
+/* Action Buttons */
+.blogCardActionsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #e5e7eb;
+  padding: 12px 20px;
+  background-color: #fafafa;
+}
+
+.blogActionButton {
+  padding: 6px 14px;
+  font-size: 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  border: none;
+}
+
+/* Button Styles */
+.blogEditButton {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.blogEditButton:hover {
+  background-color: #bae6fd;
+}
+
+.blogDeleteButton {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.blogDeleteButton:hover {
+  background-color: #fecaca;
+}
+
+.blogViewButton {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.blogViewButton:hover {
+  background-color: #a7f3d0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sectionTitle {
+    font-size: 22px;
+  }
+
+  .blogCardMainImage {
+    height: 140px;
+  }
 }

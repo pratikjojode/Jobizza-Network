@@ -195,3 +195,44 @@ export const deleteBlog = async (req, res) => {
     });
   }
 };
+
+export const getMyBlogs = async (req, res) => {
+  try {
+    const blogs = await Blog.find({ userId: req.user._id })
+      .populate("userId", "fullName")
+      .sort({ createdAt: -1 });
+    res.status(200).json({
+      status: "success",
+      data: {
+        blogs,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "error",
+      message: "Failed to fetch your blogs.",
+    });
+  }
+};
+
+export const getLatestBlogs = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit, 10) || 5;
+
+    const latestBlogs = await Blog.find()
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .populate("userId", "fullName profilePic");
+
+    res.status(200).json({
+      status: "success",
+      results: latestBlogs.length,
+      data: latestBlogs,
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "error",
+      message: err.message,
+    });
+  }
+};

@@ -20,7 +20,7 @@ const BlogsOverview = () => {
       setLoadingMyBlogs(true);
       try {
         if (!authToken) {
-          setMyBlogsError("Login to view your blogs.");
+          setMyBlogsError("Login to view and manage your blogs.");
           setLoadingMyBlogs(false);
           return;
         }
@@ -44,7 +44,7 @@ const BlogsOverview = () => {
     const fetchAllBlogs = async () => {
       setLoadingAllBlogs(true);
       try {
-        const response = await axios.get("/api/v1/blogs"); // Assuming this endpoint gets all blogs
+        const response = await axios.get("/api/v1/blogs");
         setAllBlogs(response.data.data.blogs);
         setLoadingAllBlogs(false);
       } catch (err) {
@@ -72,76 +72,125 @@ const BlogsOverview = () => {
     }
   };
 
+  const BlogCard = ({ blog, isMyBlog = false }) => (
+    <div className="blogOverviewCard">
+      <Link to={`/profile/${blog.userId?._id}`} className="blogCardContentLink">
+        <div className="blogCardHeaderContent">
+          <div className="blogAuthorInfo">
+            <img
+              src={
+                blog.userId?.profilePic ||
+                "https://placehold.co/40x40/cccccc/333333?text=NP"
+              }
+              alt={blog.userId?.fullName || "Anonymous"}
+              className="blogAuthorAvatar"
+            />
+            <div className="blogAuthorNameDate">
+              <span className="blogAuthorFullName">
+                {blog.userId?.fullName || "Anonymous"}
+              </span>
+              <span className="blogPostDate">
+                {new Date(blog.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+          </div>
+        </div>
+        <h3 className="blogCardTitle">{blog.title}</h3>
+        {blog.imageUrl && (
+          <img
+            src={blog.imageUrl}
+            alt={blog.title}
+            className="blogCardMainImage"
+          />
+        )}
+        <p className="blogCardDescription">
+          {blog.description?.substring(0, 180)}...
+        </p>
+        {blog.moreDescription && (
+          <p className="blogCardMoreDescription">
+            <strong>More:</strong> {blog.moreDescription?.substring(0, 120)}...
+          </p>
+        )}
+        {Array.isArray(blog.hashtags) && blog.hashtags.length > 0 && (
+          <div className="blogCardHashtags">
+            {blog.hashtags.map((tag, index) => (
+              <span key={index} className="blogHashtag">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
+        <div className="blogCardStats">
+          <span>👍 {blog.likesCount || 0}</span>
+          <span>👎 {blog.dislikesCount || 0}</span>
+        </div>
+      </Link>
+      <div className="blogCardActionsRow">
+        {isMyBlog && (
+          <>
+            <Link
+              to={`/blogs/edit/${blog._id}`}
+              className="blogActionButton blogEditButton"
+            >
+              Edit
+            </Link>
+            <button
+              onClick={() => handleDelete(blog._id)}
+              className="blogActionButton blogDeleteButton"
+            >
+              Delete
+            </button>
+          </>
+        )}
+        <Link
+          to={`/blogs/${blog._id}`}
+          className="blogActionButton blogViewButton"
+        >
+          View
+        </Link>
+      </div>
+    </div>
+  );
+
   return (
     <>
       <ConnectionsHeader />
-      <div className="blogs-overview-container">
-        <div className="my-blogs-section">
-          <h2>My Blog Posts</h2>
+      <div className="blogsOverviewContainer">
+        <div className="blogsSectionCard myBlogsSection">
+          <h2 className="sectionTitle">My Blog Posts</h2>
           {loadingMyBlogs ? (
-            <p className="loading-message">Loading your blogs...</p>
+            <p className="loadingMessage">Loading your blogs...</p>
           ) : myBlogsError ? (
-            <p className="error-message">{myBlogsError}</p>
+            <p className="errorMessage">{myBlogsError}</p>
           ) : myBlogs.length === 0 ? (
-            <p>You haven't created any blog posts yet.</p>
+            <p className="emptyMessage">
+              You haven't created any blog posts yet.
+            </p>
           ) : (
-            <ul className="blog-list">
+            <div className="blogsGrid">
               {myBlogs.map((blog) => (
-                <li key={blog._id} className="blog-item">
-                  <h3>{blog.title}</h3>
-                  <p className="blog-description">
-                    {blog.description.substring(0, 150)}...
-                  </p>
-                  <div className="blog-item-actions">
-                    <Link
-                      to={`/blogs/edit/${blog._id}`}
-                      className="action-button edit-button"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(blog._id)}
-                      className="action-button delete-button"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </li>
+                <BlogCard key={blog._id} blog={blog} isMyBlog />
               ))}
-            </ul>
+            </div>
           )}
         </div>
 
-        <hr className="section-divider" />
+        <hr className="blogsSectionDivider" />
 
-        <div className="all-blogs-section">
-          <h2>All Blog Posts</h2>
+        <div className="blogsSectionCard allBlogsSection">
+          <h2 className="sectionTitle">All Blog Posts</h2>
           {loadingAllBlogs ? (
-            <p className="loading-message">Loading all blogs...</p>
+            <p className="loadingMessage">Loading all blogs...</p>
           ) : allBlogsError ? (
-            <p className="error-message">{allBlogsError}</p>
+            <p className="errorMessage">{allBlogsError}</p>
           ) : allBlogs.length === 0 ? (
-            <p>No blog posts available yet.</p>
+            <p className="emptyMessage">No blog posts available yet.</p>
           ) : (
-            <ul className="blog-list">
+            <div className="blogsGrid">
               {allBlogs.map((blog) => (
-                <li key={blog._id} className="blog-item">
-                  <h3>{blog.title}</h3>
-                  <p className="blog-description">
-                    {blog.description.substring(0, 150)}...
-                  </p>
-                  <span className="blog-author">
-                    By: {blog.authorName || "Anonymous"}
-                  </span>
-                  <Link
-                    to={`/blogs/${blog._id}`}
-                    className="action-button view-button"
-                  >
-                    View
-                  </Link>
-                </li>
+                <BlogCard key={blog._id} blog={blog} />
               ))}
-            </ul>
+            </div>
           )}
         </div>
       </div>

@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
+import { Link } from "react-router-dom"; // Needed for blog edit/view links
+import ConnectionsHeader from "../components/ConnectionsHeader";
 import "../styles/MyProfile.css";
 
-import ConnectionsHeader from "../components/ConnectionsHeader";
-
-const DEFAULT_AVATAR = "/profile-pic-dummy.png";
+const DEFAULT_AVATAR = "https://placehold.co/40x40/cccccc/333333?text=NP";
 
 const MyProfile = () => {
   const [userProfile, setUserProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [profileError, setProfileError] = useState(null);
+
+  const [myBlogs, setMyBlogs] = useState([]);
+  const [loadingMyBlogs, setLoadingMyBlogs] = useState(true);
+  const [myBlogsError, setMyBlogsError] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
-    profilePic: "", // This will hold the URL for preview or current image
+    profilePic: "",
     company: "",
     designation: "",
     linkedin: "",
@@ -25,71 +29,91 @@ const MyProfile = () => {
     financialCertifications: [],
     industrySpecializations: [],
     keyFinancialSkills: [],
-    // Bio field removed as per request
   });
-
-  const [selectedFile, setSelectedFile] = useState(null); // Holds the actual file object
-
+  const [selectedFile, setSelectedFile] = useState(null);
   const [modalLoading, setModalLoading] = useState(false);
   const [modalError, setModalError] = useState(null);
   const [modalSuccessMessage, setModalSuccessMessage] = useState(null);
 
-  const fetchMyProfile = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("Authentication token not found. Please log in.");
-      }
-
-      const response = await axios.get("/api/v1/users/profile", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      setUserProfile(response.data.user);
-    } catch (err) {
-      console.error("Error fetching profile:", err);
-      if (axios.isAxiosError(err)) {
-        if (err.response) {
-          if (err.response.status === 401) {
-            setError(
-              err.response.data.message ||
-                "Session expired or invalid token. Please log in again."
-            );
-          } else {
-            setError(
-              err.response.data.message || "Failed to fetch user profile."
-            );
-          }
-        } else if (err.request) {
-          setError(
-            "No response from server. Please check your backend connection."
-          );
-        } else {
-          setError(err.message);
-        }
-      } else {
-        setError(err.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  const authToken = localStorage.getItem("token");
 
   useEffect(() => {
-    fetchMyProfile();
+    const fetchProfileData = async () => {
+      setLoadingProfile(true);
+      setProfileError(null);
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("Authentication token not found. Please log in.");
+        }
+        const response = await axios.get("/api/v1/users/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setUserProfile(response.data.user);
+      } catch (err) {
+        if (axios.isAxiosError(err)) {
+          if (err.response) {
+            if (err.response.status === 401) {
+              setProfileError(
+                err.response.data.message ||
+                  "Session expired or invalid token. Please log in again."
+              );
+            } else {
+              setProfileError(
+                err.response.data.message || "Failed to fetch user profile."
+              );
+            }
+          } else if (err.request) {
+            setProfileError(
+              "No response from server. Please check your backend connection."
+            );
+          } else {
+            setProfileError(err.message);
+          }
+        } else {
+          setProfileError(err.message);
+        }
+      } finally {
+        setLoadingProfile(false);
+      }
+    };
+
+    fetchProfileData();
   }, []);
+
+  useEffect(() => {
+    const fetchMyBlogsData = async () => {
+      setLoadingMyBlogs(true);
+      try {
+        if (!authToken) {
+          setMyBlogsError("Login to view your blogs.");
+          setLoadingMyBlogs(false);
+          return;
+        }
+        const response = await axios.get("/api/v1/blogs/me", {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        setMyBlogs(response.data.data.blogs);
+        setLoadingMyBlogs(false);
+      } catch (err) {
+        setMyBlogsError(err.response?.data?.message || err.message);
+        setLoadingMyBlogs(false);
+      }
+    };
+
+    fetchMyBlogsData();
+  }, [authToken]);
 
   useEffect(() => {
     if (isModalOpen && userProfile) {
       setFormData({
         fullName: userProfile.fullName || "",
         email: userProfile.email || "",
-        profilePic: userProfile.profilePic || "", // Current profile pic URL for display
+        profilePic: userProfile.profilePic || "",
         company: userProfile.company || "",
         designation: userProfile.designation || "",
         linkedin: userProfile.linkedin || "",
@@ -98,9 +122,8 @@ const MyProfile = () => {
         financialCertifications: userProfile.financialCertifications || [],
         industrySpecializations: userProfile.industrySpecializations || [],
         keyFinancialSkills: userProfile.keyFinancialSkills || [],
-        // Bio field omitted here
       });
-      setSelectedFile(null); // Clear any previously selected file
+      setSelectedFile(null);
       setModalError(null);
       setModalSuccessMessage(null);
     }
@@ -122,18 +145,16 @@ const MyProfile = () => {
     }));
   };
 
-  // Handles file selection for profile picture
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setSelectedFile(file); // Store the actual file object
+      setSelectedFile(file);
       setFormData((prevData) => ({
         ...prevData,
-        profilePic: URL.createObjectURL(file), // Create a temporary URL for immediate preview
+        profilePic: URL.createObjectURL(file),
       }));
     } else {
-      setSelectedFile(null); // No file selected, clear it
-      // Revert profilePic in formData to original or default if no new file selected
+      setSelectedFile(null);
       setFormData((prevData) => ({
         ...prevData,
         profilePic: userProfile.profilePic || DEFAULT_AVATAR,
@@ -152,7 +173,7 @@ const MyProfile = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleProfileSubmit = async (e) => {
     e.preventDefault();
     setModalLoading(true);
     setModalError(null);
@@ -167,38 +188,31 @@ const MyProfile = () => {
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
-          // Content-Type will be set automatically by Axios for FormData
         },
       };
 
       let dataToSend;
 
       if (selectedFile) {
-        // If a new file is selected, create FormData to send the file and other fields
         const formDataPayload = new FormData();
-        formDataPayload.append("profilePic", selectedFile); // Append the file with key 'profilePic'
+        formDataPayload.append("profilePic", selectedFile);
 
-        // Append other non-file form fields. Exclude 'email' as it's not user-editable.
         Object.keys(formData).forEach((key) => {
           if (key !== "profilePic" && key !== "email") {
-            // Do not append profilePic URL or email
             if (Array.isArray(formData[key])) {
-              // For array fields, append each item separately (backend should handle as array)
               formData[key].forEach((item) =>
                 formDataPayload.append(`${key}[]`, item)
               );
             } else {
-              // For other fields, just append them
               formDataPayload.append(key, formData[key]);
             }
           }
         });
-        dataToSend = formDataPayload; // Set dataToSend to FormData object
+        dataToSend = formDataPayload;
       } else {
-        // If no new file is selected, send data as JSON
-        const { ...restFormData } = formData; // Exclude email and profilePic (as it's a URL here)
-        dataToSend = restFormData; // Set dataToSend to plain object
-        config.headers["Content-Type"] = "application/json"; // Explicitly set Content-Type for JSON
+        const { email, ...restFormData } = formData;
+        dataToSend = restFormData;
+        config.headers["Content-Type"] = "application/json";
       }
 
       const response = await axios.put(
@@ -210,12 +224,11 @@ const MyProfile = () => {
       setModalSuccessMessage(
         response.data.message || "Profile updated successfully!"
       );
-      await fetchMyProfile(); // Re-fetch profile data to show updates on the main page
+      await fetchProfileData();
       setTimeout(() => {
-        setIsModalOpen(false); // Close the modal after a short delay
+        setIsModalOpen(false);
       }, 1500);
     } catch (err) {
-      console.error("Error updating profile:", err);
       if (axios.isAxiosError(err)) {
         if (err.response) {
           setModalError(
@@ -235,7 +248,23 @@ const MyProfile = () => {
     }
   };
 
-  if (loading) {
+  const handleDeleteBlog = async (blogId) => {
+    if (window.confirm("Are you sure you want to delete this blog post?")) {
+      try {
+        await axios.delete(`/api/v1/blogs/${blogId}`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        toast.success("Blog post deleted successfully!");
+        setMyBlogs(myBlogs.filter((blog) => blog._id !== blogId));
+      } catch (err) {
+        toast.error(err.response?.data?.message || err.message);
+      }
+    }
+  };
+
+  if (loadingProfile) {
     return (
       <div className="profile-loading-container">
         <div className="profile-loading-spinner-wrapper">
@@ -246,13 +275,13 @@ const MyProfile = () => {
     );
   }
 
-  if (error) {
+  if (profileError) {
     return (
       <div className="profile-error-container">
         <div className="profile-error-card">
           <h2 className="profile-error-heading">Error loading profile</h2>
-          <p className="profile-error-message">{error}</p>
-          {error.includes("log in again") && (
+          <p className="profile-error-message">{profileError}</p>
+          {profileError.includes("log in again") && (
             <p className="profile-login-prompt">
               Please{" "}
               <a href="/login" className="profile-login-link">
@@ -428,6 +457,75 @@ const MyProfile = () => {
             )}
         </div>
 
+        {/* My Blogs Section */}
+        <div className="profile-section-card my-blogs-profile-section">
+          <h2 className="profile-section-title">My Blog Posts</h2>
+          {loadingMyBlogs ? (
+            <p className="loading-message">Loading your blog posts...</p>
+          ) : myBlogsError ? (
+            <p className="error-message">{myBlogsError}</p>
+          ) : myBlogs.length === 0 ? (
+            <p className="empty-message">
+              You haven't created any blog posts yet.
+            </p>
+          ) : (
+            <div className="blog-cards-grid">
+              {myBlogs.map((blog) => (
+                <div key={blog._id} className="blog-post-card">
+                  <div className="card-header-content">
+                    <div className="author-info">
+                      <img
+                        src={blog.userId?.profilePic || DEFAULT_AVATAR}
+                        alt={blog.userId?.fullName || "Anonymous"}
+                        className="author-avatar"
+                      />
+                      <div className="author-name-date">
+                        <span className="author-full-name">
+                          {blog.userId?.fullName || "Anonymous"}
+                        </span>
+                        <span className="post-date">
+                          {new Date(blog.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <h3 className="blog-title">{blog.title}</h3>
+                  {blog.imageUrl && (
+                    <img
+                      src={blog.imageUrl}
+                      alt={blog.title}
+                      className="blog-main-image"
+                    />
+                  )}
+                  <p className="blog-description">
+                    {blog.description.substring(0, 180)}...
+                  </p>
+                  <div className="blog-actions-row">
+                    <Link
+                      to={`/blogs/edit/${blog._id}`}
+                      className="action-button edit-button"
+                    >
+                      Edit
+                    </Link>
+                    <button
+                      onClick={() => handleDeleteBlog(blog._id)}
+                      className="action-button delete-button"
+                    >
+                      Delete
+                    </button>
+                    <Link
+                      to={`/blogs/${blog._id}`}
+                      className="action-button view-button"
+                    >
+                      View
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {isModalOpen && (
           <div className="modal-overlay">
             <div className="modal-content">
@@ -440,7 +538,7 @@ const MyProfile = () => {
                   &times;
                 </button>
               </div>
-              <form onSubmit={handleSubmit} className="modal-form">
+              <form onSubmit={handleProfileSubmit} className="modal-form">
                 <div className="form-group">
                   <label htmlFor="fullName">Full Name</label>
                   <input
@@ -457,11 +555,10 @@ const MyProfile = () => {
                   <input
                     type="file"
                     id="profilePicFile"
-                    name="profilePicFile" // This name is for the file input
+                    name="profilePicFile"
                     accept="image/*"
                     onChange={handleFileChange}
                   />
-                  {/* Image preview based on formData.profilePic (which can be URL.createObjectURL) */}
                   {formData.profilePic && (
                     <div className="profile-pic-preview">
                       <img
@@ -473,7 +570,6 @@ const MyProfile = () => {
                     </div>
                   )}
                 </div>
-                {/* Removed Bio field */}
                 <div className="form-group">
                   <label htmlFor="company">Company</label>
                   <input

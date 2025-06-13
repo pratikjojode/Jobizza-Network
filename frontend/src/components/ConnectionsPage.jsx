@@ -4,8 +4,7 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import "../styles/ConnectionsPage.css";
 import ConnectionsHeader from "./ConnectionsHeader";
-import { toast } from "react-toastify"; // Only import toast, not ToastContainer
-// Do not import "react-toastify/dist/ReactToastify.css" here, it should be in App.js
+import { toast } from "react-toastify";
 
 const CONNECTION_STATUSES = {
   NOT_CONNECTED: "not_connected",
@@ -22,6 +21,7 @@ const API_ENDPOINTS = {
   RECEIVED_PENDING: "/api/v1/connections/my-connections/received-pending",
   CONNECTIONS: "/api/v1/connections",
   MY_OWN_PROFILE: "/api/v1/users/me",
+  LATEST_BLOGS: "/api/v1/blogs/latest?limit=5", // Assuming an endpoint for latest blogs with a limit
 };
 
 const useConnectionData = (user, logout) => {
@@ -33,6 +33,9 @@ const useConnectionData = (user, logout) => {
     actionLoading: {},
     refreshing: false,
     currentUserFullProfile: null,
+    latestBlogs: [],
+    blogsLoading: true,
+    blogsError: null,
   });
 
   const updateState = useCallback((updates) => {
@@ -47,13 +50,19 @@ const useConnectionData = (user, logout) => {
   const fetchData = useCallback(async () => {
     if (state.refreshing) return;
 
-    updateState({ loading: true, error: null });
+    updateState({
+      loading: true,
+      error: null,
+      blogsLoading: true,
+      blogsError: null,
+    });
     const headers = getAuthHeaders();
 
     if (!headers || !user?.id) {
       updateState({
         error: "Please log in to manage your connections.",
         loading: false,
+        blogsLoading: false,
       });
       return;
     }
@@ -65,12 +74,14 @@ const useConnectionData = (user, logout) => {
         sentPendingResponse,
         receivedPendingResponse,
         myProfileResponse,
+        latestBlogsResponse,
       ] = await Promise.all([
         axios.get(API_ENDPOINTS.ALL_USERS, { headers }),
         axios.get(API_ENDPOINTS.MY_CONNECTIONS, { headers }),
         axios.get(API_ENDPOINTS.SENT_PENDING, { headers }),
         axios.get(API_ENDPOINTS.RECEIVED_PENDING, { headers }),
         axios.get(API_ENDPOINTS.MY_OWN_PROFILE, { headers }),
+        axios.get(API_ENDPOINTS.LATEST_BLOGS, { headers }),
       ]);
 
       const allUsers = usersResponse.data.data || [];
@@ -82,6 +93,7 @@ const useConnectionData = (user, logout) => {
       const sentPendingRequests = sentPendingResponse.data.data || [];
       const receivedPendingRequests = receivedPendingResponse.data.data || [];
       const currentUserFullProfile = myProfileResponse.data.data.user || null;
+      const latestBlogs = latestBlogsResponse.data.data || [];
 
       const statusMap = filteredUsers.reduce((acc, u) => {
         acc[String(u._id)] = {
@@ -121,6 +133,8 @@ const useConnectionData = (user, logout) => {
         userConnectionStatuses: statusMap,
         loading: false,
         currentUserFullProfile: currentUserFullProfile,
+        latestBlogs: latestBlogs,
+        blogsLoading: false,
       });
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -132,6 +146,7 @@ const useConnectionData = (user, logout) => {
         updateState({
           error: "Session expired. Please log in again.",
           loading: false,
+          blogsLoading: false,
         });
         logout();
       } else {
@@ -139,6 +154,8 @@ const useConnectionData = (user, logout) => {
         updateState({
           error: err.response?.data?.message || "Failed to fetch data.",
           loading: false,
+          blogsLoading: false,
+          blogsError: err.response?.data?.message || "Failed to fetch blogs.",
         });
       }
     }
@@ -156,6 +173,7 @@ const useConnectionData = (user, logout) => {
     } else {
       updateState({
         loading: false,
+        blogsLoading: false,
         error: "Please log in to view this page.",
       });
     }
@@ -370,6 +388,9 @@ function ConnectionsPage() {
     updateState,
     getAuthHeaders,
     currentUserFullProfile,
+    latestBlogs,
+    blogsLoading,
+    blogsError,
   } = useConnectionData(user, logout);
 
   const displayedUser = currentUserFullProfile || user;
@@ -784,9 +805,44 @@ function ConnectionsPage() {
           </div>
 
           <div className="sidebar-card">
+            <h3 className="card-title">Latest Blogs</h3>
+            <div className="latest-blogs-list">
+              {blogsLoading ? (
+                <p className="loading-blogs">Loading blogs...</p>
+              ) : blogsError ? (
+                <p className="error-blogs">{blogsError}</p>
+              ) : latestBlogs.length === 0 ? (
+                <p className="no-blogs">No blogs available yet.</p>
+              ) : (
+                latestBlogs.map((blog) => (
+                  <Link
+                    to={`/blogs/${blog._id}`}
+                    key={blog._id}
+                    className="blog-item-link"
+                  >
+                    <div className="blog-item">
+                      <h4 className="blog-item-title">{blog.title}</h4>
+                      <p className="blog-item-description">
+                        {blog.description}
+                      </p>
+                      {blog.userId && (
+                        <span className="blog-item-author">
+                          by {blog.userId.fullName || "Anonymous"}
+                        </span>
+                      )}
+                      <span className="blog-item-date">
+                        {new Date(blog.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </Link>
+                ))
+              )}
+            </div>
+          </div>
+
+          <div className="sidebar-card">
             <h3 className="card-title">Coming Soon</h3>
             <div className="coming-soon">
-              <div className="feature-item">📝 Blog Posts</div>
               <div className="feature-item">📅 Events</div>
               <div className="feature-item">💼 Job Postings</div>
               <div className="feature-item">🎯 Industry News</div>

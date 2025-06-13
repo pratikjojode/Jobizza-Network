@@ -1,26 +1,53 @@
 /* UserProfilePage.css */
 
-/* General Container for the whole page */
+/* General page container */
 .profile-page-container {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center the profile card horizontally */
+  align-items: center;
   padding: 20px;
-  background-color: #f4f2ee; /* LinkedIn background color */
+  background-color: #f0f2f5;
   min-height: calc(100vh - 60px); /* Adjust based on your header height */
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: #333;
 }
 
-/* Error States */
+/* Loading and Error States */
+.loading-state,
 .error-state,
 .not-found-state {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  min-height: 80vh;
   text-align: center;
-  height: 80vh; /* Take up most of the viewport height */
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.1em;
+  color: #555;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #0a66c2;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-message,
@@ -28,89 +55,99 @@
   background-color: #fff;
   padding: 30px;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   max-width: 500px;
-  width: 90%;
+  width: 100%;
 }
 
 .error-message h2,
 .empty-state h3 {
-  color: #c0392b; /* Red for errors */
-  margin-bottom: 15px;
+  color: #d32f2f;
+  margin-bottom: 10px;
+  font-size: 1.8em;
 }
 
 .empty-state h3 {
-  color: #333; /* Darker for general not found */
+  color: #333;
+}
+
+.error-message p,
+.empty-state p {
+  margin-bottom: 20px;
+  line-height: 1.6;
 }
 
 .empty-icon {
-  font-size: 4rem;
+  font-size: 4em;
   margin-bottom: 20px;
 }
 
-/* Profile Card Styles */
+/* Profile Card Styling */
 .profile-card {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 900px; /* Max width similar to LinkedIn profile cards */
-  margin-top: 20px;
-  overflow: hidden; /* Ensures rounded corners apply to children */
+  max-width: 800px;
+  margin: 20px auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Profile Header Section */
 .profile-header {
-  background-color: #f0f8ff; /* Light blue background for header */
-  padding: 30px;
+  background: linear-gradient(135deg, #0a66c2, #004d96);
+  color: #ffffff;
+  padding: 40px 20px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  border-bottom: 1px solid #e0e0e0;
+  position: relative;
 }
 
 .profile-avatar-large {
-  width: 150px;
-  height: 150px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 5px solid #fff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   margin-bottom: 15px;
 }
 
 .profile-avatar-placeholder-large {
-  width: 150px;
-  height: 150px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
+  border: 5px solid #fff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  margin-bottom: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 3rem;
   color: white;
   font-weight: bold;
-  border: 4px solid #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 15px;
 }
 
 .profile-name {
-  font-size: 2.2rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 5px;
+  margin: 0;
+  font-size: 2.5em;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .profile-designation {
-  font-size: 1.2rem;
-  color: #555;
-  margin-bottom: 5px;
+  font-size: 1.2em;
+  margin: 5px 0 0;
+  opacity: 0.9;
 }
 
 .profile-company {
-  font-size: 1rem;
-  color: #777;
+  font-size: 1.1em;
+  margin: 5px 0 0;
+  opacity: 0.8;
 }
 
 /* Profile Details Sections */
@@ -120,187 +157,180 @@
 }
 
 .profile-details-section:last-of-type {
-  border-bottom: none; /* No border for the last section */
+  border-bottom: none;
 }
 
-.profile-details-section h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #0a66c2; /* LinkedIn blue for section headers */
+.section-title {
+  font-size: 1.6em;
+  color: #0a66c2;
+  margin-top: 0;
   margin-bottom: 15px;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 8px;
+  font-weight: 600;
 }
 
-.profile-details-section p {
-  font-size: 1rem;
-  line-height: 1.6;
+.profile-detail-item {
   margin-bottom: 10px;
-  color: #444;
+  font-size: 1.05em;
+  line-height: 1.6;
 }
 
-.profile-details-section strong {
+.detail-label {
+  color: #555;
+  min-width: 120px; /* Aligns labels if needed */
+  display: inline-block;
+  font-weight: 600;
+}
+
+.detail-value {
   color: #333;
 }
 
-/* LinkedIn Link */
+.profile-detail-list {
+  margin: 0;
+  padding: 0;
+  list-style: none; /* If you change to ul/li later */
+  line-height: 1.7;
+  font-size: 1.05em;
+}
+
 .linkedin-link-profile {
-  display: inline-block;
-  background-color: #0a66c2;
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 5px;
+  color: #0a66c2;
   text-decoration: none;
   font-weight: 600;
-  transition: background-color 0.2s ease;
+  transition: color 0.2s ease-in-out, text-decoration 0.2s ease-in-out;
+  font-size: 1.1em;
 }
 
 .linkedin-link-profile:hover {
-  background-color: #004d96;
+  color: #004d96;
+  text-decoration: underline;
+}
+
+.profile-linkedin-link-wrapper {
+  margin-top: 10px;
 }
 
 /* Action Buttons */
+.profile-actions-footer {
+  padding: 20px 30px;
+  display: flex;
+  justify-content: flex-end;
+  background-color: #f9f9f9;
+  border-top: 1px solid #eee;
+}
+
+/* Generic Button Styles (if not already defined globally) */
 .btn {
   padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  font-size: 1em;
   font-weight: 600;
-  margin: 5px; /* Add some margin between buttons */
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out,
+    border-color 0.2s ease-in-out;
+  text-decoration: none; /* For button acting as a link */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-primary {
-  background-color: #0a66c2; /* LinkedIn blue */
+  background-color: #0a66c2;
   color: #fff;
+  border: 1px solid #0a66c2;
 }
 
 .btn-primary:hover {
   background-color: #004d96;
+  border-color: #004d96;
 }
 
 .btn-secondary {
-  background-color: #e0e0e0;
-  color: #333;
+  background-color: #f0f2f5;
+  color: #0a66c2;
+  border: 1px solid #0a66c2;
+  margin-left: 10px;
 }
 
 .btn-secondary:hover {
-  background-color: #d0d0d0;
+  background-color: #e0e6ec;
+  color: #004d96;
+  border-color: #004d96;
 }
 
-.btn-success {
-  background-color: #28a745; /* Green for success/accept */
+.btn-back {
+  background-color: #6c757d;
   color: #fff;
+  border: 1px solid #6c757d;
 }
 
-.btn-success:hover {
-  background-color: #218838;
-}
-
-.btn-danger {
-  background-color: #dc3545; /* Red for danger/remove */
-  color: #fff;
-}
-
-.btn-danger:hover {
-  background-color: #c82333;
-}
-
-.btn:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-  color: #666;
-}
-
-/* Profile Actions Footer */
-.profile-actions-footer {
-  padding: 20px 30px;
-  text-align: center;
-  border-top: 1px solid #eee;
-  display: flex;
-  justify-content: center;
-  gap: 10px; /* Space between buttons */
-}
-
-/* Profile Actions Header (for connection status/buttons) */
-.profile-actions-header {
-  padding: 15px 30px;
-  display: flex;
-  justify-content: center; /* Center connection buttons */
-  align-items: center;
-  gap: 10px; /* Space between buttons/tags */
-  border-bottom: 1px solid #eee;
-  background-color: #fcfcfc;
-}
-
-.profile-status-tag {
-  padding: 8px 15px;
-  border-radius: 20px;
-  font-weight: 600;
-  font-size: 0.9em;
-  text-transform: capitalize;
-}
-
-.profile-status-tag.self-profile {
-  background-color: #e6f2ff;
-  color: #0a66c2;
-}
-
-.profile-status-tag.error {
-  background-color: #fcebeb;
-  color: #c0392b;
-}
-
-.profile-status-tag.loading {
-  background-color: #f0f0f0;
-  color: #555;
+.btn-back:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  .profile-card {
+    margin: 15px;
+  }
+
+  .profile-name {
+    font-size: 2em;
+  }
+
+  .profile-designation,
+  .profile-company {
+    font-size: 1em;
+  }
+
+  .section-title {
+    font-size: 1.4em;
+  }
+
+  .profile-details-section {
+    padding: 20px 25px;
+  }
+
+  .profile-actions-footer {
+    padding: 15px 25px;
+    justify-content: center;
+  }
+
+  .btn {
+    padding: 8px 15px;
+    font-size: 0.95em;
+  }
+}
+
+@media (max-width: 480px) {
   .profile-page-container {
     padding: 10px;
   }
 
   .profile-card {
-    margin-top: 10px;
-    border-radius: 0; /* Full width on smaller screens */
-  }
-
-  .profile-header {
-    padding: 20px;
+    border-radius: 8px;
   }
 
   .profile-avatar-large,
   .profile-avatar-placeholder-large {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     font-size: 2.5rem;
   }
 
   .profile-name {
-    font-size: 1.8rem;
-  }
-
-  .profile-designation {
-    font-size: 1.1rem;
+    font-size: 1.8em;
   }
 
   .profile-details-section {
-    padding: 20px;
+    padding: 15px 20px;
   }
 
-  .profile-details-section h2 {
-    font-size: 1.3rem;
-  }
-
-  .btn {
-    padding: 8px 15px;
-    font-size: 0.9rem;
-  }
-
-  .profile-actions-footer,
-  .profile-actions-header {
-    flex-wrap: wrap; /* Allow buttons to wrap */
-    justify-content: center;
+  .profile-detail-item,
+  .profile-detail-list {
+    font-size: 0.95em;
   }
 }

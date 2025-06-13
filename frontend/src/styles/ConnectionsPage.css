@@ -1,11 +1,10 @@
-/* General Body and Page Layout */
 body {
   font-family: "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
     "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
-  background-color: #f4f2ee; /* LinkedIn-like light background */
+  background-color: #f4f2ee;
   color: #333;
 }
 
@@ -16,10 +15,9 @@ body {
   box-sizing: border-box;
 }
 
-/* Header */
 .connections-header {
   background-color: #ffffff;
-  border-bottom: 1px solid #e0e0e0; /* Subtle dark border */
+  border-bottom: 1px solid #e0e0e0;
   padding: 15px 20px;
   display: flex;
   justify-content: space-between;
@@ -33,7 +31,7 @@ body {
 .header-logo {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #0a66c2; /* LinkedIn blue */
+  color: #0a66c2;
   text-decoration: none;
 }
 
@@ -90,22 +88,20 @@ body {
   background-color: #d0d0d0;
 }
 
-/* Main Layout */
 .main-layout {
   display: flex;
   justify-content: center;
   padding: 20px;
   gap: 20px;
   flex-grow: 1;
-  max-width: 1200px; /* Max width for content */
-  margin: 20px auto; /* Center the layout */
+  max-width: 1200px;
+  margin: 20px auto;
 }
 
-/* Sidebar Cards */
 .sidebar-card,
 .content-card {
   background-color: #fff;
-  border: 1px solid #dcdcdc; /* Slightly darker border for cards */
+  border: 1px solid #dcdcdc;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   padding: 20px;
@@ -120,9 +116,8 @@ body {
   border-bottom: 1px solid #eee;
 }
 
-/* Left Sidebar */
 .left-sidebar {
-  flex: 0 0 250px; /* Fixed width for left sidebar */
+  flex: 0 0 250px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -217,10 +212,9 @@ body {
   color: #666;
 }
 
-/* Main Content */
 .main-content {
   flex: 1;
-  min-width: 450px; /* Minimum width for main content */
+  min-width: 450px;
 }
 
 .content-card {
@@ -269,7 +263,6 @@ body {
   gap: 20px;
 }
 
-/* User Card */
 .user-card {
   display: flex;
   flex-direction: column;
@@ -356,7 +349,6 @@ body {
   gap: 10px;
 }
 
-/* Action Buttons */
 .btn {
   padding: 8px 15px;
   border-radius: 20px;
@@ -445,9 +437,8 @@ body {
   color: #666 !important;
 }
 
-/* Right Sidebar */
 .right-sidebar {
-  flex: 0 0 280px; /* Fixed width for right sidebar */
+  flex: 0 0 280px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -542,7 +533,6 @@ body {
   font-weight: 500;
 }
 
-/* Footer */
 .page-footer {
   background-color: #ffffff;
   border-top: 1px solid #e0e0e0;
@@ -567,7 +557,6 @@ body {
   background-color: #c82333;
 }
 
-/* Loading and Error States */
 .loading-spinner,
 .error-message {
   display: flex;
@@ -620,9 +609,6 @@ body {
   background-color: #004d96;
 }
 
-/* --- Responsive Design --- */
-
-/* For screens smaller than 1024px (typical tablet landscape and smaller desktops) */
 @media (max-width: 1024px) {
   .main-layout {
     flex-direction: column;
@@ -633,24 +619,20 @@ body {
   .left-sidebar,
   .right-sidebar,
   .main-content {
-    width: 100%; /* Take full width */
-    max-width: 768px; /* Limit overall width of individual sections */
-    flex: none; /* Remove flex basis */
+    width: 100%;
+    max-width: 768px;
+    flex: none;
   }
 
   .sidebar-card {
-    margin-bottom: 20px; /* Add margin between stacked cards */
+    margin-bottom: 20px;
   }
 
   .users-grid {
-    grid-template-columns: repeat(
-      auto-fill,
-      minmax(250px, 1fr)
-    ); /* Adjust grid for smaller screens */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
 }
 
-/* For screens smaller than 768px (typical tablet portrait and large phones) */
 @media (max-width: 768px) {
   .connections-header {
     flex-direction: column;
@@ -689,7 +671,6 @@ body {
   }
 }
 
-/* For screens smaller than 480px (typical mobile devices) */
 @media (max-width: 480px) {
   .header-nav-link,
   .header-btn {
@@ -724,7 +705,7 @@ body {
   }
 
   .users-grid {
-    grid-template-columns: 1fr; /* Single column for mobile */
+    grid-template-columns: 1fr;
   }
 
   .user-name {
@@ -740,4 +721,85 @@ body {
     padding: 6px 10px;
     font-size: 0.8rem;
   }
+}
+
+.latest-blogs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 10px 0;
+}
+
+.blog-item-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.blog-item {
+  background-color: var(--background-light);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color-light);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.blog-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px var(--shadow-light);
+  border-color: var(--primary-brand-color);
+}
+
+.blog-item-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary-brand-color);
+  margin-bottom: 5px;
+  line-height: 1.3;
+}
+
+.blog-item-description {
+  font-size: 0.9rem;
+  color: var(--text-medium);
+  margin-bottom: 10px;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.blog-item-author {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  display: block;
+  margin-bottom: 3px;
+}
+
+.blog-item-date {
+  font-size: 0.8rem;
+  color: var(--text-medium);
+  display: block;
+  text-align: right;
+}
+
+.loading-blogs,
+.error-blogs,
+.no-blogs {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-medium);
+  padding: 15px;
+  background-color: var(--background-light);
+  border-radius: 8px;
+  border: 1px solid var(--border-color-light);
+}
+
+.error-blogs {
+  color: #e74c3c;
+  font-weight: 600;
 }
