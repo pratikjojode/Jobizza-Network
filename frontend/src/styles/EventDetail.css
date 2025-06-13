@@ -1,0 +1,638 @@
+/* EventDetail.css */
+
+/* Variables for theme colors (consistent with other components) */
+:root {
+  --primary-blue: #003366; /* Dark blue */
+  --secondary-blue: #006699; /* Medium blue */
+  --light-blue: #e6f2ff; /* Very light blue for backgrounds */
+  --accent-blue: #87CEEB; /* Sky blue for highlights */
+  --text-dark: #1f2937;
+  --text-medium: #4b5563;
+  --text-light: #6b7280;
+  --white: #ffffff;
+  --shadow-light: rgba(0, 0, 0, 0.05);
+  --shadow-medium: rgba(0, 0, 0, 0.08);
+  --shadow-strong: rgba(0, 0, 0, 0.15);
+}
+
+/* Main Container for Event Detail Page */
+.event-detail-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align to top */
+  min-height: calc(100vh - 140px); /* Adjust for header and footer */
+  background-color: var(--light-blue); /* Light blue page background */
+  padding: 2.5rem 1.5rem;
+  box-sizing: border-box;
+  margin: 100px auto 40px; /* Top margin for header, bottom for footer */
+  font-family: "Inter", Arial, sans-serif;
+  color: var(--text-dark);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+/* Event Detail Card (similar to profile card) */
+.event-detail-card {
+  background-color: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px var(--shadow-medium); /* Deeper shadow */
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 900px; /* Wider card for event details */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: left; /* Align content left within card */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.event-detail-card:hover {
+  transform: translateY(-5px); /* Subtle lift on hover */
+  box-shadow: 0 15px 45px var(--shadow-strong);
+}
+
+.event-detail-image {
+  width: 100%;
+  max-height: 450px; /* Max height for large image */
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Event Info Section (Title, Date, Location, Verified) */
+.event-info-section {
+  width: 100%;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: center; /* Center title */
+}
+
+.event-detail-title {
+  font-size: 3rem; /* Very large title */
+  font-weight: 700;
+  color: var(--primary-blue);
+  margin-top: 0;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.event-detail-item {
+  font-size: 1.2rem;
+  color: var(--text-medium);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center align details */
+  gap: 10px;
+}
+.event-detail-item span {
+    font-weight: 600; /* Make value text bold */
+    color: var(--text-dark);
+}
+
+.detail-icon {
+  color: var(--secondary-blue);
+  font-size: 1.3rem;
+}
+
+.event-verified .verified-icon { color: #28a745; }
+.event-verified .unverified-icon { color: #dc3545; }
+
+/* Event Description Section */
+.event-description-section {
+  width: 100%;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px dashed #e0e0e0; /* Dashed line for separation */
+}
+
+.section-title {
+  font-size: 2rem; /* Larger section titles */
+  font-weight: 600;
+  color: var(--primary-blue);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 2px solid var(--accent-blue);
+  padding-bottom: 8px;
+  margin-top: 0;
+}
+
+.section-icon {
+  font-size: 1.8rem;
+  color: var(--accent-blue);
+}
+
+.event-description-text {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: var(--text-medium);
+}
+
+/* Organizer Section */
+.organizer-section {
+  width: 100%;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px dashed #e0e0e0;
+}
+
+.organizer-content {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Space between pic and details */
+  background-color: #f8fbfc; /* Light background for organizer block */
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.organizer-profile-pic {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--accent-blue);
+  flex-shrink: 0;
+}
+
+.organizer-profile-pic-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #add8e6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--primary-blue);
+    border: 4px solid var(--accent-blue);
+    flex-shrink: 0;
+}
+
+.organizer-details-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.organizer-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 0.3rem;
+}
+
+.organizer-job-title,
+.organizer-role,
+.organizer-linkedin-wrapper {
+  font-size: 1rem;
+  color: var(--text-medium);
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.organizer-icon {
+  color: var(--secondary-blue);
+  font-size: 1.1rem;
+}
+
+.organizer-linkedin-link {
+  color: var(--secondary-blue);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.organizer-linkedin-link:hover {
+  color: var(--primary-blue);
+  text-decoration: underline;
+}
+
+/* Event Actions Footer */
+.event-actions-footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+/* Button Styling (consistent with other components) */
+.btn {
+  padding: 0.8rem 1.8rem;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid transparent;
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.btn-primary {
+  background-color: var(--secondary-blue);
+  color: var(--white);
+  border-color: var(--secondary-blue);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-blue);
+  border-color: var(--primary-blue);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary {
+  background-color: var(--white);
+  color: var(--secondary-blue);
+  border: 2px solid var(--secondary-blue);
+}
+.btn-secondary:hover {
+  background-color: var(--light-blue);
+  color: var(--primary-blue);
+  border-color: var(--primary-blue);
+}
+
+.btn-back { /* Specific class for back button if needed */
+  /* Add specific styles if different from btn-secondary */
+}
+
+/* Status States (Loading, Error, Not Found) */
+.event-detail-container.loading-state,
+.event-detail-container.error-state,
+.event-detail-container.not-found-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: var(--light-blue);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.event-detail-container .loading-spinner,
+.event-detail-container .error-message,
+.event-detail-container .empty-state {
+  max-width: 550px;
+  width: 90%;
+  margin: 0 auto;
+  background-color: var(--white);
+  border-radius: 12px;
+  padding: 2.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  margin-top: 2rem; /* Add margin to separate from header */
+}
+
+.event-detail-container .loading-spinner .spinner {
+  border: 6px solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--secondary-blue);
+  width: 50px;
+  height: 50px;
+}
+.event-detail-container .loading-spinner p {
+  font-size: 1.2rem;
+  color: var(--text-medium);
+}
+
+.event-detail-container .error-message h2 {
+  color: #dc3545;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.event-detail-container .error-message p {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: var(--text-medium);
+}
+
+.event-detail-container .empty-icon {
+  font-size: 5rem;
+  margin-bottom: 1.2rem;
+  color: #b0bec5;
+}
+
+.event-detail-container .empty-state h3 {
+  color: var(--text-dark);
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.event-detail-container .empty-state p {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: var(--text-medium);
+}
+
+/* --- Responsive Adjustments for EventDetail --- */
+
+/* Tablets (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .event-detail-container {
+    padding: 2rem 1rem;
+    margin: 80px auto 30px;
+    min-height: calc(100vh - 110px);
+  }
+
+  .event-detail-card {
+    padding: 2rem;
+  }
+
+  .event-detail-image {
+    max-height: 350px;
+    margin-bottom: 1.5rem;
+  }
+
+  .event-info-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .event-detail-title {
+    font-size: 2.5rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .event-detail-item {
+    font-size: 1.1rem;
+    gap: 8px;
+  }
+  .detail-icon {
+    font-size: 1.2rem;
+  }
+
+  .event-description-section,
+  .organizer-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.2rem;
+    gap: 10px;
+    padding-bottom: 6px;
+  }
+  .section-icon {
+    font-size: 1.6rem;
+  }
+
+  .event-description-text {
+    font-size: 1.05rem;
+  }
+
+  .organizer-content {
+    gap: 15px;
+    padding: 1.2rem;
+  }
+
+  .organizer-profile-pic,
+  .organizer-profile-pic-placeholder {
+    width: 70px;
+    height: 70px;
+    font-size: 2.2rem;
+  }
+
+  .organizer-name {
+    font-size: 1.3rem;
+  }
+
+  .organizer-job-title,
+  .organizer-role,
+  .organizer-linkedin-wrapper {
+    font-size: 0.95rem;
+    gap: 6px;
+  }
+  .organizer-icon {
+    font-size: 1rem;
+  }
+
+  .event-actions-footer {
+    gap: 1rem;
+  }
+}
+
+/* Mobile Devices (max-width: 767px) */
+@media (max-width: 767px) {
+  .event-detail-container {
+    padding: 1.5rem 0.8rem;
+    margin: 70px auto 20px;
+    min-height: calc(100vh - 90px);
+  }
+
+  .event-detail-card {
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+
+  .event-detail-image {
+    max-height: 250px;
+    margin-bottom: 1.2rem;
+  }
+
+  .event-info-section {
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+  }
+
+  .event-detail-title {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .event-detail-item {
+    font-size: 1rem;
+    flex-direction: column; /* Stack date/location/verified vertically */
+    align-items: center;
+    gap: 4px;
+  }
+  .event-detail-item span {
+      display: block; /* Ensure value takes new line if needed */
+      text-align: center;
+  }
+  .detail-icon {
+    font-size: 1.1rem;
+    margin-bottom: 2px; /* Small margin below icon when stacked */
+  }
+
+  .event-description-section,
+  .organizer-section {
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    gap: 8px;
+    padding-bottom: 5px;
+  }
+  .section-icon {
+    font-size: 1.4rem;
+  }
+
+  .event-description-text {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .organizer-content {
+    flex-direction: column; /* Stack organizer pic and details */
+    gap: 15px;
+    padding: 1rem;
+    text-align: center; /* Center align text in stacked layout */
+  }
+
+  .organizer-profile-pic,
+  .organizer-profile-pic-placeholder {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+  }
+
+  .organizer-name {
+    font-size: 1.2rem;
+  }
+
+  .organizer-job-title,
+  .organizer-role,
+  .organizer-linkedin-wrapper {
+    font-size: 0.9rem;
+    flex-direction: column; /* Stack job title parts */
+    gap: 4px;
+  }
+  .organizer-job-title .organizer-icon,
+  .organizer-linkedin-wrapper .organizer-icon {
+    margin-bottom: 2px;
+  }
+
+  .event-actions-footer {
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 0.8rem;
+  }
+
+  .btn {
+    width: 100%; /* Full width buttons */
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .event-detail-container .loading-spinner,
+  .event-detail-container .error-message,
+  .event-detail-container .empty-state {
+      padding: 1.5rem;
+  }
+  .event-detail-container .empty-icon {
+      font-size: 4rem;
+  }
+  .event-detail-container .empty-state h3 {
+      font-size: 1.6rem;
+  }
+  .event-detail-container .empty-state p {
+      font-size: 1rem;
+  }
+}
+
+/* Smaller mobile devices (max-width: 480px) */
+@media (max-width: 480px) {
+  .event-detail-container {
+    padding: 1rem 0.5rem;
+    margin: 60px auto 15px;
+    min-height: calc(100vh - 75px);
+  }
+
+  .event-detail-card {
+    padding: 1rem;
+  }
+
+  .event-detail-image {
+    max-height: 200px;
+    margin-bottom: 1rem;
+  }
+
+  .event-detail-title {
+    font-size: 1.8rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .event-detail-item {
+    font-size: 0.9rem;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+    gap: 6px;
+    padding-bottom: 4px;
+  }
+  .section-icon {
+    font-size: 1.2rem;
+  }
+
+  .event-description-text {
+    font-size: 0.9rem;
+  }
+
+  .organizer-content {
+    padding: 0.8rem;
+    gap: 10px;
+  }
+
+  .organizer-profile-pic,
+  .organizer-profile-pic-placeholder {
+    width: 50px;
+    height: 50px;
+    font-size: 1.8rem;
+  }
+
+  .organizer-name {
+    font-size: 1.1rem;
+  }
+
+  .organizer-job-title,
+  .organizer-role,
+  .organizer-linkedin-wrapper {
+    font-size: 0.85rem;
+  }
+
+  .event-actions-footer {
+    gap: 0.6rem;
+  }
+
+  .btn {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.9rem;
+  }
+
+  .event-detail-container .loading-spinner,
+  .event-detail-container .error-message,
+  .event-detail-container .empty-state {
+      padding: 1rem;
+  }
+  .event-detail-container .empty-icon {
+      font-size: 3rem;
+  }
+  .event-detail-container .empty-state h3 {
+      font-size: 1.4rem;
+  }
+  .event-detail-container .empty-state p {
+      font-size: 0.9rem;
+  }
+}
