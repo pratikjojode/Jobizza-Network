@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom'; // Assuming you're using React Router
+import { useLocation } from 'react-router-dom'; 
 import '../styles/Header.css';
 import JobizzaLogo from '../assets/Jobizza-logo.jpeg';
 
@@ -28,7 +28,6 @@ const Header = () => {
           </a>
         </div>
 
-        {/* Desktop Navigation */}
         <nav className="navbar-nav desktop-nav">
           <ul className="nav-list">
             <li className="nav-item">
@@ -43,13 +42,11 @@ const Header = () => {
             <li className="nav-item">
               <a href="/pre-demo" className={getLinkClass('/pre-demo')}>Pre-Demo</a>
             </li>
-            <li className="nav-item">
-              <a href="/about" className={getLinkClass('/about')}>About Us</a>
-            </li>
+           
           </ul>
         </nav>
 
-        {/* Hamburger */}
+        
         <button
           className={`hamburger ${isMenuOpen ? 'active' : ''}`}
           onClick={toggleMenu}
@@ -60,7 +57,6 @@ const Header = () => {
           <span className="hamburger-line"></span>
         </button>
 
-        {/* Mobile Navigation */}
         <nav className={`navbar-nav mobile-nav ${isMenuOpen ? 'active' : ''}`}>
           <ul className="nav-list">
             <li className="nav-item">
@@ -81,7 +77,6 @@ const Header = () => {
           </ul>
         </nav>
 
-        {/* Overlay */}
         <div className={`navbar-overlay ${isMenuOpen ? 'active' : ''}`} onClick={closeMenu}></div>
       </div>
     </header>

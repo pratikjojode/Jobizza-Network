@@ -110,9 +110,9 @@ function VerifyOtpPage() {
                 onChange={(e) => setOtp(e.target.value)}
                 required
                 className="jobizaaa-otp-form-input"
-                maxLength="6" // Limit OTP input to 6 characters
-                inputMode="numeric" // Suggest numeric keyboard on mobile
-                pattern="[0-9]*" // Restrict input to numbers
+                maxLength="6" 
+                inputMode="numeric" 
+                pattern="[0-9]*" 
                 aria-label="One-Time Password"
               />
             </div>
@@ -122,7 +122,7 @@ function VerifyOtpPage() {
           </form>
         </div>
       </div>
-      <Footer /> {/* Render Footer component */}
+      <Footer /> 
     </>
   );
 }

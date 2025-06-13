@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-// Assuming useAuth context is correctly implemented and provides login, isAuthenticated, user
 import { useAuth } from "../context/AuthContext";
+<<<<<<< HEAD
 import "../styles/AuthForm.css"; // Import the new CSS file
+=======
+import '../styles/AuthForm.css'; 
+>>>>>>> a60c9a9e587c29c3d29f3af8da1330fbda0a9ed6
 import Header from "./Header";
-import Footer from "./Footer"; // Import Footer component
-// Removed Header and Footer imports as they were causing issues in the previous context
-// If you intend to use them, ensure they are imported and used correctly in your App.js or parent component.
+import Footer from "./Footer"; 
 
+<<<<<<< HEAD
 // Consider a default profile pic path if you want to show a preview
 const DEFAULT_PROFILE_PIC = "/profile-pic-dummy.png"; // Make sure you have this image in your public folder or accessible path
+=======
+const DEFAULT_PROFILE_PIC = "/profile-pic-dummy.png"; 
+>>>>>>> a60c9a9e587c29c3d29f3af8da1330fbda0a9ed6
 
 function AuthForm({ isRegister }) {
   const [email, setEmail] = useState("");
@@ -17,7 +22,7 @@ function AuthForm({ isRegister }) {
   const [fullName, setFullName] = useState("");
   const [company, setCompany] = useState("");
   const [designation, setDesignation] = useState("");
-  const [role, setRole] = useState("CXO"); // Default role
+  const [role, setRole] = useState("CXO"); 
   const [linkedin, setLinkedin] = useState("");
   const [financialCertifications, setFinancialCertifications] = useState("");
   const [yearsOfFinanceExperience, setYearsOfFinanceExperience] = useState("");
@@ -30,7 +35,6 @@ function AuthForm({ isRegister }) {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  // Destructure login, isAuthenticated, and user from the useAuth context
   const { login, isAuthenticated, user } = useAuth();
 
   const cLevelRoles = [
@@ -52,7 +56,7 @@ function AuthForm({ isRegister }) {
     "Admin",
   ];
 
-  // Effect to redirect authenticated users
+  
   useEffect(() => {
     if (isAuthenticated && user) {
       if (user.role === "Admin") {
@@ -61,22 +65,19 @@ function AuthForm({ isRegister }) {
         navigate("/connections", { replace: true });
       }
     }
-  }, [isAuthenticated, user, navigate]); // Dependencies for the effect
-
-  // Handler for profile picture file input change
+  }, [isAuthenticated, user, navigate]); 
   const handleFileChange = (e) => {
     setProfileImageFile(e.target.files[0]);
   };
 
-  // Handler for form submission
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
-    setError(""); // Clear previous errors
-    setSuccessMessage(""); // Clear previous success messages
-    setLoading(true); // Set loading state to true
+    e.preventDefault(); 
+    setError(""); 
+    setSuccessMessage(""); 
+    setLoading(true); 
 
     if (isRegister) {
-      // Logic for user registration
+      
       const industrySpecializationsArray = industrySpecializations
         .split(",")
         .map((s) => s.trim())
@@ -128,9 +129,15 @@ function AuthForm({ isRegister }) {
         if (response.ok) {
           setSuccessMessage(data.message + " Redirecting to login...");
           setTimeout(() => {
+<<<<<<< HEAD
             navigate("/login");
           }, 2000);
 
+=======
+            navigate("/login"); 
+          }, 2000);
+        
+>>>>>>> a60c9a9e587c29c3d29f3af8da1330fbda0a9ed6
           setEmail("");
           setPassword("");
           setFullName("");
@@ -151,12 +158,12 @@ function AuthForm({ isRegister }) {
         console.error("Registration error:", err);
         setError("Network error or server unreachable.");
       } finally {
-        setLoading(false); // Reset loading state
+        setLoading(false); 
       }
     } else {
-      // Logic for user login
+      
       try {
-        const res = await login(email, password, role); // Call login function from context
+        const res = await login(email, password, role);
         if (!res.success) {
           setError(res.message);
         }
@@ -164,12 +171,12 @@ function AuthForm({ isRegister }) {
         console.error("Login error:", err);
         setError("Network error or server unreachable.");
       } finally {
-        setLoading(false); // Reset loading state
+        setLoading(false); 
       }
     }
   };
 
-  // Don't render the form if the user is already authenticated
+  
   if (isAuthenticated) {
     return null;
   }
@@ -190,6 +197,7 @@ function AuthForm({ isRegister }) {
               : "Log in to continue your engagement with top financial leaders and access your exclusive resources."}
           </p>
 
+<<<<<<< HEAD
           {error && (
             <p className="jobizaaa-auth-message jobizaaa-auth-error-message">
               {error}
@@ -199,6 +207,243 @@ function AuthForm({ isRegister }) {
             <p className="jobizaaa-auth-message jobizaaa-auth-success-message">
               {successMessage}
             </p>
+=======
+        {error && <p className="jobizaaa-auth-message jobizaaa-auth-error-message">{error}</p>}
+        {successMessage && (
+          <p className="jobizaaa-auth-message jobizaaa-auth-success-message">{successMessage}</p>
+        )}
+
+        <form onSubmit={handleSubmit} className="jobizaaa-auth-form">
+          <div className="jobizaaa-form-group">
+            <label htmlFor="email" className="jobizaaa-form-label">
+              Email:
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="jobizaaa-form-input"
+              aria-label="Email address"
+            />
+          </div>
+          <div className="jobizaaa-form-group">
+            <label htmlFor="password" className="jobizaaa-form-label">
+              Password:
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="jobizaaa-form-input"
+              aria-label="Password"
+            />
+          </div>
+
+          {isRegister && (
+            <div className="jobizaaa-scroll-panel"> 
+              <div className="jobizaaa-form-group">
+                <label htmlFor="fullName" className="jobizaaa-form-label">
+                  Full Name:
+                </label>
+                <input
+                  type="text"
+                  id="fullName"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                  className="jobizaaa-form-input"
+                  aria-label="Full Name"
+                />
+              </div>
+              <div className="jobizaaa-form-group">
+                <label htmlFor="company" className="jobizaaa-form-label">
+                  Company:
+                </label>
+                <input
+                  type="text"
+                  id="company"
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
+                  required
+                  className="jobizaaa-form-input"
+                  aria-label="Company"
+                />
+              </div>
+              <div className="jobizaaa-form-group">
+                <label htmlFor="designation" className="jobizaaa-form-label">
+                  Designation:
+                </label>
+                <input
+                  type="text"
+                  id="designation"
+                  value={designation}
+                  onChange={(e) => setDesignation(e.target.value)}
+                  required
+                  className="jobizaaa-form-input"
+                  aria-label="Designation"
+                />
+              </div>
+              <div className="jobizaaa-form-group">
+                <label htmlFor="role" className="jobizaaa-form-label">
+                  Your Primary Role:
+                </label>
+                <select
+                  id="role"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="jobizaaa-form-input"
+                  aria-label="Primary Role"
+                >
+                  {cLevelRoles.map((r) => (
+                    <option key={r} value={r}>
+                      {r}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="jobizaaa-form-group">
+                <label htmlFor="linkedin" className="jobizaaa-form-label">
+                  LinkedIn Profile URL:
+                </label>
+                <input
+                  type="url"
+                  id="linkedin"
+                  value={linkedin}
+                  onChange={(e) => setLinkedin(e.target.value)}
+                  className="jobizaaa-form-input"
+                  aria-label="LinkedIn Profile URL"
+                />
+              </div>
+              <div className="jobizaaa-form-group">
+                <label
+                  htmlFor="financialCertifications"
+                  className="jobizaaa-form-label"
+                >
+                  Financial Certifications (comma-separated):
+                </label>
+                <input
+                  type="text"
+                  id="financialCertifications"
+                  value={financialCertifications}
+                  onChange={(e) => setFinancialCertifications(e.target.value)}
+                  className="jobizaaa-form-input"
+                  aria-label="Financial Certifications"
+                />
+              </div>
+              <div className="jobizaaa-form-group">
+                <label
+                  htmlFor="yearsOfFinanceExperience"
+                  className="jobizaaa-form-label"
+                >
+                  Years of Finance Experience:
+                </label>
+                <input
+                  type="number"
+                  id="yearsOfFinanceExperience"
+                  value={yearsOfFinanceExperience}
+                  onChange={(e) => setYearsOfFinanceExperience(e.target.value)}
+                  className="jobizaaa-form-input"
+                  aria-label="Years of Finance Experience"
+                />
+              </div>
+              <div className="jobizaaa-form-group">
+                <label
+                  htmlFor="industrySpecializations"
+                  className="jobizaaa-form-label"
+                >
+                  Industry Specializations (comma-separated):
+                </label>
+                <input
+                  type="text"
+                  id="industrySpecializations"
+                  value={industrySpecializations}
+                  onChange={(e) => setIndustrySpecializations(e.target.value)}
+                  className="jobizaaa-form-input"
+                  aria-label="Industry Specializations"
+                />
+              </div>
+              <div className="jobizaaa-form-group">
+                <label
+                  htmlFor="keyFinancialSkills"
+                  className="jobizaaa-form-label"
+                >
+                  Key Financial Skills (comma-separated):
+                </label>
+                <input
+                  type="text"
+                  id="keyFinancialSkills"
+                  value={keyFinancialSkills}
+                  onChange={(e) => setKeyFinancialSkills(e.target.value)}
+                  className="jobizaaa-form-input"
+                  aria-label="Key Financial Skills"
+                />
+              </div>
+              <div className="jobizaaa-form-group">
+                <label htmlFor="budgetManaged" className="jobizaaa-form-label">
+                  Budget Managed (e.g., "$1M+"):
+                </label>
+                <input
+                  type="text"
+                  id="budgetManaged"
+                  value={budgetManaged}
+                  onChange={(e) => setBudgetManaged(e.target.value)}
+                  className="jobizaaa-form-input"
+                  aria-label="Budget Managed"
+                />
+              </div>
+              <div className="jobizaaa-form-group">
+                <label htmlFor="profilePic" className="jobizaaa-form-label">
+                  Profile Picture (Optional):
+                </label>
+                <input
+                  type="file"
+                  id="profilePic"
+                  name="profilePic"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="jobizaaa-form-input-file" 
+                  aria-label="Profile Picture Upload"
+                />
+                {profileImageFile && (
+                  <div className="jobizaaa-image-preview">
+                    <img
+                      src={URL.createObjectURL(profileImageFile)}
+                      alt="Profile Preview"
+                      className="jobizaaa-profile-pic-thumbnail"
+                    />
+                    <p>{profileImageFile.name}</p>
+                  </div>
+                )}
+              </div>
+            </div> 
+          )}
+          
+
+          {!isRegister && (
+            <>
+              <p className="jobizaaa-form-label jobizaaa-role-selection-label">Login as Role:</p>
+              <div className="jobizaaa-role-cards-container">
+                
+                {cLevelRoles.map((r) => (
+                  <div
+                    key={r}
+                    className={`jobizaaa-role-card ${role === r ? "jobizaaa-role-card-selected" : ""}`}
+                    onClick={() => setRole(r)}
+                    tabIndex="0" 
+                    role="button" 
+                    aria-pressed={role === r} 
+                    aria-label={`Login as ${r}`}
+                  >
+                    {r}
+                  </div>
+                ))}
+              </div>
+            </>
+>>>>>>> a60c9a9e587c29c3d29f3af8da1330fbda0a9ed6
           )}
 
           <form onSubmit={handleSubmit} className="jobizaaa-auth-form">

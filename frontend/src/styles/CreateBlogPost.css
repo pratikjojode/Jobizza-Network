@@ -1,0 +1,670 @@
+/* CreateBlogPost.css */
+
+/* Import Font Awesome for icons */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+
+
+.create-blog-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #eef5ff 0%, #dee9f7 100%); /* Blue gradient background */
+  padding: 40px 0; /* Increased padding */
+  font-family: 'Inter', sans-serif; /* Consistent font */
+}
+
+.create-blog-wrapper {
+  max-width: 1100px; /* Wider wrapper for desktop */
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.blog-header {
+  text-align: center;
+  margin-bottom: 50px; /* More space below header */
+  padding: 30px 0;
+}
+
+.page-title {
+  font-size: 3rem; /* Larger title */
+  font-weight: 800; /* Bolder font */
+  color: #2c3e50;
+  margin-bottom: 15px; /* More space below title */
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); /* Stronger blue gradient */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.page-subtitle {
+  font-size: 1.2rem; /* Slightly larger subtitle */
+  color: #555555; /* Darker grey for better contrast */
+  margin: 0;
+  font-weight: 500; /* Medium weight */
+}
+
+.blog-form-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Form on left, tips on right */
+  gap: 50px; /* Increased gap */
+  align-items: start;
+}
+
+.blog-form {
+  background: white;
+  border-radius: 20px;
+  padding: 50px; /* Increased padding */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); /* Stronger shadow */
+  border: 1px solid #e0e0e0; /* Lighter border */
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+}
+
+.blog-form:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+/* Removed the ::before pseudo-element that created the blue line at the top */
+/*
+.blog-form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px; 
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); 
+}
+*/
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 35px; /* More space between input groups */
+}
+
+.input-group {
+  position: relative;
+  animation: slideInUp 0.6s ease-out; /* Existing animation */
+}
+
+.form-label {
+  display: block;
+  font-size: 1.05rem; /* Slightly larger label font */
+  font-weight: 700; /* Bolder labels */
+  color: #333333; /* Darker label color */
+  margin-bottom: 10px;
+  transition: color 0.3s ease;
+}
+
+.required {
+  color: #e74c3c; /* Red color for required indicator */
+  font-weight: 700;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  border: 2px solid #d1d5db; /* Lighter, more subtle border */
+  border-radius: 12px;
+  padding: 18px 22px; /* Increased padding */
+  font-size: 1.1rem; /* Larger input font */
+  font-family: 'Inter', sans-serif; /* Consistent font */
+  transition: all 0.3s ease;
+  background: #f8faff; /* Very light blue background for inputs */
+  resize: vertical;
+  box-sizing: border-box;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.05); /* Subtle inner shadow */
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: #d9e4eb; /* Softer placeholder color */
+  font-style: italic;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #007bff; /* Vibrant blue border on focus */
+  background: #ffffff; /* White background on focus */
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.25), inset 0 1px 4px rgba(0, 0, 0, 0.1); /* More prominent shadow */
+  transform: translateY(-2px); /* Slight lift on focus */
+}
+
+.title-input {
+  font-size: 1.3rem; /* Even larger title input font */
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.content-textarea {
+  min-height: 350px; /* Increased min-height for full content */
+  line-height: 1.7; /* Improved line height for readability */
+  font-family: 'Georgia', serif; /* Serif font for content */
+}
+
+.editor-toolbar {
+  background: #eef5ff; /* Light blue toolbar */
+  border: 2px solid #d1d5db;
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  padding: 12px 22px; /* Adjusted padding */
+  font-size: 0.95rem; /* Slightly larger toolbar text */
+  color: #607d8b; /* Darker grey blue for toolbar text */
+  font-weight: 500;
+}
+
+.content-textarea {
+  border-radius: 0 0 12px 12px;
+  border-top: none;
+}
+
+.char-count {
+  margin-top: 10px; /* More space above char count */
+  text-align: right;
+  font-size: 0.9rem; /* Slightly larger char count font */
+  color: #78909c; /* Softer grey for char count */
+}
+
+.char-count .error {
+  color: #e74c3c;
+  font-weight: 700;
+}
+
+.hashtag-preview {
+  margin-top: 15px; /* More space above hashtag preview */
+}
+
+.hashtag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* More space between chips */
+}
+
+.hashtag-chip {
+  background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%); /* Brighter blue gradient for tags */
+  color: white;
+  padding: 8px 15px; /* Larger padding for chips */
+  border-radius: 25px; /* More rounded chips */
+  font-size: 0.9rem; /* Larger chip font */
+  font-weight: 600;
+  box-shadow: 0 3px 8px rgba(66, 165, 245, 0.3); /* Enhanced shadow for chips */
+  transition: transform 0.2s ease;
+}
+
+.hashtag-chip:hover {
+    transform: translateY(-2px);
+}
+
+.image-upload-area {
+  border: 3px dashed #a7d9ff; /* Light blue dashed border */
+  border-radius: 15px; /* More rounded corners */
+  padding: 50px 20px; /* Increased padding */
+  text-align: center;
+  transition: all 0.3s ease;
+  background: #fdfefe; /* Very light background */
+  position: relative;
+  cursor: pointer;
+}
+
+.image-upload-area:hover {
+  border-color: #007bff; /* Vibrant blue on hover */
+  background: #eef5ff; /* Lighter blue background on hover */
+}
+
+.upload-placeholder {
+  position: relative;
+}
+
+.upload-icon {
+  font-size: 3.5rem; /* Larger icon */
+  margin-bottom: 20px; /* More space below icon */
+  opacity: 0.7;
+  color: #007bff; /* Blue icon */
+}
+
+.upload-placeholder p {
+  margin: 10px 0; /* More space around text */
+  color: #4b5563;
+  font-weight: 600; /* Bolder text */
+  font-size: 1.05rem;
+}
+
+.upload-note {
+  font-size: 0.9rem;
+  color: #9ca3af !important;
+  font-weight: 500 !important;
+}
+
+.file-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.image-preview {
+  position: relative;
+  display: inline-block;
+  max-width: 100%; /* Ensure it doesn't overflow */
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 350px; /* Taller preview image */
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18); /* Stronger shadow */
+  object-fit: cover; /* Cover the area, possibly cropping */
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: -12px; /* Slightly more offset */
+  right: -12px;
+  background: #e74c3c;
+  color: white;
+  border: 3px solid white; /* White border for contrast */
+  border-radius: 50%;
+  width: 36px; /* Larger button */
+  height: 36px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(231, 76, 60, 0.4); /* Enhanced shadow */
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.remove-image-btn:hover {
+  transform: scale(1.15) rotate(5deg); /* More pronounced hover effect */
+  background-color: #c0392b;
+}
+
+.form-actions {
+  display: flex;
+  gap: 20px; /* More space between buttons */
+  justify-content: flex-end;
+  margin-top: 50px; /* More space above actions */
+  padding-top: 40px; /* More padding above border */
+  border-top: 1px solid #e0e0e0; /* Lighter border */
+}
+
+.btn {
+  padding: 16px 36px; /* Larger buttons */
+  border-radius: 12px; /* More rounded buttons */
+  font-size: 1.1rem; /* Larger button text */
+  font-weight: 700; /* Bolder text */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px; /* More space for icon */
+  text-decoration: none;
+  min-width: 150px; /* Wider buttons */
+  justify-content: center;
+}
+
+.btn-secondary {
+  background: #eef5ff; /* Light blue background */
+  color: #007bff; /* Blue text */
+  border: 2px solid #cfe2ff; /* Light blue border */
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.1);
+}
+
+.btn-secondary:hover {
+  background: #dcebff; /* Darker light blue on hover */
+  color: #0056b3; /* Darker blue text */
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 123, 255, 0.2);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); /* Strong blue gradient */
+  color: white;
+  box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4); /* More prominent shadow */
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 123, 255, 0.5);
+  background: linear-gradient(135deg, #0056b3 0%, #003a7a 100%); /* Darker gradient on hover */
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn.loading {
+  pointer-events: none;
+}
+
+.spinner {
+  width: 20px; /* Larger spinner */
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3); /* Thicker, transparent border */
+  border-top: 3px solid white; /* White top border */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.blog-tips {
+  background: white;
+  border-radius: 20px;
+  padding: 40px; /* Increased padding */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e0e0;
+  height: fit-content;
+  position: sticky;
+  top: 40px; /* Adjusted sticky position */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+}
+
+.blog-tips:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+}
+
+.blog-tips h3 {
+  color: #2c3e50;
+  margin-bottom: 25px; /* More space below heading */
+  font-size: 1.3rem; /* Larger heading */
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.blog-tips ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.blog-tips li {
+  padding: 15px 0; /* More padding for list items */
+  border-bottom: 1px solid #f1f3f4;
+  color: #4b5563;
+  line-height: 1.6; /* Improved line height */
+  position: relative;
+  padding-left: 30px; /* More space for checkmark */
+  font-size: 0.98rem;
+}
+
+.blog-tips li:last-child {
+  border-bottom: none;
+}
+
+.blog-tips li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #10b981; /* Green checkmark */
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .create-blog-wrapper {
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 768px) {
+  .create-blog-wrapper {
+    padding: 0 15px;
+  }
+
+  .blog-form-container {
+    grid-template-columns: 1fr; /* Stack columns on smaller screens */
+    gap: 40px;
+  }
+
+  .blog-form {
+    padding: 30px 25px; /* Adjusted padding */
+  }
+
+  .page-title {
+    font-size: 2.2rem;
+  }
+
+  .page-subtitle {
+      font-size: 1.1rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 14px 25px;
+    font-size: 1rem;
+  }
+
+  .blog-tips {
+    position: relative; /* Remove sticky behavior on small screens */
+    top: auto;
+    padding: 30px 25px;
+  }
+
+  .form-input,
+  .form-textarea {
+      padding: 15px 18px;
+      font-size: 1rem;
+  }
+
+  .title-input {
+      font-size: 1.1rem;
+  }
+
+  .content-textarea {
+      min-height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .create-blog-container {
+    padding: 20px 0;
+  }
+
+  .blog-header {
+    padding: 15px 0;
+    margin-bottom: 30px;
+  }
+
+  .page-title {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+  }
+
+  .page-subtitle {
+      font-size: 0.95rem;
+  }
+
+  .blog-form {
+    padding: 25px 15px;
+    border-radius: 15px;
+  }
+
+  .form-section {
+    gap: 25px;
+  }
+
+  .form-label {
+      font-size: 0.95rem;
+  }
+
+  .form-input,
+  .form-textarea {
+    padding: 12px 15px;
+    font-size: 0.95rem;
+    border-radius: 10px;
+  }
+
+  .title-input {
+      font-size: 1rem;
+  }
+
+  .content-textarea {
+    min-height: 200px;
+  }
+
+  .editor-toolbar {
+      padding: 10px 15px;
+      font-size: 0.9rem;
+      border-radius: 10px 10px 0 0;
+  }
+
+  .hashtag-chip {
+      padding: 6px 10px;
+      font-size: 0.8rem;
+  }
+
+  .image-upload-area {
+      padding: 30px 15px;
+      border-radius: 10px;
+  }
+
+  .upload-icon {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+  }
+
+  .upload-placeholder p {
+      font-size: 0.9rem;
+      margin: 5px 0;
+  }
+
+  .upload-note {
+      font-size: 0.8rem;
+  }
+
+  .preview-image {
+      max-height: 250px;
+      border-radius: 10px;
+  }
+
+  .remove-image-btn {
+      width: 30px;
+      height: 30px;
+      font-size: 0.9rem;
+      top: -8px;
+      right: -8px;
+  }
+
+  .form-actions {
+      margin-top: 30px;
+      padding-top: 20px;
+  }
+
+  .btn {
+      padding: 12px 20px;
+      font-size: 0.95rem;
+      min-width: unset;
+      border-radius: 10px;
+  }
+
+  .spinner {
+      width: 16px;
+      height: 16px;
+      border-width: 2px;
+  }
+
+  .blog-tips {
+      padding: 25px 15px;
+      border-radius: 15px;
+  }
+
+  .blog-tips h3 {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+  }
+
+  .blog-tips li {
+      padding: 10px 0;
+      padding-left: 25px;
+      font-size: 0.9rem;
+  }
+}
+
+/* Animation for form elements */
+.input-group:nth-child(1) { animation-delay: 0.1s; }
+.input-group:nth-child(2) { animation-delay: 0.2s; }
+.input-group:nth-child(3) { animation-delay: 0.3s; }
+.input-group:nth-child(4) { animation-delay: 0.4s; }
+.input-group:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Focus states for accessibility */
+.form-input:focus + .char-count,
+.form-textarea:focus + .char-count {
+  color: #007bff; /* Blue on focus */
+  font-weight: 700;
+}
+
+/* Error states */
+.form-input.error,
+.form-textarea.error {
+  border-color: #e74c3c;
+  background: #fffafa; /* Light red background */
+}
+
+.form-input.error:focus,
+.form-textarea.error:focus {
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.15);
+}
+
+/* Success states (if needed for validation feedback) */
+.form-input.success,
+.form-textarea.success {
+  border-color: #2ecc71; /* Green for success */
+  background: #f0fff0;
+}
+
+/* Loading overlay for form submission */
+.blog-form.submitting {
+  position: relative;
+  pointer-events: none;
+}
+
+.blog-form.submitting::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.85); /* Slightly less transparent */
+  backdrop-filter: blur(3px); /* Stronger blur */
+  z-index: 10;
+  border-radius: 20px; /* Match form border-radius */
+}

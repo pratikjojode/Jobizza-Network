@@ -1,0 +1,455 @@
+/* UniqueConnectionsHeader.css */
+
+/* General Header Styles */
+.connect-page-main-header {
+  background-color: #ffffff;
+  padding: 15px 25px; /* Adjusted padding for better spacing */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  font-family: 'Inter', sans-serif; /* Consistent font */
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; /* Ensure header stays on top */
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Left Content Area (Logo, Hamburger, Navigation) */
+.header-left-content-area {
+  display: flex;
+  align-items: center;
+  gap: 25px; /* Space between logo and nav items */
+}
+
+.app-brand-logo-link {
+  font-size: 1.6rem; /* Larger logo font */
+  font-weight: 800; /* Bolder */
+  color: #007bff; /* Jobizaa blue */
+  text-decoration: none;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  padding: 5px 0; /* Align with other elements */
+}
+
+/* Hamburger Menu Icon (Mobile Only) */
+.hamburger-menu-icon {
+  display: none; /* Hidden by default on desktop */
+  font-size: 1.8rem;
+  color: #333333;
+  cursor: pointer;
+  z-index: 1001; /* Above mobile menu */
+}
+
+/* Navigation Menu */
+.header-navigation-menu {
+  display: flex;
+  align-items: center;
+  gap: 25px; /* Space between navigation items */
+}
+
+.nav-item-icon-link {
+  display: flex;
+  flex-direction: column; /* Stack icon and text */
+  align-items: center;
+  text-decoration: none;
+  color: #555555;
+  font-weight: 600;
+  font-size: 0.9rem; /* Slightly smaller text for icons */
+  transition: color 0.3s ease, transform 0.2s ease;
+  padding: 8px 5px; /* Add some padding for clickable area */
+  border-radius: 8px; /* Rounded corners */
+}
+
+.nav-item-icon-link svg {
+  font-size: 1.4rem; /* Icon size */
+  margin-bottom: 5px; /* Space between icon and text */
+  color: #667eea; /* Blue for icons */
+  transition: color 0.3s ease;
+}
+
+.nav-item-icon-link:hover {
+  color: #007bff;
+  transform: translateY(-2px);
+}
+
+.nav-item-icon-link:hover svg {
+  color: #0056b3;
+}
+
+/* Active Navigation Link */
+.nav-item-icon-link.active {
+  color: #007bff;
+  position: relative;
+}
+
+.nav-item-icon-link.active svg {
+  color: #0056b3;
+}
+
+.nav-item-icon-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -15px; /* Position below the text/icon */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%; /* Line width */
+  height: 3px;
+  background: linear-gradient(90deg, #007bff, #0056b3); /* Blue gradient underline */
+  border-radius: 2px;
+}
+
+
+.nav-item-text {
+  display: block; /* Always display on desktop */
+}
+
+/* Search Forms */
+.header-search-form {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 25px; /* Fully rounded search bar */
+  overflow: hidden;
+  background-color: #f8f9fa;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.header-search-form:focus-within {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+.search-input {
+  border: none;
+  padding: 10px 15px;
+  font-size: 0.95rem;
+  background-color: transparent;
+  width: 180px; /* Default width for search input */
+  outline: none;
+  color: #333333;
+}
+
+.search-filter-select {
+  border: none;
+  padding: 10px 10px;
+  font-size: 0.95rem;
+  background-color: transparent;
+  outline: none;
+  color: #555555;
+  cursor: pointer;
+  appearance: none; /* Remove default arrow */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666' width='18px' height='18px'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E"); /* Custom arrow */
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 30px; /* Space for custom arrow */
+}
+
+.search-button {
+  background-color: #007bff;
+  border: none;
+  padding: 10px 15px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 0 25px 25px 0; /* Only right side rounded */
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+/* Right User Actions */
+.header-right-user-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Space between user action items */
+}
+
+.user-profile-display-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #333333;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.user-profile-display-link:hover {
+  color: #007bff;
+  transform: translateY(-2px);
+}
+
+.user-profile-avatar-img {
+  width: 38px; /* Avatar size */
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
+  border: 2px solid #007bff; /* Blue border for avatar */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.user-profile-avatar-placeholder-div {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #555555;
+  font-size: 1.1rem;
+  margin-right: 8px;
+  border: 2px solid #007bff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.settings-icon-link {
+  color: #555555;
+  font-size: 1.5rem; /* Settings icon size */
+  transition: color 0.3s ease, transform 0.2s ease;
+  padding: 5px; /* Add padding for easier clicking */
+  border-radius: 50%;
+}
+
+.settings-icon-link:hover {
+  color: #007bff;
+  transform: rotate(30deg); /* Slight rotation on hover */
+  background-color: #f0f8ff;
+}
+
+.logout-action-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 25px; /* Rounded button */
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.logout-action-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+}
+
+/* Mobile Specific Styles */
+.mobile-search,
+.mobile-only {
+    display: none; /* Hidden by default */
+}
+.desktop-only {
+    display: flex; /* Visible by default */
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 1024px) {
+  /* Adjustments for smaller desktops/large tablets */
+  .header-left-content-area {
+    gap: 15px;
+  }
+  .header-navigation-menu {
+    gap: 15px;
+  }
+  .search-input {
+    width: 150px; /* Slightly smaller search input */
+  }
+  .header-right-user-actions {
+    gap: 15px;
+  }
+  .nav-item-icon-link {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .connect-page-main-header {
+    padding: 10px 20px;
+  }
+
+  .app-brand-logo-link {
+    font-size: 1.4rem;
+  }
+
+  .hamburger-menu-icon {
+    display: block; /* Show hamburger on mobile */
+  }
+
+  .header-navigation-menu {
+    position: fixed;
+    top: 0; /* Will be adjusted by JS, but visually start from top */
+    right: -100%; /* Hide menu off-screen to the right */
+    width: 280px; /* Width of the mobile menu */
+    height: 100vh;
+    background-color: #ffffff;
+    flex-direction: column; /* Stack items vertically */
+    justify-content: flex-start; /* Align items to the top */
+    padding: 80px 15px 20px; /* Adjusted horizontal padding for menu content */
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+    transition: right 0.3s ease-in-out;
+    z-index: 999; /* Below hamburger icon */
+    align-items: flex-start; /* Align text to left */
+    gap: 15px; /* Spacing for vertical menu items */
+    overflow-y: auto; /* Enable scrolling for long menus */
+  }
+
+  .header-navigation-menu.menu-open {
+    right: 0; /* Slide menu into view */
+  }
+
+  .nav-item-icon-link {
+    width: 100%; /* Full width for menu items */
+    flex-direction: row; /* Icon and text side-by-side */
+    justify-content: flex-start;
+    padding: 12px 10px;
+    font-size: 1rem;
+    color: #333333;
+    border-radius: 8px;
+  }
+
+  .nav-item-icon-link:hover {
+      background-color: #f0f8ff;
+      transform: none; /* Remove transform on mobile menu hover */
+  }
+  .nav-item-icon-link.active {
+      background-color: #e0f0ff; /* Lighter blue for active state in menu */
+  }
+  .nav-item-icon-link.active::after {
+      content: none; /* Remove underline on mobile menu */
+  }
+
+
+  .nav-item-icon-link svg {
+    margin-bottom: 0;
+    margin-right: 10px; /* Space between icon and text */
+    font-size: 1.6rem; /* Larger icons in menu */
+  }
+
+  .nav-item-text {
+    display: block; /* Always show text in mobile menu */
+  }
+
+  /* Hide desktop elements */
+  .desktop-search,
+  .desktop-only {
+    display: none;
+  }
+
+  /* Show mobile elements */
+  .mobile-search {
+    display: flex; /* Ensure mobile search is displayed */
+    width: 100%; /* Take full width of the padded menu content area */
+    margin: 10px 0 20px 0; /* Adjusted margin to ensure it spans correctly */
+    border: 1px solid #cfe2ff;
+    border-radius: 25px; /* Rounded corners for the search bar */
+    background-color: #eef5ff;
+    min-height: 45px; /* Ensure it has a visible height */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    align-items: center; /* Vertically align items in the search bar */
+    overflow: hidden; /* Hide anything that overflows the rounded corners */
+  }
+  .mobile-search .search-input {
+      flex-grow: 1; /* Allow input to take available space */
+      background-color: #eef5ff;
+      width: auto; /* Let flexbox control width */
+      padding: 10px 12px;
+      border-radius: 0; /* Remove individual border-radius, controlled by parent */
+  }
+  .mobile-search .search-filter-select {
+      background-color: #eef5ff;
+      width: 75px; /* Adjusted width for the select dropdown */
+      flex-shrink: 0; /* Prevent shrinking */
+      padding: 10px 5px; /* Adjust padding */
+      font-size: 0.85rem;
+      border-radius: 0; /* Remove individual border-radius */
+  }
+  .mobile-search .search-button {
+      flex-shrink: 0; /* Prevent shrinking */
+      width: 45px; /* Fixed width for the search button */
+      padding: 10px 5px; /* Adjust padding for fixed width */
+      font-size: 0.9rem;
+      border-radius: 0 25px 25px 0; /* Apply border-radius only to the right side */
+  }
+
+
+  .mobile-only {
+      display: flex; /* Show mobile-only profile/settings/logout */
+      width: 100%;
+      justify-content: flex-start;
+      padding: 12px 10px;
+      font-size: 1rem;
+      color: #333333;
+      border-radius: 8px;
+  }
+  .mobile-only:hover {
+      background-color: #f0f8ff;
+      transform: none;
+  }
+  .logout-action-button.mobile-only {
+      background-color: #f8f9fa;
+      color: #dc3545; /* Red for logout */
+      border: 1px solid #dc3545;
+      box-shadow: none;
+      padding: 12px 10px;
+      font-weight: 500;
+      width: 100%;
+      justify-content: center;
+  }
+  .logout-action-button.mobile-only:hover {
+      background-color: #dc3545;
+      color: white;
+  }
+
+  .user-profile-display-link.mobile-only .user-profile-avatar-img,
+  .user-profile-display-link.mobile-only .user-profile-avatar-placeholder-div {
+      width: 32px;
+      height: 32px;
+      margin-right: 10px;
+  }
+  .settings-icon-link.mobile-only svg {
+      font-size: 1.6rem;
+      margin-right: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .connect-page-main-header {
+    padding: 10px 15px;
+  }
+  .app-brand-logo-link {
+    font-size: 1.3rem;
+  }
+  .hamburger-menu-icon {
+    font-size: 1.6rem;
+  }
+  .header-navigation-menu {
+    width: 250px; /* Slightly narrower menu for smaller screens */
+    padding: 70px 15px 15px;
+  }
+  .mobile-search .search-filter-select {
+      width: 65px; /* Further adjusted width for select on very small screens */
+      padding: 10px 2px; /* Reduced padding */
+      font-size: 0.8rem; /* Smaller font for select */
+  }
+  .mobile-search .search-button {
+      width: 38px; /* Further adjusted width for button on very small screens */
+      padding: 10px 2px; /* Reduced padding */
+      font-size: 0.8rem; /* Smaller font for button */
+  }
+  .mobile-search .search-input {
+      padding: 10px 8px; /* Adjusted padding for input */
+      font-size: 0.85rem; /* Smaller font for input */
+  }
+}

@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import ConnectionsHeader from "../components/ConnectionsHeader";
+import Footer from "../components/Footer";
 import "../styles/BlogsOverview.css";
 
 const BlogsOverview = () => {
@@ -80,7 +81,7 @@ const BlogsOverview = () => {
             <img
               src={
                 blog.userId?.profilePic ||
-                "https://placehold.co/40x40/cccccc/333333?text=NP"
+                "https://placehold.co/40x40/add8e6/003366?text=NP" // Updated placeholder
               }
               alt={blog.userId?.fullName || "Anonymous"}
               className="blogAuthorAvatar"
@@ -159,11 +160,11 @@ const BlogsOverview = () => {
         <div className="blogsSectionCard myBlogsSection">
           <h2 className="sectionTitle">My Blog Posts</h2>
           {loadingMyBlogs ? (
-            <p className="loadingMessage">Loading your blogs...</p>
+            <p className="statusMessage loadingMessage">Loading your blogs...</p>
           ) : myBlogsError ? (
-            <p className="errorMessage">{myBlogsError}</p>
+            <p className="statusMessage errorMessage">{myBlogsError}</p>
           ) : myBlogs.length === 0 ? (
-            <p className="emptyMessage">
+            <p className="statusMessage emptyMessage">
               You haven't created any blog posts yet.
             </p>
           ) : (
@@ -180,11 +181,11 @@ const BlogsOverview = () => {
         <div className="blogsSectionCard allBlogsSection">
           <h2 className="sectionTitle">All Blog Posts</h2>
           {loadingAllBlogs ? (
-            <p className="loadingMessage">Loading all blogs...</p>
+            <p className="statusMessage loadingMessage">Loading all blogs...</p>
           ) : allBlogsError ? (
-            <p className="errorMessage">{allBlogsError}</p>
+            <p className="statusMessage errorMessage">{allBlogsError}</p>
           ) : allBlogs.length === 0 ? (
-            <p className="emptyMessage">No blog posts available yet.</p>
+            <p className="statusMessage emptyMessage">No blog posts available yet.</p>
           ) : (
             <div className="blogsGrid">
               {allBlogs.map((blog) => (
@@ -194,6 +195,7 @@ const BlogsOverview = () => {
           )}
         </div>
       </div>
+      <Footer/>
     </>
   );
 };
