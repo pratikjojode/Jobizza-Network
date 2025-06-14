@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify"; // Ensure ToastContainer is imported
-import "react-toastify/dist/ReactToastify.css"; // Ensure CSS is imported
+import "react-toastify/dist/ReactToastify.css";
 import ConnectionsHeader from "../components/ConnectionsHeader";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 
 const ViewAllEvents = () => {
   const [events, setEvents] = useState([]);
@@ -32,7 +32,7 @@ const ViewAllEvents = () => {
   }, []);
 
   const handleViewEvent = (eventId) => {
-    navigate(`/events/${eventId}`); // Redirects to /events/:id
+    navigate(`/events/${eventId}`);
   };
 
   if (loading) {
@@ -45,7 +45,7 @@ const ViewAllEvents = () => {
 
   return (
     <>
-      <ToastContainer /> {/* ToastContainer should be placed here */}
+      <ToastContainer />
       <ConnectionsHeader />
       <h2>All Events</h2>
       {events.length === 0 ? (
@@ -53,11 +53,9 @@ const ViewAllEvents = () => {
       ) : (
         <div className="events-grid">
           {" "}
-          {/* Consider adding a class for styling */}
           {events.map((event) => (
             <div key={event._id} className="event-card">
               {" "}
-              {/* Consider adding a class for styling */}
               {event.imageUrl && (
                 <img
                   src={event.imageUrl}
