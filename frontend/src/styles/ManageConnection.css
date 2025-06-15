@@ -1,0 +1,513 @@
+/* --- General Styling & Responsive Basics --- */
+.manage-connections-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+/* For smaller screens, ensure padding is reasonable */
+@media (max-width: 768px) {
+  .manage-connections-container {
+    padding: 15px;
+  }
+}
+
+/* --- Header & Action Buttons --- */
+.manage-connections-header {
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  gap: 15px; /* Space between header elements */
+}
+
+.manage-connections-header h2 {
+  font-size: 1.8em;
+  color: #2c3e50;
+  margin: 0;
+  flex-grow: 1; /* Allow heading to take available space */
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Space between buttons */
+}
+
+.action-buttons button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.95em;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  white-space: nowrap; /* Prevent buttons from wrapping text */
+}
+
+.action-buttons button:hover {
+  transform: translateY(-2px);
+}
+
+.toggle-view-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.toggle-view-btn:hover {
+  background-color: #2980b9;
+}
+
+.export-csv-btn {
+  background-color: #27ae60;
+  color: white;
+}
+
+.export-csv-btn:hover {
+  background-color: #229954;
+}
+
+.bulk-delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.bulk-delete-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.bulk-delete-btn:hover:not(:disabled) {
+  background-color: #c0392b;
+}
+
+/* Responsive adjustments for header buttons */
+@media (max-width: 600px) {
+  .manage-connections-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .manage-connections-header h2 {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .action-buttons {
+    width: 100%;
+    justify-content: stretch; /* Stretch buttons to fill width */
+  }
+
+  .action-buttons button {
+    flex: 1; /* Distribute space evenly */
+  }
+}
+
+/* --- Messages (Loading, Error, No Connections) --- */
+.loading-message,
+.error-message,
+.no-connections-message {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.1em;
+  border-radius: 8px;
+  margin-top: 30px;
+}
+
+.loading-message {
+  background-color: #e8f5e9; /* Light green */
+  color: #27ae60;
+}
+
+.error-message {
+  background-color: #fce4e4; /* Light red */
+  color: #c0392b;
+  border: 1px solid #e74c3c;
+}
+
+.no-connections-message {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
+/* --- Table View --- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden; /* Ensures rounded corners apply to content */
+}
+
+table thead {
+  background-color: #f5f5f5;
+}
+
+table th,
+table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  font-size: 0.9em;
+}
+
+table th {
+  color: #555;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.selected-row {
+  background-color: #eaf6fd !important; /* Highlight selected rows */
+}
+
+table td .action-buttons {
+  gap: 5px; /* Smaller gap for actions within table cells */
+  flex-wrap: wrap; /* Allow action buttons to wrap within cell if needed */
+  justify-content: flex-start; /* Align actions to the left */
+}
+
+table td button {
+  padding: 6px 10px;
+  font-size: 0.85em;
+  border-radius: 4px;
+}
+
+/* Specific button colors for table actions */
+button.view-btn {
+  background-color: #3498db;
+  color: white;
+}
+button.view-btn:hover {
+  background-color: #2980b9;
+}
+
+button.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+button.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+button.block-btn {
+  background-color: #9b59b6; /* Purple */
+  color: white;
+}
+button.block-btn:hover {
+  background-color: #8e44ad;
+}
+
+/* Pending actions */
+button.accept-btn {
+  background-color: #2ecc71;
+  color: white;
+}
+button.accept-btn:hover {
+  background-color: #27ad60;
+}
+
+button.decline-btn {
+  background-color: #f39c12; /* Orange */
+  color: white;
+}
+button.decline-btn:hover {
+  background-color: #e67e22;
+}
+
+button.cancel-btn {
+  background-color: #f1c40f; /* Yellow */
+  color: #333;
+}
+button.cancel-btn:hover {
+  background-color: #f0b20a;
+}
+
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Checkbox styling */
+input[type="checkbox"] {
+  transform: scale(1.2);
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+/* Responsive Table */
+@media (max-width: 900px) {
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block; /* Make table elements behave like block elements */
+  }
+
+  thead tr {
+    position: absolute;
+    top: -9999px; /* Hide table headers visually */
+    left: -9999px;
+  }
+
+  table tr {
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  table td {
+    border: none;
+    position: relative;
+    padding-left: 50%; /* Make space for data-label */
+    text-align: right;
+  }
+
+  table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    width: calc(50% - 30px);
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: bold;
+    text-align: left;
+    color: #555;
+  }
+
+  table td:first-child {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 15px; /* Adjust padding for checkbox */
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+  }
+
+  table td:last-child {
+    border-bottom: none;
+    text-align: left; /* Align actions to the left */
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+
+  table td .action-buttons {
+    flex-direction: column; /* Stack buttons vertically */
+    align-items: flex-start;
+  }
+
+  table td button {
+    width: 100%; /* Make buttons full width */
+    margin-bottom: 5px; /* Space between stacked buttons */
+  }
+}
+
+/* --- Card View --- */
+.connection-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+  margin-top: 20px;
+}
+
+.connection-card {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.connection-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.selected-card {
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3); /* Blue highlight */
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.card-header input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.card-header h3 {
+  font-size: 1.1em;
+  color: #333;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.card-status {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8em;
+  font-weight: bold;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.status-pending {
+  background-color: #fdf5e6; /* Light yellow */
+  color: #f39c12;
+}
+
+.status-accepted {
+  background-color: #e6faed; /* Light green */
+  color: #2ecc71;
+}
+
+.status-declined {
+  background-color: #ffeaea; /* Light red */
+  color: #e74c3c;
+}
+
+.card-body p {
+  margin: 8px 0;
+  font-size: 0.95em;
+  line-height: 1.4;
+}
+
+.card-body strong {
+  color: #555;
+}
+
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px; /* Space between buttons in card view */
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.card-actions button {
+  flex: 1 1 auto; /* Allow buttons to grow and shrink */
+  padding: 8px 12px;
+  font-size: 0.85em;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+/* Apply specific button styles from table view to card view as well */
+.card-actions .view-btn {
+  background-color: #3498db;
+  color: white;
+}
+.card-actions .view-btn:hover {
+  background-color: #2980b9;
+}
+
+.card-actions .delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+.card-actions .delete-btn:hover {
+  background-color: #c0392b;
+}
+
+.card-actions .block-btn {
+  background-color: #9b59b6;
+  color: white;
+}
+.card-actions .block-btn:hover {
+  background-color: #8e44ad;
+}
+
+/* Pending actions for cards */
+.card-actions button[onClick^="handleAccept"] {
+  background-color: #2ecc71;
+  color: white;
+}
+.card-actions button[onClick^="handleAccept"]:hover {
+  background-color: #27ad60;
+}
+
+.card-actions button[onClick^="handleDecline"] {
+  background-color: #f39c12;
+  color: white;
+}
+.card-actions button[onClick^="handleDecline"]:hover {
+  background-color: #e67e22;
+}
+
+.card-actions button[onClick^="handleCancel"] {
+  background-color: #f1c40f;
+  color: #333;
+}
+.card-actions button[onClick^="handleCancel"]:hover {
+  background-color: #f0b20a;
+}
+
+.card-actions button[onClick^="handleRemove"] {
+  background-color: #ff7f50; /* Coral for remove */
+  color: white;
+}
+.card-actions button[onClick^="handleRemove"]:hover {
+  background-color: #ff6347;
+}
+
+/* Responsive adjustments for card view grid */
+@media (max-width: 768px) {
+  .connection-cards-container {
+    grid-template-columns: 1fr; /* Single column on smaller screens */
+  }
+}
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.status-pending {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+.status-accepted {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+.status-declined {
+  background-color: #fecaca;
+  color: #991b1b;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-id {
+  color: #6b7280;
+  font-size: 11px;
+}
+
+.action-buttons-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}

@@ -32,7 +32,10 @@ export const createEvent = async (req, res) => {
 
 export const getAllEvents = async (req, res) => {
   try {
-    const events = await Event.find().populate("organizer", "username");
+    const events = await Event.find().populate(
+      "organizer",
+      "email fullName company designation role"
+    );
     res.status(200).json(events);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -95,10 +98,13 @@ export const updateEvent = async (req, res) => {
       return res.status(404).json({ message: "Event not found" });
     }
 
-    if (event.organizer.toString() !== req.user._id) {
-      return res.status(403).json({
-        message: "Forbidden: You are not the organizer of this event",
-      });
+    if (
+      event.organizer.toString() !== req.user._id &&
+      req.user.role !== "Admin"
+    ) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to update this event" });
     }
 
     event.title = title || event.title;
@@ -130,11 +136,16 @@ export const deleteEvent = async (req, res) => {
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
     }
-    if (event.organizer.toString() !== req.user.userId) {
+
+    if (
+      event.organizer.toString() !== req.user.userId &&
+      req.user.role !== "Admin"
+    ) {
       return res.status(403).json({
-        message: "Forbidden: You are not the organizer of this event",
+        message: "Forbidden: You are not authorized to delete this event",
       });
     }
+
     await Event.deleteOne({ _id: req.params.id });
     res.status(200).json({ message: "Event deleted successfully" });
   } catch (err) {

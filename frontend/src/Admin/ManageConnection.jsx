@@ -13,6 +13,20 @@ const ManageConnection = () => {
   const [viewMode, setViewMode] = useState("table");
   const [selectedConnectionIds, setSelectedConnectionIds] = useState([]);
 
+  const compareUserIds = (id1, id2) => {
+    if (!id1 || !id2) return false;
+    const str1 =
+      typeof id1 === "object" ? id1._id || id1.toString() : String(id1);
+    const str2 =
+      typeof id2 === "object" ? id2._id || id2.toString() : String(id2);
+    return str1 === str2;
+  };
+
+  const getUserId = (user) => {
+    if (!user) return null;
+    return typeof user === "object" ? user._id : String(user);
+  };
+
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
@@ -72,7 +86,7 @@ const ManageConnection = () => {
   const refreshConnections = async () => {
     setLoading(true);
     setError(null);
-    setSelectedConnectionIds([]); // Clear selections on refresh
+    setSelectedConnectionIds([]);
     const storedToken = localStorage.getItem("token");
     if (!storedToken) {
       setError("No authentication token found. Please log in.");
@@ -263,8 +277,6 @@ const ManageConnection = () => {
     }
   };
 
-  // --- New Functions for Card View, Export, and Bulk Delete ---
-
   const toggleViewMode = () => {
     setViewMode((prevMode) => (prevMode === "table" ? "card" : "table"));
   };
@@ -300,16 +312,13 @@ const ManageConnection = () => {
       return;
     }
 
-    setLoading(true); // Show loading while bulk deleting
+    setLoading(true);
     setError(null);
     const storedToken = localStorage.getItem("token");
 
     try {
-      // Send array of IDs to the backend
-      // Assuming your backend has an endpoint like DELETE /api/v1/connections/bulk-delete
-      // which accepts an array of IDs in the request body (e.g., { ids: [...] })
       await axios.post(
-        `/api/v1/connections/bulk-delete`, // Use POST for bulk delete if DELETE with body is not supported
+        `/api/v1/connections/bulk-delete`,
         { ids: selectedConnectionIds },
         {
           headers: {
@@ -318,7 +327,7 @@ const ManageConnection = () => {
         }
       );
       alert(`${selectedConnectionIds.length} connections permanently deleted!`);
-      refreshConnections(); // Refresh the list after deletion
+      refreshConnections();
     } catch (err) {
       console.error("Error bulk deleting connections:", err);
       alert(
@@ -328,7 +337,7 @@ const ManageConnection = () => {
       );
     } finally {
       setLoading(false);
-      setSelectedConnectionIds([]); // Clear selection regardless of success/failure
+      setSelectedConnectionIds([]);
     }
   };
 
@@ -399,6 +408,9 @@ const ManageConnection = () => {
       <div className="manage-connections-header">
         <h2>Manage All Connections ({connections.length})</h2>
         <div className="action-buttons">
+          <button onClick={refreshConnections} className="refresh-btn">
+            Refresh
+          </button>
           <button onClick={toggleViewMode} className="toggle-view-btn">
             {viewMode === "table" ? "Show Card View" : "Show Table View"}
           </button>
@@ -420,167 +432,215 @@ const ManageConnection = () => {
       ) : (
         <>
           {viewMode === "table" ? (
-            <table>
-              <thead>
-                <tr>
-                  <th>
-                    <input
-                      type="checkbox"
-                      onChange={handleSelectAllChange}
-                      checked={
-                        selectedConnectionIds.length === connections.length &&
-                        connections.length > 0
-                      }
-                    />
-                  </th>
-                  <th>ID</th>
-                  <th>Sender (ID)</th>
-                  <th>Receiver (ID)</th>
-                  <th>Status</th>
-                  <th>Created At</th>
-                  <th>Updated At</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {connections.map((connection) => (
-                  <tr
-                    key={connection._id}
-                    className={
-                      selectedConnectionIds.includes(connection._id)
-                        ? "selected-row"
-                        : ""
-                    }
-                  >
-                    <td>
+            <div className="table-container">
+              <table className="connections-table">
+                <thead>
+                  <tr>
+                    <th>
                       <input
                         type="checkbox"
-                        checked={selectedConnectionIds.includes(connection._id)}
-                        onChange={() => handleCheckboxChange(connection._id)}
+                        onChange={handleSelectAllChange}
+                        checked={
+                          selectedConnectionIds.length === connections.length &&
+                          connections.length > 0
+                        }
+                        title="Select All"
                       />
-                    </td>
-                    <td data-label="ID">{connection._id}</td>
-                    <td data-label="Sender (ID)">
-                      {connection.sender?.fullName ||
-                        String(connection.sender) ||
-                        "N/A"}{" "}
-                      (
-                      {connection.sender?._id ||
-                        String(connection.sender) ||
-                        "N/A"}
-                      )
-                    </td>
-                    <td data-label="Receiver (ID)">
-                      {connection.receiver?.fullName ||
-                        String(connection.receiver) ||
-                        "N/A"}{" "}
-                      (
-                      {connection.receiver?._id ||
-                        String(connection.receiver) ||
-                        "N/A"}
-                      )
-                    </td>
-                    <td data-label="Status">{connection.status}</td>
-                    <td data-label="Created At">
-                      {new Date(connection.createdAt).toLocaleString()}
-                    </td>
-                    <td data-label="Updated At">
-                      {new Date(connection.updatedAt).toLocaleString()}
-                    </td>
-                    <td data-label="Actions">
-                      {connection.status === "pending" && (
-                        <>
-                          {loggedInUserId ===
-                            String(
-                              connection.receiver?._id || connection.receiver
-                            ) && (
+                    </th>
+                    <th>ID</th>
+                    <th>Sender</th>
+                    <th>Receiver</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                    <th>Updated At</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {connections.map((connection) => (
+                    <tr
+                      key={connection._id}
+                      className={
+                        selectedConnectionIds.includes(connection._id)
+                          ? "selected-row"
+                          : ""
+                      }
+                    >
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={selectedConnectionIds.includes(
+                            connection._id
+                          )}
+                          onChange={() => handleCheckboxChange(connection._id)}
+                        />
+                      </td>
+                      <td data-label="ID" title={connection._id}>
+                        {connection._id.substring(0, 8)}...
+                      </td>
+                      <td data-label="Sender">
+                        <div className="user-info">
+                          <strong>
+                            {connection.sender?.fullName || "N/A"}
+                          </strong>
+                          <small>{connection.sender?.email || "N/A"}</small>
+                          <small className="user-id">
+                            ID:{" "}
+                            {connection.sender?._id?.substring(0, 8) || "N/A"}
+                            ...
+                          </small>
+                        </div>
+                      </td>
+                      <td data-label="Receiver">
+                        <div className="user-info">
+                          <strong>
+                            {connection.receiver?.fullName || "N/A"}
+                          </strong>
+                          <small>{connection.receiver?.email || "N/A"}</small>
+                          <small className="user-id">
+                            ID:{" "}
+                            {connection.receiver?._id?.substring(0, 8) || "N/A"}
+                            ...
+                          </small>
+                        </div>
+                      </td>
+                      <td data-label="Status">
+                        <span
+                          className={`status-badge status-${connection.status}`}
+                        >
+                          {connection.status}
+                        </span>
+                      </td>
+                      <td data-label="Created At">
+                        {new Date(connection.createdAt).toLocaleDateString()}
+                        <small>
+                          {new Date(connection.createdAt).toLocaleTimeString()}
+                        </small>
+                      </td>
+                      <td data-label="Updated At">
+                        {new Date(connection.updatedAt).toLocaleDateString()}
+                        <small>
+                          {new Date(connection.updatedAt).toLocaleTimeString()}
+                        </small>
+                      </td>
+                      <td data-label="Actions">
+                        <div className="action-buttons-cell">
+                          {connection.status === "pending" && (
                             <>
-                              <button
-                                onClick={() => handleAccept(connection._id)}
-                              >
-                                Accept
-                              </button>
-                              <button
-                                onClick={() => handleDecline(connection._id)}
-                              >
-                                Decline
-                              </button>
+                              {compareUserIds(
+                                loggedInUserId,
+                                getUserId(connection.receiver)
+                              ) && (
+                                <>
+                                  <button
+                                    onClick={() => handleAccept(connection._id)}
+                                    className="accept-btn"
+                                    title="Accept connection request"
+                                  >
+                                    Accept
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      handleDecline(connection._id)
+                                    }
+                                    className="decline-btn"
+                                    title="Decline connection request"
+                                  >
+                                    Decline
+                                  </button>
+                                </>
+                              )}
+                              {compareUserIds(
+                                loggedInUserId,
+                                getUserId(connection.sender)
+                              ) && (
+                                <button
+                                  onClick={() => handleCancel(connection._id)}
+                                  className="cancel-btn"
+                                  title="Cancel sent request"
+                                >
+                                  Cancel
+                                </button>
+                              )}
                             </>
                           )}
-                          {loggedInUserId ===
-                            String(
-                              connection.sender?._id || connection.sender
-                            ) && (
-                            <button
-                              onClick={() => handleCancel(connection._id)}
-                            >
-                              Cancel
-                            </button>
-                          )}
-                        </>
-                      )}
-                      {connection.status === "accepted" &&
-                        (loggedInUserId ===
-                          String(connection.sender?._id || connection.sender) ||
-                          loggedInUserId ===
-                            String(
-                              connection.receiver?._id || connection.receiver
-                            )) && (
-                          <button onClick={() => handleRemove(connection._id)}>
-                            Remove
+                          {connection.status === "accepted" &&
+                            (compareUserIds(
+                              loggedInUserId,
+                              getUserId(connection.sender)
+                            ) ||
+                              compareUserIds(
+                                loggedInUserId,
+                                getUserId(connection.receiver)
+                              )) && (
+                              <button
+                                onClick={() => handleRemove(connection._id)}
+                                className="remove-btn"
+                                title="Remove connection"
+                              >
+                                Remove
+                              </button>
+                            )}
+
+                          <button
+                            onClick={() => handleView(connection)}
+                            className="view-btn"
+                            title="View details"
+                          >
+                            View
                           </button>
-                        )}
 
-                      <button
-                        onClick={() => handleView(connection)}
-                        className="view-btn"
-                      >
-                        View
-                      </button>
+                          <button
+                            onClick={() => handleDelete(connection._id)}
+                            className="delete-btn"
+                            title="Permanently delete"
+                          >
+                            Delete
+                          </button>
 
-                      {(connection.status === "accepted" ||
-                        connection.status === "declined") && (
-                        <button
-                          onClick={() => handleDelete(connection._id)}
-                          className="delete-btn"
-                        >
-                          Delete
-                        </button>
-                      )}
-                      {loggedInUserId ===
-                        String(connection.sender?._id || connection.sender) && (
-                        <button
-                          onClick={() =>
-                            handleBlock(
-                              connection.receiver?._id || connection.receiver
-                            )
-                          }
-                          className="block-btn"
-                        >
-                          Block{" "}
-                          {connection.receiver?.fullName || "Receiver User"}
-                        </button>
-                      )}
-                      {loggedInUserId ===
-                        String(
-                          connection.receiver?._id || connection.receiver
-                        ) && (
-                        <button
-                          onClick={() =>
-                            handleBlock(
-                              connection.sender?._id || connection.sender
-                            )
-                          }
-                          className="block-btn"
-                        >
-                          Block {connection.sender?.fullName || "Sender User"}
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                          {loggedInUserId && (
+                            <>
+                              {compareUserIds(
+                                loggedInUserId,
+                                getUserId(connection.sender)
+                              ) && (
+                                <button
+                                  onClick={() =>
+                                    handleBlock(getUserId(connection.receiver))
+                                  }
+                                  className="block-btn"
+                                  title={`Block ${
+                                    connection.receiver?.fullName || "Receiver"
+                                  }`}
+                                >
+                                  Block Receiver
+                                </button>
+                              )}
+                              {compareUserIds(
+                                loggedInUserId,
+                                getUserId(connection.receiver)
+                              ) && (
+                                <button
+                                  onClick={() =>
+                                    handleBlock(getUserId(connection.sender))
+                                  }
+                                  className="block-btn"
+                                  title={`Block ${
+                                    connection.sender?.fullName || "Sender"
+                                  }`}
+                                >
+                                  Block Sender
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           ) : (
             <div className="connection-cards-container">
               {connections.map((connection) => (
@@ -598,81 +658,106 @@ const ManageConnection = () => {
                       checked={selectedConnectionIds.includes(connection._id)}
                       onChange={() => handleCheckboxChange(connection._id)}
                     />
-                    <h3>Connection ID: {connection._id}</h3>
+                    <h3 title={connection._id}>
+                      Connection: {connection._id.substring(0, 12)}...
+                    </h3>
                     <span className={`card-status status-${connection.status}`}>
                       {connection.status}
                     </span>
                   </div>
                   <div className="card-body">
-                    <p>
-                      <strong>Sender:</strong>{" "}
-                      {connection.sender?.fullName ||
-                        String(connection.sender) ||
-                        "N/A"}{" "}
-                      (ID:{" "}
-                      {connection.sender?._id ||
-                        String(connection.sender) ||
-                        "N/A"}
-                      )
-                    </p>
-                    <p>
-                      <strong>Receiver:</strong>{" "}
-                      {connection.receiver?.fullName ||
-                        String(connection.receiver) ||
-                        "N/A"}{" "}
-                      (ID:{" "}
-                      {connection.receiver?._id ||
-                        String(connection.receiver) ||
-                        "N/A"}
-                      )
-                    </p>
-                    <p>
-                      <strong>Created:</strong>{" "}
-                      {new Date(connection.createdAt).toLocaleString()}
-                    </p>
-                    <p>
-                      <strong>Last Updated:</strong>{" "}
-                      {new Date(connection.updatedAt).toLocaleString()}
-                    </p>
+                    <div className="user-section">
+                      <h4>Sender:</h4>
+                      <p>
+                        <strong>{connection.sender?.fullName || "N/A"}</strong>
+                      </p>
+                      <p>
+                        <small>{connection.sender?.email || "N/A"}</small>
+                      </p>
+                      <p>
+                        <small>
+                          ID:{" "}
+                          {connection.sender?._id?.substring(0, 12) || "N/A"}...
+                        </small>
+                      </p>
+                    </div>
+                    <div className="user-section">
+                      <h4>Receiver:</h4>
+                      <p>
+                        <strong>
+                          {connection.receiver?.fullName || "N/A"}
+                        </strong>
+                      </p>
+                      <p>
+                        <small>{connection.receiver?.email || "N/A"}</small>
+                      </p>
+                      <p>
+                        <small>
+                          ID:{" "}
+                          {connection.receiver?._id?.substring(0, 12) || "N/A"}
+                          ...
+                        </small>
+                      </p>
+                    </div>
+                    <div className="date-section">
+                      <p>
+                        <strong>Created:</strong>{" "}
+                        {new Date(connection.createdAt).toLocaleString()}
+                      </p>
+                      <p>
+                        <strong>Last Updated:</strong>{" "}
+                        {new Date(connection.updatedAt).toLocaleString()}
+                      </p>
+                    </div>
                   </div>
                   <div className="card-actions">
                     {connection.status === "pending" && (
                       <>
-                        {loggedInUserId ===
-                          String(
-                            connection.receiver?._id || connection.receiver
-                          ) && (
+                        {compareUserIds(
+                          loggedInUserId,
+                          getUserId(connection.receiver)
+                        ) && (
                           <>
                             <button
                               onClick={() => handleAccept(connection._id)}
+                              className="accept-btn"
                             >
                               Accept
                             </button>
                             <button
                               onClick={() => handleDecline(connection._id)}
+                              className="decline-btn"
                             >
                               Decline
                             </button>
                           </>
                         )}
-                        {loggedInUserId ===
-                          String(
-                            connection.sender?._id || connection.sender
-                          ) && (
-                          <button onClick={() => handleCancel(connection._id)}>
+                        {compareUserIds(
+                          loggedInUserId,
+                          getUserId(connection.sender)
+                        ) && (
+                          <button
+                            onClick={() => handleCancel(connection._id)}
+                            className="cancel-btn"
+                          >
                             Cancel
                           </button>
                         )}
                       </>
                     )}
                     {connection.status === "accepted" &&
-                      (loggedInUserId ===
-                        String(connection.sender?._id || connection.sender) ||
-                        loggedInUserId ===
-                          String(
-                            connection.receiver?._id || connection.receiver
-                          )) && (
-                        <button onClick={() => handleRemove(connection._id)}>
+                      (compareUserIds(
+                        loggedInUserId,
+                        getUserId(connection.sender)
+                      ) ||
+                        compareUserIds(
+                          loggedInUserId,
+                          getUserId(connection.receiver)
+                        )) && (
+                        <button
+                          onClick={() => handleRemove(connection._id)}
+                          className="remove-btn"
+                        >
                           Remove
                         </button>
                       )}
@@ -681,45 +766,45 @@ const ManageConnection = () => {
                       onClick={() => handleView(connection)}
                       className="view-btn"
                     >
-                      View
+                      View Details
                     </button>
 
-                    {(connection.status === "accepted" ||
-                      connection.status === "declined") && (
-                      <button
-                        onClick={() => handleDelete(connection._id)}
-                        className="delete-btn"
-                      >
-                        Delete
-                      </button>
-                    )}
-                    {loggedInUserId ===
-                      String(connection.sender?._id || connection.sender) && (
-                      <button
-                        onClick={() =>
-                          handleBlock(
-                            connection.receiver?._id || connection.receiver
-                          )
-                        }
-                        className="block-btn"
-                      >
-                        Block {connection.receiver?.fullName || "Receiver"}
-                      </button>
-                    )}
-                    {loggedInUserId ===
-                      String(
-                        connection.receiver?._id || connection.receiver
-                      ) && (
-                      <button
-                        onClick={() =>
-                          handleBlock(
-                            connection.sender?._id || connection.sender
-                          )
-                        }
-                        className="block-btn"
-                      >
-                        Block {connection.sender?.fullName || "Sender"}
-                      </button>
+                    <button
+                      onClick={() => handleDelete(connection._id)}
+                      className="delete-btn"
+                    >
+                      Delete
+                    </button>
+
+                    {loggedInUserId && (
+                      <>
+                        {compareUserIds(
+                          loggedInUserId,
+                          getUserId(connection.sender)
+                        ) && (
+                          <button
+                            onClick={() =>
+                              handleBlock(getUserId(connection.receiver))
+                            }
+                            className="block-btn"
+                          >
+                            Block {connection.receiver?.fullName || "Receiver"}
+                          </button>
+                        )}
+                        {compareUserIds(
+                          loggedInUserId,
+                          getUserId(connection.receiver)
+                        ) && (
+                          <button
+                            onClick={() =>
+                              handleBlock(getUserId(connection.sender))
+                            }
+                            className="block-btn"
+                          >
+                            Block {connection.sender?.fullName || "Sender"}
+                          </button>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
