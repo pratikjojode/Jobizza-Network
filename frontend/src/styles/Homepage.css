@@ -19,22 +19,30 @@
 }
 
 body {
-  background: linear-gradient(135deg, #f8fafc 0%, #e6f3ff 30%, #f0f8ff 70%, #f8fafc 100%);
+  background: linear-gradient(
+    135deg,
+    #f8fafc 0%,
+    #e6f3ff 30%,
+    #f0f8ff 70%,
+    #f8fafc 100%
+  );
   background-attachment: fixed;
   min-height: 100vh;
 }
 
 .home-container {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--text-medium);
-  background: linear-gradient(135deg, var(--gray-light) 0%, var(--primary-light) 100%);
   line-height: 1.6;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   color: var(--text-dark);
   font-weight: 700;
   line-height: 1.2;
@@ -44,23 +52,24 @@ a {
   text-decoration: none;
 }
 
-
 @keyframes borderGlow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(49, 130, 206, 0.3), 0 0 40px rgba(49, 130, 206, 0.1);
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(49, 130, 206, 0.3),
+      0 0 40px rgba(49, 130, 206, 0.1);
     border: 2px solid rgba(49, 130, 206, 0.3);
   }
   50% {
-    box-shadow: 0 0 30px rgba(49, 130, 206, 0.5), 0 0 60px rgba(49, 130, 206, 0.2);
+    box-shadow: 0 0 30px rgba(49, 130, 206, 0.5),
+      0 0 60px rgba(49, 130, 206, 0.2);
     border: 2px solid rgba(49, 130, 206, 0.6);
   }
 }
 
-
 .hero-section {
   text-align: center;
   padding: 5rem 1.5rem;
-  background: linear-gradient(135deg, var(--gray-light) 0%, var(--primary-light) 100%); 
+
   border-radius: var(--border-radius);
   margin: 2rem 0 3rem;
 }
@@ -94,13 +103,12 @@ a {
   font-size: 1.1rem;
 }
 
-
 .why-join-section {
   margin: 5rem 0;
-  background-color: var(--white); 
-  padding: 3rem 1.5rem; 
-  border-radius: var(--border-radius); 
-  box-shadow: var(--box-shadow); 
+  background-color: var(--white);
+  padding: 3rem 1.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 
 .benefits-grid {
@@ -148,13 +156,12 @@ a {
   color: var(--text-dark);
 }
 
-
 .executive-roles {
   margin: 5rem 0;
-  background: linear-gradient(135deg, var(--gray-light) 0%, var(--primary-light) 100%); 
-  padding: 3rem 1.5rem; 
-  border-radius: var(--border-radius); 
-  box-shadow: var(--box-shadow); 
+
+  padding: 3rem 1.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 
 .roles-grid {
@@ -180,13 +187,12 @@ a {
   color: var(--white);
 }
 
-
 .testimonial-section {
   margin: 5rem 0;
-  background-color: var(--white); 
+  background-color: var(--white);
   padding: 3rem 1.5rem;
-  border-radius: var(--border-radius); 
-  box-shadow: var(--box-shadow); 
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 
 .testimonial-cards {
@@ -243,10 +249,10 @@ a {
 
 .features-section {
   margin: 5rem 0;
-  background: linear-gradient(135deg, var(--gray-light) 0%, var(--primary-light) 100%); 
-  padding: 3rem 1.5rem; 
-  border-radius: var(--border-radius); 
-  box-shadow: var(--box-shadow); 
+
+  padding: 3rem 1.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 
 .features-grid {
@@ -257,7 +263,7 @@ a {
 }
 
 .feature-card {
-  background: var(--white); 
+  background: var(--white);
   padding: 2rem;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
@@ -270,12 +276,11 @@ a {
   color: var(--text-dark);
 }
 
-
 .user-welcome {
   text-align: center;
   margin: 5rem 0;
   padding: 3rem;
-  background: var(--primary-light); 
+  background: var(--primary-light);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
 }
@@ -291,14 +296,13 @@ a {
   justify-content: center;
 }
 
-
 .final-cta {
   text-align: center;
   padding: 4rem 2rem;
-  background-color: var(--white); 
+  background-color: var(--white);
   border-radius: var(--border-radius);
   margin: 4rem 0;
-  box-shadow: var(--box-shadow); 
+  box-shadow: var(--box-shadow);
 }
 
 .cta-content {
@@ -384,7 +388,7 @@ a {
   .hero-heading {
     font-size: 2.2rem;
   }
-  
+
   .hero-subheading {
     font-size: 1.1rem;
   }
@@ -394,39 +398,39 @@ a {
   .hero-section {
     padding: 3rem 1rem;
   }
-  
+
   .hero-heading {
     font-size: 1.8rem;
   }
-  
+
   .hero-subheading {
     font-size: 1rem;
   }
-  
+
   .section-header h2 {
     font-size: 1.6rem;
   }
-  
+
   .section-subtitle {
     font-size: 1rem;
   }
-  
+
   .benefits-grid,
   .features-grid,
   .testimonial-cards {
     grid-template-columns: 1fr;
   }
-  
+
   .user-actions {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .cta-buttons {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .cta-button {
     width: 100%;
     max-width: 300px;
@@ -442,22 +446,22 @@ a {
   .hero-heading {
     font-size: 1.6rem;
   }
-  
+
   .role-pill {
     font-size: 0.8rem;
     padding: 0.4rem 0.8rem;
   }
-  
+
   .testimonial-card,
   .feature-card,
   .benefit-card {
     padding: 1.5rem;
   }
-  
+
   .final-cta {
     padding: 2.5rem 1rem;
   }
-  
+
   .final-cta h2 {
     font-size: 1.5rem;
   }

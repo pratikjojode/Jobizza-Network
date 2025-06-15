@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import "../styles/ManageUsers.css";
-import { toast } from "react-toastify";
 
-const DEFAULT_PROFILE_PIC = "/profile-pic-dummy.png";
+const DEFAULT_PROFILE_PIC =
+  "https://placehold.co/150x150/aabbcc/ffffff?text=No+Pic";
 
 const ManageUsers = () => {
   const { token } = useAuth();
@@ -34,6 +34,45 @@ const ManageUsers = () => {
   const [updateError, setUpdateError] = useState(null);
   const [updateLoading, setUpdateLoading] = useState(false);
   const [profileImageFile, setProfileImageFile] = useState(null);
+
+  // Modals for confirmation and alerts
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmModalMessage, setConfirmModalMessage] = useState("");
+  const confirmActionRef = useRef(null); // To store the action to perform on confirmation
+
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertModalMessage, setAlertModalMessage] = useState("");
+
+  const showConfirmation = (message, action) => {
+    setConfirmModalMessage(message);
+    confirmActionRef.current = action;
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirm = () => {
+    if (confirmActionRef.current) {
+      confirmActionRef.current();
+    }
+    setShowConfirmModal(false);
+    setConfirmModalMessage("");
+    confirmActionRef.current = null;
+  };
+
+  const handleCancelConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmModalMessage("");
+    confirmActionRef.current = null;
+  };
+
+  const showAlert = (message) => {
+    setAlertModalMessage(message);
+    setShowAlertModal(true);
+  };
+
+  const handleCloseAlert = () => {
+    setShowAlertModal(false);
+    setAlertModalMessage("");
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -68,7 +107,8 @@ const ManageUsers = () => {
         }
       } catch (err) {
         setError(err.message);
-        toast.error("Error fetching users:", err);
+        console.error("Error fetching users:", err);
+        showAlert(`Error fetching users: ${err.message}`);
       } finally {
         setLoading(false);
       }
@@ -79,7 +119,7 @@ const ManageUsers = () => {
 
   const exportUsersToCsv = () => {
     if (users.length === 0) {
-      alert("No users to export.");
+      showAlert("No users to export.");
       return;
     }
 
@@ -124,11 +164,11 @@ const ManageUsers = () => {
         formatField(user.designation || ""),
         formatField(user.linkedin || ""),
         formatField(user.profilePic || ""),
-        formatField((user.financialCertifications || []).join(", ")),
+        formatField((user.financialCertifications || []).join("; ")),
         user.yearsOfFinanceExperience || "0",
-        formatField((user.industrySpecializations || []).join(", ")),
-        formatField((user.keyFinancialSkills || []).join(", ")),
-        formatField((user.connections || []).join(", ")),
+        formatField((user.industrySpecializations || []).join("; ")),
+        formatField((user.keyFinancialSkills || []).join("; ")),
+        formatField((user.connections || []).join("; ")),
         formatField(user.budgetManaged || ""),
         user.isVerified ? "Yes" : "No",
         user.isApproved ? "Yes" : "No",
@@ -151,58 +191,51 @@ const ManageUsers = () => {
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
     }
+    showAlert("Users data exported to CSV!");
   };
 
-  const handleDeleteUser = async (userId) => {
-    if (
-      window.confirm(
-        "Are you sure you want to delete this user? This action cannot be undone."
-      )
-    ) {
-      try {
-        const response = await fetch(`/api/v1/admin/users/${userId}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  const confirmDeleteUser = async (userId) => {
+    try {
+      const response = await fetch(`/api/v1/admin/users/${userId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Failed to delete user.");
-        }
-
-        setUsers(users.filter((user) => user._id !== userId));
-        setSelectedUserIds((prev) => {
-          // Remove from selected if it was there
-          const newSet = new Set(prev);
-          newSet.delete(userId);
-          return newSet;
-        });
-        alert("User deleted successfully!");
-      } catch (err) {
-        setError(err.message);
-        console.error("Error deleting user:", err);
-        alert(`Error deleting user: ${err.message}`);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to delete user.");
       }
+
+      setUsers(users.filter((user) => user._id !== userId));
+      setSelectedUserIds((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(userId);
+        return newSet;
+      });
+      showAlert("User deleted successfully!");
+    } catch (err) {
+      setError(err.message);
+      console.error("Error deleting user:", err);
+      showAlert(`Error deleting user: ${err.message}`);
     }
   };
 
-  const handleBulkDelete = async () => {
+  const handleDeleteUser = (userId) => {
+    showConfirmation(
+      "Are you sure you want to delete this user? This action cannot be undone.",
+      () => confirmDeleteUser(userId)
+    );
+  };
+
+  const confirmBulkDelete = async () => {
     if (selectedUserIds.size === 0) {
-      alert("Please select users to delete.");
+      showAlert("Please select users to delete.");
       return;
     }
 
-    if (
-      !window.confirm(
-        `Are you sure you want to delete ${selectedUserIds.size} selected users? This action cannot be undone.`
-      )
-    ) {
-      return;
-    }
-
-    setLoading(true); // Indicate that a bulk operation is in progress
+    setLoading(true);
     let successfulDeletions = 0;
     let failedDeletions = 0;
     const failedUserNames = [];
@@ -236,25 +269,33 @@ const ManageUsers = () => {
       }
     }
 
-    // After all deletions, re-fetch or filter local state
     if (successfulDeletions > 0) {
-      alert(`${successfulDeletions} users deleted successfully.`);
+      showAlert(`${successfulDeletions} users deleted successfully.`);
     }
     if (failedDeletions > 0) {
-      alert(
+      showAlert(
         `${failedDeletions} users failed to delete: ${failedUserNames.join(
           ", "
         )}. Check console for details.`
       );
     }
 
-    // Re-fetch users to get the most up-to-date list and clear selected items
-    // Alternatively, filter 'users' state locally:
     setUsers((prevUsers) =>
       prevUsers.filter((user) => !selectedUserIds.has(user._id))
     );
-    setSelectedUserIds(new Set()); // Clear selection
-    setLoading(false); // End loading indication
+    setSelectedUserIds(new Set());
+    setLoading(false);
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedUserIds.size === 0) {
+      showAlert("Please select users to delete.");
+      return;
+    }
+    showConfirmation(
+      `Are you sure you want to delete ${selectedUserIds.size} selected users? This action cannot be undone.`,
+      confirmBulkDelete
+    );
   };
 
   const toggleUserStatus = async (userId, field, currentValue) => {
@@ -284,10 +325,13 @@ const ManageUsers = () => {
       setUsers((prevUsers) =>
         prevUsers.map((user) => (user._id === userId ? updatedUser.data : user))
       );
+      showAlert(
+        `${field} status updated successfully for ${updatedUser.data.fullName}!`
+      );
     } catch (err) {
       setError(err.message);
       console.error(`Error toggling ${field} status:`, err);
-      alert(`Error toggling ${field} status: ${err.message}`);
+      showAlert(`Error toggling ${field} status: ${err.message}`);
     }
   };
 
@@ -432,10 +476,10 @@ const ManageUsers = () => {
             : user
         )
       );
-      alert("User updated successfully!");
+      showAlert("User updated successfully!");
       handleModalClose();
     } else {
-      alert("User details updated, but no data was returned.");
+      showAlert("User details updated, but no data was returned.");
     }
 
     setUpdateLoading(false);
@@ -504,8 +548,6 @@ const ManageUsers = () => {
 
   return (
     <div className="manage-users-container">
-      <h2 className="manage-users-heading">Manage Users ({users.length})</h2>
-
       <div className="manage-users-controls">
         <div className="view-toggle-buttons">
           <button
@@ -550,7 +592,6 @@ const ManageUsers = () => {
                     disabled={users.length === 0}
                   />
                 </th>{" "}
-                {/* New Select All checkbox */}
                 <th>ID</th>
                 <th>Profile</th>
                 <th>Full Name</th>
@@ -580,7 +621,6 @@ const ManageUsers = () => {
                       onChange={() => handleSelectUser(user._id)}
                     />
                   </td>{" "}
-                  {/* Individual user checkbox */}
                   <td title={user._id}>
                     {user._id ? user._id.slice(-6) : "N/A"}
                   </td>
@@ -918,6 +958,10 @@ const ManageUsers = () => {
                       src={currentUserToEdit.profilePic}
                       alt="Current Profile"
                       className="profile-pic-preview"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = DEFAULT_PROFILE_PIC;
+                      }}
                     />
                   </div>
                 )}
@@ -971,7 +1015,7 @@ const ManageUsers = () => {
               </div>
               <div className="form-group form-group-full">
                 <label htmlFor="connections">
-                  Connections (IDs, comma-separated):
+                  Connections (comma-separated IDs):
                 </label>
                 <input
                   type="text"
@@ -982,7 +1026,7 @@ const ManageUsers = () => {
                 />
               </div>
 
-              <div className="form-group-checkbox">
+              <div className="form-group checkbox-group">
                 <input
                   type="checkbox"
                   id="isVerified"
@@ -990,9 +1034,9 @@ const ManageUsers = () => {
                   checked={editFormData.isVerified}
                   onChange={handleChange}
                 />
-                <label htmlFor="isVerified">Verified User</label>
+                <label htmlFor="isVerified">Is Verified</label>
               </div>
-              <div className="form-group-checkbox">
+              <div className="form-group checkbox-group">
                 <input
                   type="checkbox"
                   id="isApproved"
@@ -1000,27 +1044,21 @@ const ManageUsers = () => {
                   checked={editFormData.isApproved}
                   onChange={handleChange}
                 />
-                <label htmlFor="isApproved">Approved User</label>
+                <label htmlFor="isApproved">Is Approved</label>
               </div>
 
-              {updateLoading && (
-                <p className="loading-message">Saving changes...</p>
-              )}
-              {updateError && (
-                <p className="error-message-modal">Error: {updateError}</p>
-              )}
-
+              {updateError && <p className="modal-error">{updateError}</p>}
               <div className="modal-actions">
                 <button
                   type="submit"
-                  className="save-button"
+                  className="btn btn-save"
                   disabled={updateLoading}
                 >
-                  Save Changes
+                  {updateLoading ? "Saving..." : "Save Changes"}
                 </button>
                 <button
                   type="button"
-                  className="cancel-button"
+                  className="btn btn-cancel"
                   onClick={handleModalClose}
                   disabled={updateLoading}
                 >
@@ -1028,6 +1066,47 @@ const ManageUsers = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showConfirmModal && (
+        <div className="modal-overlay">
+          <div className="modal-content small-modal">
+            <div className="modal-header">
+              <h2>Confirm Action</h2>
+              <button className="close-button" onClick={handleCancelConfirm}>
+                &times;
+              </button>
+            </div>
+            <p className="modal-message">{confirmModalMessage}</p>
+            <div className="modal-actions">
+              <button className="btn btn-delete" onClick={handleConfirm}>
+                Confirm
+              </button>
+              <button className="btn btn-cancel" onClick={handleCancelConfirm}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAlertModal && (
+        <div className="modal-overlay">
+          <div className="modal-content small-modal">
+            <div className="modal-header">
+              <h2>Notification</h2>
+              <button className="close-button" onClick={handleCloseAlert}>
+                &times;
+              </button>
+            </div>
+            <p className="modal-message">{alertModalMessage}</p>
+            <div className="modal-actions">
+              <button className="btn" onClick={handleCloseAlert}>
+                OK
+              </button>
+            </div>
           </div>
         </div>
       )}

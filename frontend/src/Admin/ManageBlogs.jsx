@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Make sure this is imported once globally, e.g., in App.js or index.js
-import "../styles/ManageBlogs.css"; // Import the new CSS file
+import "../styles/ManageBlogs.css";
 
 const ManageBlogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -12,9 +10,76 @@ const ManageBlogs = () => {
   const [editingBlogId, setEditingBlogId] = useState(null);
   const [editedBlogData, setEditedBlogData] = useState({});
   const [selectedImageFile, setSelectedImageFile] = useState(null);
-  const [viewMode, setViewMode] = useState("grid"); // New state for view mode: 'grid' or 'table'
+  const [viewMode, setViewMode] = useState("table");
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmModalMessage, setConfirmModalMessage] = useState("");
+  const confirmActionRef = useRef(null);
+
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertModalMessage, setAlertModalMessage] = useState("");
+
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [updateModalMessage, setUpdateModalMessage] = useState("");
+
+  const [showBlogDetailModal, setShowBlogDetailModal] = useState(false);
+  const [selectedBlogForDetail, setSelectedBlogForDetail] = useState(null);
+
+  const fileInputRef = useRef(null);
 
   const authToken = localStorage.getItem("token");
+
+  const showConfirmation = (message, action) => {
+    setConfirmModalMessage(message);
+    confirmActionRef.current = action;
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirm = () => {
+    if (confirmActionRef.current) {
+      confirmActionRef.current();
+    }
+    setShowConfirmModal(false);
+    setConfirmModalMessage("");
+    confirmActionRef.current = null;
+  };
+
+  const handleCancelConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmModalMessage("");
+    confirmActionRef.current = null;
+  };
+
+  const showAlert = (message) => {
+    setAlertModalMessage(message);
+    setShowAlertModal(true);
+  };
+
+  const handleCloseAlert = () => {
+    setShowAlertModal(false);
+    setAlertModalMessage("");
+  };
+
+  const handleCloseUpdate = () => {
+    setShowUpdateModal(false);
+    setUpdateModalMessage("");
+  };
+
+  const handleViewBlog = (blog) => {
+    setSelectedBlogForDetail(blog);
+    setShowBlogDetailModal(true);
+  };
+
+  const handleCloseBlogDetailModal = () => {
+    setShowBlogDetailModal(false);
+    setSelectedBlogForDetail(null);
+  };
+
+  const truncateText = (text, maxLength) => {
+    if (!text) return "";
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
+  };
 
   const fetchBlogs = async () => {
     try {
@@ -27,36 +92,34 @@ const ManageBlogs = () => {
       setError(err);
       setLoading(false);
       console.error("Error fetching blogs:", err);
-      toast.error("Failed to fetch blogs!"); // Toast for fetch error
+      showAlert("Failed to fetch blogs!");
     }
   };
 
   useEffect(() => {
     fetchBlogs();
+    // eslint-disable-next-line
   }, []);
 
   const handleDelete = async (blogId) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this blog?"
-    );
-    if (!confirmDelete) return;
-
-    try {
-      await axios.delete(`/api/v1/blogs/${blogId}`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-      await fetchBlogs();
-      setSelectedBlogIds(selectedBlogIds.filter((id) => id !== blogId));
-      toast.success("Blog deleted successfully!"); // Toast for success
-    } catch (err) {
-      setError(err);
-      console.error("Error deleting blog:", err);
-      toast.error(
-        `Failed to delete blog: ${err.response?.data?.message || err.message}`
-      ); // Toast for error
-    }
+    showConfirmation("Are you sure you want to delete this blog?", async () => {
+      try {
+        await axios.delete(`/api/v1/blogs/${blogId}`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        await fetchBlogs();
+        setSelectedBlogIds((prev) => prev.filter((id) => id !== blogId));
+        showAlert("Blog deleted successfully!");
+      } catch (err) {
+        setError(err);
+        console.error("Error deleting blog:", err);
+        showAlert(
+          `Failed to delete blog: ${err.response?.data?.message || err.message}`
+        );
+      }
+    });
   };
 
   const handleEditClick = (blog) => {
@@ -81,6 +144,10 @@ const ManageBlogs = () => {
 
   const handleImageFileChange = (e) => {
     setSelectedImageFile(e.target.files[0]);
+  };
+
+  const handleImageUploadButtonClick = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
   };
 
   const handleSaveEdit = async (blogId) => {
@@ -116,13 +183,14 @@ const ManageBlogs = () => {
       setEditedBlogData({});
       setSelectedImageFile(null);
       await fetchBlogs();
-      toast.success("Blog updated successfully!"); // Toast for success
+      setShowUpdateModal(true);
+      setUpdateModalMessage("Blog updated successfully!");
     } catch (err) {
       setError(err);
       console.error("Error updating blog:", err.response?.data || err.message);
-      toast.error(
+      showAlert(
         `Failed to update blog: ${err.response?.data?.message || err.message}`
-      ); // Toast for error
+      );
     }
   };
 
@@ -134,7 +202,7 @@ const ManageBlogs = () => {
 
   const handleExportCsv = () => {
     if (blogs.length === 0) {
-      toast.info("No blogs to export!"); // Toast for info
+      showAlert("No blogs to export!");
       return;
     }
 
@@ -180,7 +248,7 @@ const ManageBlogs = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    toast.success("Blogs exported to CSV!"); // Toast for success
+    showAlert("Blogs exported to CSV!");
   };
 
   const handleSelectBlog = (blogId) => {
@@ -191,16 +259,11 @@ const ManageBlogs = () => {
     );
   };
 
-  const handleBulkDelete = async () => {
+  const confirmBulkDelete = async () => {
     if (selectedBlogIds.length === 0) {
-      toast.info("No blogs selected for bulk delete."); // Toast for info
+      showAlert("No blogs selected for bulk delete.");
       return;
     }
-
-    const confirmBulkDelete = window.confirm(
-      `Are you sure you want to delete ${selectedBlogIds.length} selected blogs?`
-    );
-    if (!confirmBulkDelete) return;
 
     try {
       await Promise.all(
@@ -214,16 +277,27 @@ const ManageBlogs = () => {
       );
       setSelectedBlogIds([]);
       await fetchBlogs();
-      toast.success("Selected blogs deleted successfully!"); // Toast for success
+      showAlert("Selected blogs deleted successfully!");
     } catch (err) {
       setError(err);
       console.error("Error during bulk delete:", err);
-      toast.error(
+      showAlert(
         `Failed to perform bulk delete: ${
           err.response?.data?.message || err.message
         }`
-      ); // Toast for error
+      );
     }
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedBlogIds.length === 0) {
+      showAlert("No blogs selected for bulk delete.");
+      return;
+    }
+    showConfirmation(
+      `Are you sure you want to delete ${selectedBlogIds.length} selected blogs?`,
+      confirmBulkDelete
+    );
   };
 
   if (loading) {
@@ -240,18 +314,6 @@ const ManageBlogs = () => {
 
   return (
     <div className="manage-blogs-container">
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-
       <h1>Manage Blogs</h1>
       <div className="manage-blogs-header">
         <button onClick={handleExportCsv} className="btn">
@@ -284,13 +346,12 @@ const ManageBlogs = () => {
         <div className="blog-grid-container">
           {blogs.map((blog) => (
             <div key={blog._id} className="blog-card">
-              {/* Select Checkbox */}
               <div className="card-header">
                 <input
                   type="checkbox"
                   checked={selectedBlogIds.includes(blog._id)}
                   onChange={() => handleSelectBlog(blog._id)}
-                  style={{ marginRight: "10px" }} // Inline for simplicity here
+                  style={{ marginRight: "10px" }}
                 />
                 {editingBlogId === blog._id ? (
                   <input
@@ -305,14 +366,25 @@ const ManageBlogs = () => {
                 )}
               </div>
 
-              {/* Image */}
               <div className="card-image-container">
-                {editingBlogId === blog._id ? (
-                  <>
-                    {editedBlogData.imageUrl && !selectedImageFile && (
+                {editingBlogId === blog._id && (
+                  <div className="image-edit-controls">
+                    {editedBlogData.imageUrl && !selectedImageFile ? (
                       <img
                         src={editedBlogData.imageUrl}
                         alt="Current"
+                        className="current-image-thumbnail"
+                      />
+                    ) : selectedImageFile ? (
+                      <img
+                        src={URL.createObjectURL(selectedImageFile)}
+                        alt="New Selected"
+                        className="current-image-thumbnail"
+                      />
+                    ) : (
+                      <img
+                        src="https://placehold.co/100x100?text=No+Image"
+                        alt="Placeholder"
                         className="current-image-thumbnail"
                       />
                     )}
@@ -320,21 +392,31 @@ const ManageBlogs = () => {
                       type="file"
                       name="profilePic"
                       onChange={handleImageFileChange}
-                      className="file-input"
+                      ref={fileInputRef}
+                      style={{ display: "none" }}
                     />
-                  </>
-                ) : (
-                  blog.imageUrl && (
-                    <img
-                      src={blog.imageUrl}
-                      alt={blog.title}
-                      className="card-image"
-                    />
-                  )
+                    <button
+                      type="button"
+                      onClick={handleImageUploadButtonClick}
+                      className="btn"
+                    >
+                      {selectedImageFile
+                        ? "Change Selected Image"
+                        : "Upload New Image"}
+                    </button>
+                  </div>
                 )}
+                {!editingBlogId || editingBlogId !== blog._id
+                  ? blog.imageUrl && (
+                      <img
+                        src={blog.imageUrl}
+                        alt={blog.title}
+                        className="card-image"
+                      />
+                    )
+                  : null}
               </div>
 
-              {/* Details */}
               <div className="card-body">
                 <p>
                   <strong>Author:</strong>{" "}
@@ -350,7 +432,17 @@ const ManageBlogs = () => {
                       className="textarea-field"
                     />
                   ) : (
-                    blog.description
+                    <>
+                      {truncateText(blog.description, 150)}{" "}
+                      {blog.description && blog.description.length > 150 && (
+                        <button
+                          onClick={() => handleViewBlog(blog)}
+                          className="view-full-btn"
+                        >
+                          View
+                        </button>
+                      )}
+                    </>
                   )}
                 </p>
                 {editingBlogId === blog._id ? (
@@ -366,7 +458,16 @@ const ManageBlogs = () => {
                 ) : (
                   blog.moreDescription && (
                     <p className="card-description">
-                      <strong>More Info:</strong> {blog.moreDescription}
+                      <strong>More Info:</strong>{" "}
+                      {truncateText(blog.moreDescription, 150)}{" "}
+                      {blog.moreDescription.length > 150 && (
+                        <button
+                          onClick={() => handleViewBlog(blog)}
+                          className="view-full-btn"
+                        >
+                          View
+                        </button>
+                      )}
                     </p>
                   )
                 )}
@@ -393,7 +494,6 @@ const ManageBlogs = () => {
                 </p>
               </div>
 
-              {/* Actions */}
               <div className="card-actions">
                 {editingBlogId === blog._id ? (
                   <>
@@ -431,7 +531,6 @@ const ManageBlogs = () => {
           ))}
         </div>
       ) : (
-        // Table View
         <div className="blogs-table-container">
           <table className="blogs-table">
             <thead>
@@ -481,7 +580,17 @@ const ManageBlogs = () => {
                         className="textarea-field"
                       />
                     ) : (
-                      blog.description
+                      <>
+                        {truncateText(blog.description, 100)}{" "}
+                        {blog.description && blog.description.length > 100 && (
+                          <button
+                            onClick={() => handleViewBlog(blog)}
+                            className="view-full-btn"
+                          >
+                            View
+                          </button>
+                        )}
+                      </>
                     )}
                   </td>
                   <td>
@@ -493,16 +602,39 @@ const ManageBlogs = () => {
                         className="textarea-field"
                       />
                     ) : (
-                      blog.moreDescription
+                      <>
+                        {truncateText(blog.moreDescription, 100)}{" "}
+                        {blog.moreDescription &&
+                          blog.moreDescription.length > 100 && (
+                            <button
+                              onClick={() => handleViewBlog(blog)}
+                              className="view-full-btn"
+                            >
+                              View
+                            </button>
+                          )}
+                      </>
                     )}
                   </td>
                   <td>
                     {editingBlogId === blog._id ? (
-                      <>
-                        {editedBlogData.imageUrl && !selectedImageFile && (
+                      <div className="image-edit-controls-table">
+                        {editedBlogData.imageUrl && !selectedImageFile ? (
                           <img
                             src={editedBlogData.imageUrl}
                             alt="Current"
+                            className="current-image-thumbnail"
+                          />
+                        ) : selectedImageFile ? (
+                          <img
+                            src={URL.createObjectURL(selectedImageFile)}
+                            alt="New Selected"
+                            className="current-image-thumbnail"
+                          />
+                        ) : (
+                          <img
+                            src="https://placehold.co/80x80?text=No+Image"
+                            alt="Placeholder"
                             className="current-image-thumbnail"
                           />
                         )}
@@ -510,9 +642,17 @@ const ManageBlogs = () => {
                           type="file"
                           name="profilePic"
                           onChange={handleImageFileChange}
-                          className="file-input"
+                          ref={fileInputRef}
+                          style={{ display: "none" }}
                         />
-                      </>
+                        <button
+                          type="button"
+                          onClick={handleImageUploadButtonClick}
+                          className="btn"
+                        >
+                          {selectedImageFile ? "Change" : "Upload"}
+                        </button>
+                      </div>
                     ) : (
                       blog.imageUrl && (
                         <img
@@ -522,7 +662,7 @@ const ManageBlogs = () => {
                             maxWidth: "80px",
                             maxHeight: "80px",
                             objectFit: "cover",
-                          }} // Keeping some inline for size
+                          }}
                         />
                       )
                     )}
@@ -582,6 +722,130 @@ const ManageBlogs = () => {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {showConfirmModal && (
+        <div className="modal-overlay">
+          <div className="modal-content small-modal">
+            <div className="modal-header">
+              <h2>Confirm Action</h2>
+              <button className="close-button" onClick={handleCancelConfirm}>
+                &times;
+              </button>
+            </div>
+            <p className="modal-message">{confirmModalMessage}</p>
+            <div className="modal-actions">
+              <button className="btn btn-delete" onClick={handleConfirm}>
+                Confirm
+              </button>
+              <button className="btn btn-cancel" onClick={handleCancelConfirm}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAlertModal && (
+        <div className="modal-overlay">
+          <div className="modal-content small-modal">
+            <div className="modal-header">
+              <h2>Notification</h2>
+              <button className="close-button" onClick={handleCloseAlert}>
+                &times;
+              </button>
+            </div>
+            <p className="modal-message">{alertModalMessage}</p>
+            <div className="modal-actions">
+              <button className="btn" onClick={handleCloseAlert}>
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showUpdateModal && (
+        <div className="modal-overlay">
+          <div className="modal-content small-modal">
+            <div className="modal-header">
+              <h2>Update Successful</h2>
+              <button className="close-button" onClick={handleCloseUpdate}>
+                &times;
+              </button>
+            </div>
+            <p className="modal-message">{updateModalMessage}</p>
+            <div className="modal-actions">
+              <button className="btn btn-save" onClick={handleCloseUpdate}>
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showBlogDetailModal && selectedBlogForDetail && (
+        <div className="modal-overlay">
+          <div className="modal-content blog-detail-modal">
+            <div className="modal-header">
+              <h2>{selectedBlogForDetail.title}</h2>
+              <button
+                className="close-button"
+                onClick={handleCloseBlogDetailModal}
+              >
+                &times;
+              </button>
+            </div>
+            <div className="blog-detail-content">
+              {selectedBlogForDetail.imageUrl && (
+                <img
+                  src={selectedBlogForDetail.imageUrl}
+                  alt={selectedBlogForDetail.title}
+                  className="blog-detail-image"
+                />
+              )}
+              <p>
+                <strong>Author:</strong>{" "}
+                {selectedBlogForDetail.userId
+                  ? selectedBlogForDetail.userId.fullName
+                  : "Unknown User"}
+              </p>
+              <p>
+                <strong>Description:</strong>{" "}
+                {selectedBlogForDetail.description}
+              </p>
+              {selectedBlogForDetail.moreDescription && (
+                <p>
+                  <strong>More Info:</strong>{" "}
+                  {selectedBlogForDetail.moreDescription}
+                </p>
+              )}
+              <p>
+                <strong>Likes:</strong> {selectedBlogForDetail.likesCount} |{" "}
+                <strong>Dislikes:</strong> {selectedBlogForDetail.dislikesCount}
+              </p>
+              <p>
+                <strong>Hashtags:</strong>{" "}
+                {selectedBlogForDetail.hashtags &&
+                selectedBlogForDetail.hashtags.length > 0
+                  ? selectedBlogForDetail.hashtags.join(", ")
+                  : "None"}
+              </p>
+              <p className="timestamps">
+                <strong>Created At:</strong>{" "}
+                {new Date(selectedBlogForDetail.createdAt).toLocaleString()}
+                <br />
+                <strong>Updated At:</strong>{" "}
+                {new Date(selectedBlogForDetail.updatedAt).toLocaleString()}
+              </p>
+            </div>
+            <div className="modal-actions">
+              <button className="btn" onClick={handleCloseBlogDetailModal}>
+                Close
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
