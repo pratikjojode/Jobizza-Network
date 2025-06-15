@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom"; // Changed Link to NavLink
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   FaUsers,
@@ -60,7 +60,7 @@ function ConnectionsHeader() {
             onClick={() => setIsMenuOpen(false)}
           >
             <FaUsers />
-            <span className="nav-item-text">Connections</span>
+            {/* <span className="nav-item-text">Connections</span> Removed text */}
           </NavLink>
           <NavLink
             to="/notifications"
@@ -71,7 +71,7 @@ function ConnectionsHeader() {
             onClick={() => setIsMenuOpen(false)}
           >
             <FaBell />
-            <span className="nav-item-text">Notifications</span>
+            {/* <span className="nav-item-text">Notifications</span> Removed text */}
           </NavLink>
           <NavLink
             to="/events/create"
@@ -82,7 +82,7 @@ function ConnectionsHeader() {
             onClick={() => setIsMenuOpen(false)}
           >
             <FaCalendarPlus />
-            <span className="nav-item-text">Create Event</span>
+            {/* <span className="nav-item-text">Create Event</span> Removed text */}
           </NavLink>
           <NavLink
             to="/posts/create"
@@ -93,7 +93,7 @@ function ConnectionsHeader() {
             onClick={() => setIsMenuOpen(false)}
           >
             <FaEdit />
-            <span className="nav-item-text">Create Post</span>
+            {/* <span className="nav-item-text">Create Post</span> Removed text */}
           </NavLink>
           <NavLink
             to="/blogs/create"
@@ -104,7 +104,7 @@ function ConnectionsHeader() {
             onClick={() => setIsMenuOpen(false)}
           >
             <FaBlog />
-            <span className="nav-item-text">Create Blog</span>
+            {/* <span className="nav-item-text">Create Blog</span> Removed text */}
           </NavLink>
           <NavLink
             to="/blogs/manageBlogs"
@@ -115,7 +115,7 @@ function ConnectionsHeader() {
             onClick={() => setIsMenuOpen(false)}
           >
             <FaBlog />
-            <span className="nav-item-text">View Blog</span>
+            {/* <span className="nav-item-text">View Blog</span> Removed text */}
           </NavLink>
           <NavLink
             to="/network/createNetwork"
@@ -126,7 +126,7 @@ function ConnectionsHeader() {
             onClick={() => setIsMenuOpen(false)}
           >
             <FaUsers />
-            <span className="nav-item-text">Network</span>
+            {/* <span className="nav-item-text">Network</span> Removed text */}
           </NavLink>
           <NavLink
             to="/events/viewAllEvents"
@@ -137,7 +137,7 @@ function ConnectionsHeader() {
             onClick={() => setIsMenuOpen(false)}
           >
             <FaBlog />
-            <span className="nav-item-text">View Events</span>
+            {/* <span className="nav-item-text">View Events</span> Removed text */}
           </NavLink>
         </nav>
       </div>
@@ -181,6 +181,7 @@ function ConnectionsHeader() {
                 : "user-profile-display-link desktop-only"
             }
             onClick={() => setIsMenuOpen(false)}
+            title="My Profile" // Added title for icon-only link
           >
             {user.profilePic ? (
               <img
@@ -193,7 +194,7 @@ function ConnectionsHeader() {
                 {user.fullName?.charAt(0)?.toUpperCase()}
               </div>
             )}
-            <span className="user-profile-name-text">My Profile</span>
+            {/* <span className="user-profile-name-text">My Profile</span> Removed text */}
           </NavLink>
         )}
         <NavLink
@@ -208,7 +209,11 @@ function ConnectionsHeader() {
         >
           <FaCog />
         </NavLink>
-        <button onClick={logout} className="logout-action-button desktop-only">
+        <button
+          onClick={logout}
+          className="logout-action-button desktop-only"
+          title="Logout"
+        >
           Logout
         </button>
 
@@ -220,7 +225,9 @@ function ConnectionsHeader() {
 
       {/* Mobile Navigation Menu (Side Drawer) - This is a separate element for mobile */}
       <nav
-        className={`header-navigation-menu mobile-menu-drawer ${isMenuOpen ? "menu-open" : ""}`}
+        className={`header-navigation-menu mobile-menu-drawer ${
+          isMenuOpen ? "menu-open" : ""
+        }`}
       >
         {/* Mobile Search Form - visible only when menu is open on mobile */}
         <form
@@ -261,7 +268,7 @@ function ConnectionsHeader() {
           onClick={() => setIsMenuOpen(false)}
         >
           <FaUsers />
-          <span className="nav-item-text">Connections</span>
+          {/* <span className="nav-item-text">Connections</span> Removed text */}
         </NavLink>
         <NavLink
           to="/notifications"
@@ -272,7 +279,7 @@ function ConnectionsHeader() {
           onClick={() => setIsMenuOpen(false)}
         >
           <FaBell />
-          <span className="nav-item-text">Notifications</span>
+          {/* <span className="nav-item-text">Notifications</span> Removed text */}
         </NavLink>
         <NavLink
           to="/events/create"
@@ -283,7 +290,7 @@ function ConnectionsHeader() {
           onClick={() => setIsMenuOpen(false)}
         >
           <FaCalendarPlus />
-          <span className="nav-item-text">Create Event</span>
+          {/* <span className="nav-item-text">Create Event</span> Removed text */}
         </NavLink>
         <NavLink
           to="/posts/create"
@@ -294,7 +301,7 @@ function ConnectionsHeader() {
           onClick={() => setIsMenuOpen(false)}
         >
           <FaEdit />
-          <span className="nav-item-text">Create Post</span>
+          {/* <span className="nav-item-text">Create Post</span> Removed text */}
         </NavLink>
         <NavLink
           to="/blogs/create"
@@ -305,7 +312,7 @@ function ConnectionsHeader() {
           onClick={() => setIsMenuOpen(false)}
         >
           <FaBlog />
-          <span className="nav-item-text">Create Blog</span>
+          {/* <span className="nav-item-text">Create Blog</span> Removed text */}
         </NavLink>
         <NavLink
           to="/blogs/manageBlogs"
@@ -316,7 +323,7 @@ function ConnectionsHeader() {
           onClick={() => setIsMenuOpen(false)}
         >
           <FaBlog />
-          <span className="nav-item-text">View Blog</span>
+          {/* <span className="nav-item-text">View Blog</span> Removed text */}
         </NavLink>
         <NavLink
           to="/network/createNetwork"
@@ -327,7 +334,7 @@ function ConnectionsHeader() {
           onClick={() => setIsMenuOpen(false)}
         >
           <FaUsers />
-          <span className="nav-item-text">Network</span>
+          {/* <span className="nav-item-text">Network</span> Removed text */}
         </NavLink>
         <NavLink
           to="/events/viewAllEvents"
@@ -338,10 +345,9 @@ function ConnectionsHeader() {
           onClick={() => setIsMenuOpen(false)}
         >
           <FaBlog />
-          <span className="nav-item-text">View Events</span>
+          {/* <span className="nav-item-text">View Events</span> Removed text */}
         </NavLink>
 
-        {/* Mobile User Actions - visible only when menu is open on mobile */}
         {user && (
           <NavLink
             to="/profile"
@@ -351,6 +357,7 @@ function ConnectionsHeader() {
                 : "user-profile-display-link mobile-only"
             }
             onClick={() => setIsMenuOpen(false)}
+            title="My Profile" // Added title for icon-only link
           >
             {user.profilePic ? (
               <img
@@ -363,7 +370,7 @@ function ConnectionsHeader() {
                 {user.fullName?.charAt(0)?.toUpperCase()}
               </div>
             )}
-            <span className="user-profile-name-text">My Profile</span>
+            {/* <span className="user-profile-name-text">My Profile</span> Removed text */}
           </NavLink>
         )}
         <NavLink
@@ -377,10 +384,13 @@ function ConnectionsHeader() {
           onClick={() => setIsMenuOpen(false)}
         >
           <FaCog />
-          <span className="nav-item-text">Settings</span>
         </NavLink>
 
-        <button onClick={logout} className="logout-action-button mobile-only">
+        <button
+          onClick={logout}
+          className="logout-action-button mobile-only"
+          title="Logout"
+        >
           Logout
         </button>
       </nav>

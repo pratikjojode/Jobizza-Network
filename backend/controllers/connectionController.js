@@ -20,6 +20,46 @@ export const sendConnectionRequest = async (req, res, next) => {
         .json({ success: false, message: "Receiver user not found." });
     }
 
+    // Check if connection already exists in any state
+    const existingConnection = await ConnectionRequest.findOne({
+      $or: [
+        { sender: senderId, receiver: receiverId },
+        { sender: receiverId, receiver: senderId },
+      ],
+    });
+
+    if (existingConnection) {
+      let message = "";
+      switch (existingConnection.status) {
+        case "pending":
+          if (existingConnection.sender.toString() === senderId) {
+            message = "Connection request already sent and pending.";
+          } else {
+            message = "You have a pending connection request from this user.";
+          }
+          break;
+        case "accepted":
+          message = "You are already connected with this user.";
+          break;
+        case "declined":
+          message = "Connection request was previously declined.";
+          break;
+        default:
+          message = "Connection request already exists.";
+      }
+
+      return res.status(409).json({
+        success: false,
+        message: message,
+        existingConnection: {
+          id: existingConnection._id,
+          status: existingConnection.status,
+          sender: existingConnection.sender,
+          receiver: existingConnection.receiver,
+        },
+      });
+    }
+
     const connection = await ConnectionRequest.create({
       sender: senderId,
       receiver: receiverId,
@@ -136,7 +176,7 @@ export const cancelConnectionRequest = async (req, res, next) => {
 
     await ConnectionRequest.findByIdAndDelete(id);
 
-    res.status(204).json({
+    res.status(200).json({
       success: true,
       message: "Connection request cancelled.",
       data: null,
@@ -172,7 +212,7 @@ export const removeConnection = async (req, res, next) => {
 
     await ConnectionRequest.findByIdAndDelete(id);
 
-    res.status(204).json({
+    res.status(200).json({
       success: true,
       message: "Connection removed.",
       data: null,
@@ -266,8 +306,8 @@ export const getReceivedPendingRequests = async (req, res, next) => {
 export const getAllConnectionRequests = async (req, res) => {
   try {
     const connections = await ConnectionRequest.find()
-      .populate("sender", "fullName email profilePic") // Populates sender's details
-      .populate("receiver", "fullName email profilePic"); // Populates receiver's details
+      .populate("sender", "fullName email profilePic")
+      .populate("receiver", "fullName email profilePic");
 
     res.status(200).json({
       success: true,
@@ -275,7 +315,6 @@ export const getAllConnectionRequests = async (req, res) => {
       data: connections,
     });
   } catch (error) {
-    // Basic error handling for the controller without external error handlers
     res.status(500).json({ success: false, message: error.message });
   }
 };
@@ -286,6 +325,7 @@ export const getAllUsersForConnection = async (req, res) => {
 
     const users = await User.find({ _id: { $ne: currentUserId } });
 
+    // Get all connection requests involving the current user
     const connectionRequests = await ConnectionRequest.find({
       $or: [{ sender: currentUserId }, { receiver: currentUserId }],
     });
@@ -309,12 +349,21 @@ export const getAllUsersForConnection = async (req, res) => {
       } else if (request.status === "accepted") {
         connectionStatus = "connected";
       } else if (request.status === "declined") {
-        connectionStatus = "not_connected";
+        // For declined requests, check who declined
+        if (request.receiver.toString() === currentUserId) {
+          // Current user declined the request
+          connectionStatus = "declined_by_me";
+        } else {
+          // Other user declined the request
+          connectionStatus = "declined_by_them";
+        }
       }
 
       connectionMap.set(otherUserId, {
         connectionStatus,
         connectionId: request._id.toString(),
+        requestStatus: request.status,
+        isSender: request.sender.toString() === currentUserId,
       });
     });
 
@@ -331,6 +380,16 @@ export const getAllUsersForConnection = async (req, res) => {
         company: user.company,
         connectionStatus: connectionInfo?.connectionStatus || "not_connected",
         connectionId: connectionInfo?.connectionId || null,
+        canConnect:
+          !connectionInfo ||
+          connectionInfo.connectionStatus === "declined_by_them" ||
+          connectionInfo.connectionStatus === "declined_by_me",
+        buttonText: getButtonText(
+          connectionInfo?.connectionStatus || "not_connected"
+        ),
+        buttonAction: getButtonAction(
+          connectionInfo?.connectionStatus || "not_connected"
+        ),
       };
     });
 
@@ -342,5 +401,95 @@ export const getAllUsersForConnection = async (req, res) => {
   } catch (error) {
     console.log("Error fetching all users for connection:", error);
     res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// Helper function to determine button text based on connection status
+function getButtonText(status) {
+  switch (status) {
+    case "connected":
+      return "Connected";
+    case "pending_sent":
+      return "Request Sent";
+    case "pending_received":
+      return "Accept Request";
+    case "declined_by_me":
+      return "Connect";
+    case "declined_by_them":
+      return "Connect";
+    case "not_connected":
+    default:
+      return "Connect";
+  }
+}
+
+// Helper function to determine button action based on connection status
+function getButtonAction(status) {
+  switch (status) {
+    case "connected":
+      return "remove";
+    case "pending_sent":
+      return "cancel";
+    case "pending_received":
+      return "accept";
+    case "declined_by_me":
+      return "connect";
+    case "declined_by_them":
+      return "connect";
+    case "not_connected":
+    default:
+      return "connect";
+  }
+}
+
+export const getConnectionSuggestions = async (req, res, next) => {
+  try {
+    const currentUserId = req.user._id;
+
+    const existingConnections = await ConnectionRequest.find({
+      $or: [{ sender: currentUserId }, { receiver: currentUserId }],
+      status: { $in: ["pending", "accepted"] },
+    }).select("sender receiver status");
+
+    const connectedOrPendingUserIds = new Set();
+    existingConnections.forEach((conn) => {
+      if (conn.sender.toString() === currentUserId.toString()) {
+        connectedOrPendingUserIds.add(conn.receiver.toString());
+      } else {
+        connectedOrPendingUserIds.add(conn.sender.toString());
+      }
+    });
+
+    connectedOrPendingUserIds.add(currentUserId.toString());
+
+    const suggestions = await User.find({
+      _id: { $nin: Array.from(connectedOrPendingUserIds) },
+    })
+      .select("fullName profilePic designation company")
+      .limit(10);
+
+    const suggestionsWithStatus = suggestions.map((user) => ({
+      _id: user._id,
+      fullName: user.fullName,
+      profilePic: user.profilePic,
+      designation: user.designation,
+      company: user.company,
+      connectionStatus: "not_connected",
+    }));
+
+    res.status(200).json({
+      status: "success",
+      results: suggestionsWithStatus.length,
+      data: {
+        suggestions: suggestionsWithStatus,
+      },
+    });
+  } catch (err) {
+    console.error("Error getting connection suggestions:", err);
+    res.status(500).json({
+      status: "error",
+      message: "Failed to retrieve connection suggestions.",
+      error: err.message,
+    });
   }
 };

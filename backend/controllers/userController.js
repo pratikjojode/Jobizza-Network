@@ -1,3 +1,4 @@
+import Event from "../models/eventModel.js";
 import User from "../models/User.js";
 
 export const getUserProfileById = async (req, res) => {
@@ -192,5 +193,24 @@ export const getAllUsersForDash = async (req, res) => {
       message: "Failed to fetch users",
       error: error.message,
     });
+  }
+};
+
+export const getEventsByUserId = async (req, res) => {
+  try {
+    const events = await Event.find({ organizer: req.params.userId })
+      .populate(
+        "organizer",
+        "fullName designation company role profilePic linkedin"
+      )
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      data: {
+        events: events,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };

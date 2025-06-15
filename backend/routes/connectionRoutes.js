@@ -10,6 +10,7 @@ import {
   getReceivedPendingRequests,
   getAllConnectionRequests,
   getAllUsersForConnection,
+  getConnectionSuggestions,
 } from "../controllers/connectionController.js";
 import { protect } from "../middlewares/authMiddleware.js";
 
@@ -21,6 +22,7 @@ router.use(protect);
 // Get all connection requests (admin view)
 router.get("/", getAllConnectionRequests);
 
+router.get("/suggestions", getConnectionSuggestions);
 // Send a new connection request
 router.post("/", sendConnectionRequest);
 
