@@ -9,6 +9,7 @@ import {
   getUnapprovedUsers,
   updateUserProfileByAdmin,
   uploadProfilePic,
+  getAdminProfile,
 } from "../controllers/adminController.js";
 import { protect, admin } from "../middlewares/authMiddleware.js";
 import upload from "../middlewares/uploadMiddleware.js";
@@ -20,7 +21,7 @@ router.put("/users/update-role", protect, admin, updateUserRole);
 router.get("/users", protect, admin, getAllUsers);
 router.get("/users/:id", protect, admin, getUserDetails);
 router.delete("/users/:id", protect, admin, deleteUser);
-
+router.get("/adminProfile", protect, admin, getAdminProfile);
 // Admin Dashboard Specific Routes
 router.get("/dashboard-stats", protect, admin, getDashboardStats);
 router.put("/users/:id", protect, admin, updateUserProfileByAdmin);

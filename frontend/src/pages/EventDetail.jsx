@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-// The react-toastify CSS import should ideally be handled at a global level (e.g., App.js or index.js)
-// or via a separate CSS file that imports it, but for a self-contained Canvas component,
-// it might need to be imported directly or addressed by the build system.
-// For now, removing this line to address the specific "Cannot import ... into a JavaScript file" error.
-// import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
+
 import ConnectionsHeader from "../components/ConnectionsHeader"; // Adjusted path
 import Footer from "../components/Footer"; // Adjusted path
 import {
@@ -17,7 +13,7 @@ import {
   FaLinkedin,
   FaCheckCircle,
   FaTimesCircle,
-  FaInfoCircle // For about/description section
+  FaInfoCircle, // For about/description section
 } from "react-icons/fa"; // Adjusted path for react-icons/fa
 import "../styles/EventDetail.css"; // Adjusted path
 
@@ -99,8 +95,13 @@ const EventDetail = () => {
               🚫
             </div>
             <h3>Event Not Found</h3>
-            <p>The event you are looking for does not exist or is unavailable.</p>
-            <button onClick={() => navigate("/events")} className="btn btn-primary">
+            <p>
+              The event you are looking for does not exist or is unavailable.
+            </p>
+            <button
+              onClick={() => navigate("/events")}
+              className="btn btn-primary"
+            >
               View All Events
             </button>
           </div>
@@ -112,13 +113,18 @@ const EventDetail = () => {
 
   return (
     <>
-      <ToastContainer />
       <ConnectionsHeader />
       <div className="event-detail-container">
         <div className="event-detail-card">
           {event.imageUrl && (
-            <img src={event.imageUrl} alt={event.title} className="event-detail-image"
-              onError={(e) => { e.target.src = "https://placehold.co/800x450/e0e0e0/555555?text=No+Image"; }}
+            <img
+              src={event.imageUrl}
+              alt={event.title}
+              className="event-detail-image"
+              onError={(e) => {
+                e.target.src =
+                  "https://placehold.co/800x450/e0e0e0/555555?text=No+Image";
+              }}
             />
           )}
 
@@ -133,26 +139,37 @@ const EventDetail = () => {
               <span>{event.location}</span>
             </p>
             <p className="event-detail-item event-verified">
-              {event.isVerified ? <FaCheckCircle className="detail-icon verified-icon" /> : <FaTimesCircle className="detail-icon unverified-icon" />} Verified:{" "}
-              <span>{event.isVerified ? "Yes" : "No"}</span>
+              {event.isVerified ? (
+                <FaCheckCircle className="detail-icon verified-icon" />
+              ) : (
+                <FaTimesCircle className="detail-icon unverified-icon" />
+              )}{" "}
+              Verified: <span>{event.isVerified ? "Yes" : "No"}</span>
             </p>
           </div>
 
           <div className="event-description-section">
-            <h2 className="section-title"><FaInfoCircle className="section-icon" /> About This Event</h2>
+            <h2 className="section-title">
+              <FaInfoCircle className="section-icon" /> About This Event
+            </h2>
             <p className="event-description-text">{event.description}</p>
           </div>
 
           {event.organizer && (
             <div className="organizer-section">
-              <h2 className="section-title"><FaUserCircle className="section-icon" /> Organized By</h2>
+              <h2 className="section-title">
+                <FaUserCircle className="section-icon" /> Organized By
+              </h2>
               <div className="organizer-content">
                 {event.organizer.profilePic ? (
                   <img
                     src={event.organizer.profilePic}
                     alt="Organizer"
                     className="organizer-profile-pic"
-                    onError={(e) => { e.target.src = "https://placehold.co/80x80/add8e6/003366?text=NP"; }}
+                    onError={(e) => {
+                      e.target.src =
+                        "https://placehold.co/80x80/add8e6/003366?text=NP";
+                    }}
                   />
                 ) : (
                   <div className="organizer-profile-pic-placeholder">
@@ -160,14 +177,21 @@ const EventDetail = () => {
                   </div>
                 )}
                 <div className="organizer-details-text">
-                  <p className="organizer-name">{event.organizer.fullName || event.organizer.username}</p>
+                  <p className="organizer-name">
+                    {event.organizer.fullName || event.organizer.username}
+                  </p>
                   {event.organizer.designation && event.organizer.company && (
                     <p className="organizer-job-title">
-                      <FaBriefcase className="organizer-icon" /> {event.organizer.designation} at <FaBuilding className="organizer-icon" /> {event.organizer.company}
+                      <FaBriefcase className="organizer-icon" />{" "}
+                      {event.organizer.designation} at{" "}
+                      <FaBuilding className="organizer-icon" />{" "}
+                      {event.organizer.company}
                     </p>
                   )}
                   {event.organizer.role && (
-                    <p className="organizer-role">Role: {event.organizer.role}</p>
+                    <p className="organizer-role">
+                      Role: {event.organizer.role}
+                    </p>
                   )}
                   {event.organizer.linkedin && (
                     <p className="organizer-linkedin-wrapper">
@@ -177,7 +201,8 @@ const EventDetail = () => {
                         rel="noopener noreferrer"
                         className="organizer-linkedin-link"
                       >
-                        <FaLinkedin className="organizer-icon" /> View LinkedIn Profile
+                        <FaLinkedin className="organizer-icon" /> View LinkedIn
+                        Profile
                       </a>
                     </p>
                   )}
@@ -187,12 +212,20 @@ const EventDetail = () => {
           )}
 
           <div className="event-actions-footer">
-            <button onClick={() => navigate("/events")} className="btn btn-secondary">
+            <button
+              onClick={() => navigate("/events")}
+              className="btn btn-secondary"
+            >
               Back to All Events
             </button>
             {/* Add more event-specific actions here, e.g., "Register", "Add to Calendar" */}
-             <button onClick={() => toast.info("Registration functionality coming soon!")} className="btn btn-primary">
-                Register for Event
+            <button
+              onClick={() =>
+                toast.info("Registration functionality coming soon!")
+              }
+              className="btn btn-primary"
+            >
+              Register for Event
             </button>
           </div>
         </div>

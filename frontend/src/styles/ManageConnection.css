@@ -1,152 +1,237 @@
-/* ManageConnection.css */
-
-/* Overall Container */
+/* --- General Styling & Responsive Basics --- */
 .manage-connections-container {
   padding: 20px;
-
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  font-family: -apple-system, BlinkMacMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol";
+  font-family: Arial, sans-serif;
   color: #333;
 }
 
-/* Header Section */
+/* For smaller screens, ensure padding is reasonable */
+@media (max-width: 768px) {
+  .manage-connections-container {
+    padding: 15px;
+  }
+}
+
+/* --- Header & Action Buttons --- */
 .manage-connections-header {
   display: flex;
+  flex-wrap: wrap; /* Allow items to wrap on smaller screens */
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
-  flex-wrap: wrap;
-  gap: 15px;
+  gap: 15px; /* Space between header elements */
 }
 
 .manage-connections-header h2 {
-  margin: 0;
+  font-size: 1.8em;
   color: #2c3e50;
-  font-size: 2.2em;
-  font-weight: 600;
-  padding-left: 0;
-  border-bottom: none;
+  margin: 0;
+  flex-grow: 1; /* Allow heading to take available space */
 }
 
-/* Action Buttons Container */
 .action-buttons {
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  gap: 10px; /* Space between buttons */
 }
 
-/* General Button Styling */
-.action-buttons button,
-table button,
-.connection-card .card-actions button {
-  background-color: #007bff;
-  color: white;
+.action-buttons button {
+  padding: 10px 18px;
   border: none;
-  padding: 8px 14px;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 0.85em;
-  font-weight: 500;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
-  min-width: 70px;
-  text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 0.95em;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  white-space: nowrap; /* Prevent buttons from wrapping text */
 }
 
-.action-buttons button:hover,
-table button:hover,
-.connection-card .card-actions button:hover {
-  background-color: #0056b3;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+.action-buttons button:hover {
+  transform: translateY(-2px);
 }
 
-.action-buttons button:active,
-table button:active,
-.connection-card .card-actions button:active {
-  background-color: #004085;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-.action-buttons button:disabled,
-table button:disabled,
-.connection-card .card-actions button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-  opacity: 0.6;
-  box-shadow: none;
-}
-
-/* Specific Button Colors for Action Bar */
 .toggle-view-btn {
-  background-color: #6f42c1; /* Purple */
+  background-color: #3498db;
+  color: white;
 }
+
 .toggle-view-btn:hover {
-  background-color: #5d34a4;
+  background-color: #2980b9;
 }
 
 .export-csv-btn {
-  background-color: #28a745; /* Green */
+  background-color: #27ae60;
+  color: white;
 }
+
 .export-csv-btn:hover {
-  background-color: #218838;
+  background-color: #229954;
 }
 
 .bulk-delete-btn {
-  background-color: #dc3545; /* Red */
-}
-.bulk-delete-btn:hover {
-  background-color: #c82333;
+  background-color: #e74c3c;
+  color: white;
 }
 
-/* Table Styling */
+.bulk-delete-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.bulk-delete-btn:hover:not(:disabled) {
+  background-color: #c0392b;
+}
+
+/* Responsive adjustments for header buttons */
+@media (max-width: 600px) {
+  .manage-connections-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .manage-connections-header h2 {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .action-buttons {
+    width: 100%;
+    justify-content: stretch; /* Stretch buttons to fill width */
+  }
+
+  .action-buttons button {
+    flex: 1; /* Distribute space evenly */
+  }
+}
+
+/* --- Messages (Loading, Error, No Connections) --- */
+.loading-message,
+.error-message,
+.no-connections-message {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.1em;
+  border-radius: 8px;
+  margin-top: 30px;
+}
+
+.loading-message {
+  background-color: #e8f5e9; /* Light green */
+  color: #27ae60;
+}
+
+.error-message {
+  background-color: #fce4e4; /* Light red */
+  color: #c0392b;
+  border: 1px solid #e74c3c;
+}
+
+.no-connections-message {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
+/* --- Table View --- */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
+  margin-top: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   background-color: #fff;
   border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid #e0e0e0;
+  overflow: hidden; /* Ensures rounded corners apply to content */
+}
+
+table thead {
+  background-color: #f5f5f5;
 }
 
 table th,
 table td {
-  padding: 12px 20px;
+  padding: 12px 15px;
   text-align: left;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #ddd;
   font-size: 0.9em;
-  color: #444;
 }
 
-/* Table Header */
 table th {
-  background-color: #ffffff;
   color: #555;
-  font-weight: 600;
+  font-weight: bold;
   text-transform: uppercase;
-  font-size: 0.85em;
-  letter-spacing: 0.5px;
-}
-
-/* Remove bottom border from the last row */
-table tbody tr:last-child td {
-  border-bottom: none;
 }
 
 table tbody tr:hover {
-  background-color: #f5f5f5;
-  cursor: default;
+  background-color: #f9f9f9;
 }
 
-/* Selected row highlight for table */
-table tbody tr.selected-row {
-  background-color: #e6f7ff; /* Light blue for selected rows */
-  border-left: 4px solid #007bff; /* Highlight border */
+.selected-row {
+  background-color: #eaf6fd !important; /* Highlight selected rows */
+}
+
+table td .action-buttons {
+  gap: 5px; /* Smaller gap for actions within table cells */
+  flex-wrap: wrap; /* Allow action buttons to wrap within cell if needed */
+  justify-content: flex-start; /* Align actions to the left */
+}
+
+table td button {
+  padding: 6px 10px;
+  font-size: 0.85em;
+  border-radius: 4px;
+}
+
+/* Specific button colors for table actions */
+button.view-btn {
+  background-color: #3498db;
+  color: white;
+}
+button.view-btn:hover {
+  background-color: #2980b9;
+}
+
+button.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+button.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+button.block-btn {
+  background-color: #9b59b6; /* Purple */
+  color: white;
+}
+button.block-btn:hover {
+  background-color: #8e44ad;
+}
+
+/* Pending actions */
+button.accept-btn {
+  background-color: #2ecc71;
+  color: white;
+}
+button.accept-btn:hover {
+  background-color: #27ad60;
+}
+
+button.decline-btn {
+  background-color: #f39c12; /* Orange */
+  color: white;
+}
+button.decline-btn:hover {
+  background-color: #e67e22;
+}
+
+button.cancel-btn {
+  background-color: #f1c40f; /* Yellow */
+  color: #333;
+}
+button.cancel-btn:hover {
+  background-color: #f0b20a;
+}
+
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Checkbox styling */
@@ -154,140 +239,91 @@ input[type="checkbox"] {
   transform: scale(1.2);
   margin-right: 5px;
   cursor: pointer;
-  accent-color: #007bff;
 }
 
-/* Specific styling for connection status */
-td[data-label="Status"],
-.card-status {
-  font-weight: 500;
-  text-transform: capitalize;
-  padding: 3px 8px;
-  border-radius: 4px;
-  display: inline-block;
+/* Responsive Table */
+@media (max-width: 900px) {
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block; /* Make table elements behave like block elements */
+  }
+
+  thead tr {
+    position: absolute;
+    top: -9999px; /* Hide table headers visually */
+    left: -9999px;
+  }
+
+  table tr {
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  table td {
+    border: none;
+    position: relative;
+    padding-left: 50%; /* Make space for data-label */
+    text-align: right;
+  }
+
+  table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    width: calc(50% - 30px);
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: bold;
+    text-align: left;
+    color: #555;
+  }
+
+  table td:first-child {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 15px; /* Adjust padding for checkbox */
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+  }
+
+  table td:last-child {
+    border-bottom: none;
+    text-align: left; /* Align actions to the left */
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+
+  table td .action-buttons {
+    flex-direction: column; /* Stack buttons vertically */
+    align-items: flex-start;
+  }
+
+  table td button {
+    width: 100%; /* Make buttons full width */
+    margin-bottom: 5px; /* Space between stacked buttons */
+  }
 }
 
-.status-pending {
-  color: #e67e22; /* Orange */
-  background-color: #fef3e5;
-}
-
-.status-accepted {
-  color: #27ae60; /* Green */
-  background-color: #e8f9ed;
-}
-
-.status-declined {
-  color: #e74c3c; /* Red */
-  background-color: #fdeded;
-}
-
-/* Button Container in Table Actions Column */
-table td[data-label="Actions"] {
-  white-space: nowrap;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-/* Specific button colors for table actions (can be reused for cards if desired) */
-table button.accept-btn,
-.connection-card button.accept-btn {
-  /* Added classes for specificity */
-  background-color: #28a745; /* Green for Accept */
-}
-table button.accept-btn:hover,
-.connection-card button.accept-btn:hover {
-  background-color: #218838;
-}
-
-table button.decline-btn,
-.connection-card button.decline-btn {
-  /* Added classes for specificity */
-  background-color: #dc3545; /* Red for Decline */
-}
-table button.decline-btn:hover,
-.connection-card button.decline-btn:hover {
-  background-color: #c82333;
-}
-
-table button.cancel-btn,
-.connection-card button.cancel-btn {
-  /* Added classes for specificity */
-  background-color: #6c757d; /* Gray for Cancel */
-}
-table button.cancel-btn:hover,
-.connection-card button.cancel-btn:hover {
-  background-color: #5a6268;
-}
-
-table button.remove-btn,
-.connection-card button.remove-btn {
-  /* Added classes for specificity */
-  background-color: #ffc107; /* Yellow for Remove */
-  color: #333; /* Dark text on yellow */
-}
-table button.remove-btn:hover,
-.connection-card button.remove-btn:hover {
-  background-color: #e0a800;
-}
-
-.view-btn {
-  background-color: #17a2b8; /* Info blue */
-}
-.view-btn:hover {
-  background-color: #138496;
-}
-
-.delete-btn {
-  background-color: #dc3545; /* Red */
-}
-.delete-btn:hover {
-  background-color: #c82333;
-}
-
-.block-btn {
-  background-color: #343a40; /* Dark gray */
-}
-.block-btn:hover {
-  background-color: #23272b;
-}
-
-/* Message Styling (Loading, Error, No connections) */
-.loading-message,
-.error-message,
-.no-connections-message {
-  text-align: center;
-  padding: 30px;
-  font-size: 1.1em;
-  color: #666;
-  background-color: #f0f0f0;
-  border-radius: 8px;
-  margin-top: 20px;
-}
-
-.error-message {
-  color: #dc3545;
-  font-weight: bold;
-  background-color: #ffebe9;
-  border: 1px solid #dc3545;
-}
-
-/* --- Card View Specific Styles --- */
+/* --- Card View --- */
 .connection-cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  gap: 25px;
   margin-top: 20px;
 }
 
 .connection-card {
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -296,183 +332,182 @@ table button.remove-btn:hover,
 }
 
 .connection-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
 }
 
-.connection-card.selected-card {
-  border: 2px solid #007bff;
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+.selected-card {
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3); /* Blue highlight */
 }
 
 .card-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.card-header h3 {
-  margin: 0;
-  font-size: 1.1em;
-  color: #2c3e50;
-  flex-grow: 1;
+  border-bottom: 1px solid #eee;
 }
 
 .card-header input[type="checkbox"] {
   margin-right: 10px;
 }
 
+.card-header h3 {
+  font-size: 1.1em;
+  color: #333;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.card-status {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8em;
+  font-weight: bold;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.status-pending {
+  background-color: #fdf5e6; /* Light yellow */
+  color: #f39c12;
+}
+
+.status-accepted {
+  background-color: #e6faed; /* Light green */
+  color: #2ecc71;
+}
+
+.status-declined {
+  background-color: #ffeaea; /* Light red */
+  color: #e74c3c;
+}
+
 .card-body p {
-  margin-bottom: 8px;
-  font-size: 0.9em;
-  color: #555;
+  margin: 8px 0;
+  font-size: 0.95em;
+  line-height: 1.4;
 }
 
 .card-body strong {
-  color: #333;
+  color: #555;
 }
 
 .card-actions {
-  margin-top: 20px;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  justify-content: flex-end;
+  gap: 8px; /* Space between buttons in card view */
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
 }
 
-/* Responsive Design */
-@media (max-width: 992px) {
-  .manage-connections-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .action-buttons {
-    justify-content: flex-start;
-    width: 100%;
-  }
+.card-actions button {
+  flex: 1 1 auto; /* Allow buttons to grow and shrink */
+  padding: 8px 12px;
+  font-size: 0.85em;
+  border-radius: 5px;
+  white-space: nowrap;
 }
 
+/* Apply specific button styles from table view to card view as well */
+.card-actions .view-btn {
+  background-color: #3498db;
+  color: white;
+}
+.card-actions .view-btn:hover {
+  background-color: #2980b9;
+}
+
+.card-actions .delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+.card-actions .delete-btn:hover {
+  background-color: #c0392b;
+}
+
+.card-actions .block-btn {
+  background-color: #9b59b6;
+  color: white;
+}
+.card-actions .block-btn:hover {
+  background-color: #8e44ad;
+}
+
+/* Pending actions for cards */
+.card-actions button[onClick^="handleAccept"] {
+  background-color: #2ecc71;
+  color: white;
+}
+.card-actions button[onClick^="handleAccept"]:hover {
+  background-color: #27ad60;
+}
+
+.card-actions button[onClick^="handleDecline"] {
+  background-color: #f39c12;
+  color: white;
+}
+.card-actions button[onClick^="handleDecline"]:hover {
+  background-color: #e67e22;
+}
+
+.card-actions button[onClick^="handleCancel"] {
+  background-color: #f1c40f;
+  color: #333;
+}
+.card-actions button[onClick^="handleCancel"]:hover {
+  background-color: #f0b20a;
+}
+
+.card-actions button[onClick^="handleRemove"] {
+  background-color: #ff7f50; /* Coral for remove */
+  color: white;
+}
+.card-actions button[onClick^="handleRemove"]:hover {
+  background-color: #ff6347;
+}
+
+/* Responsive adjustments for card view grid */
 @media (max-width: 768px) {
-  .manage-connections-container {
-    padding: 15px;
-    margin: 15px auto;
-  }
-
-  .manage-connections-header h2 {
-    font-size: 1.8em;
-    margin-bottom: 15px;
-  }
-
-  .action-buttons button {
-    font-size: 0.8em;
-    padding: 7px 12px;
-  }
-
-  /* Table responsive styles */
-  table,
-  thead,
-  tbody,
-  th,
-  td,
-  tr {
-    display: block;
-  }
-
-  table thead tr {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-  }
-
-  table tr {
-    border: 1px solid #e0e0e0;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  }
-
-  table td {
-    border-bottom: 1px solid #f0f0f0;
-    position: relative;
-    padding-left: 45%;
-    text-align: right;
-    font-size: 0.85em;
-  }
-
-  table td::before {
-    content: attr(data-label);
-    position: absolute;
-    left: 15px;
-    width: calc(45% - 30px);
-    white-space: nowrap;
-    text-align: left;
-    font-weight: 600;
-    color: #555;
-  }
-
-  table td:last-child {
-    border-bottom: 0;
-    text-align: center;
-    padding-left: 15px;
-  }
-
-  table td:first-child {
-    text-align: center;
-    padding-left: 15px;
-  }
-  table td:first-child::before {
-    content: "";
-  }
-
-  table td[data-label="Actions"] {
-    justify-content: center;
-    padding-top: 15px;
-    padding-bottom: 15px;
-  }
-
-  table button {
-    width: auto;
-    flex-grow: 1;
-    margin: 4px;
-  }
-
-  /* Card view responsive styles */
   .connection-cards-container {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 15px;
+    grid-template-columns: 1fr; /* Single column on smaller screens */
   }
 }
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
 
-/* Further adjustments for very small screens */
-@media (max-width: 480px) {
-  .manage-connections-container {
-    margin: 10px;
-    padding: 10px;
-  }
-  .manage-connections-header h2 {
-    font-size: 1.6em;
-  }
-  .action-buttons button {
-    padding: 6px 10px;
-    font-size: 0.75em;
-  }
-  table td {
-    padding: 10px 15px;
-  }
-  table td::before {
-    font-size: 0.8em;
-    left: 10px;
-    width: calc(45% - 20px);
-  }
-  .connection-card {
-    padding: 15px;
-  }
-  .card-actions button {
-    padding: 6px 10px;
-    font-size: 0.75em;
-  }
+.status-pending {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+.status-accepted {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+.status-declined {
+  background-color: #fecaca;
+  color: #991b1b;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-id {
+  color: #6b7280;
+  font-size: 11px;
+}
+
+.action-buttons-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
 }

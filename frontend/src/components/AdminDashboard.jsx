@@ -24,10 +24,19 @@ function AdminDashboard() {
   const { user, logout } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const location = useLocation();
 
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  const closeDropdown = () => {
+    setIsDropdownOpen(false);
   };
 
   useEffect(() => {
@@ -39,8 +48,19 @@ function AdminDashboard() {
       }
     };
 
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".user-dropdown")) {
+        setIsDropdownOpen(false);
+      }
+    };
+
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      document.removeEventListener("click", handleClickOutside);
+    };
   }, [isSidebarOpen]);
 
   return (
@@ -74,20 +94,33 @@ function AdminDashboard() {
             <FaCog />
           </button>
           <div className="user-dropdown">
-            <div className="user-avatar">
-              <span>{user?.fullName?.charAt(0)}</span>
-            </div>
-            <div className="dropdown-content">
-              <Link to="profile" onClick={isMobile ? toggleSidebar : undefined}>
+            <div className={`dropdown-content ${isDropdownOpen ? "show" : ""}`}>
+              <Link
+                to="profile"
+                onClick={() => {
+                  closeDropdown();
+                  isMobile && toggleSidebar();
+                }}
+              >
                 My Profile
               </Link>
               <Link
                 to="/settings"
-                onClick={isMobile ? toggleSidebar : undefined}
+                onClick={() => {
+                  closeDropdown();
+                  isMobile && toggleSidebar();
+                }}
               >
                 Account Settings
               </Link>
-              <button onClick={logout}>Logout</button>
+              <button
+                onClick={() => {
+                  logout();
+                  closeDropdown();
+                }}
+              >
+                Logout
+              </button>
             </div>
           </div>
         </div>
@@ -105,122 +138,134 @@ function AdminDashboard() {
             isMobile && isSidebarOpen ? "mobile-open" : ""
           }`}
         >
-          <h2 className="sidebar-heading">Admin Navigation</h2>
-          <ul className="sidebar-menu">
-            <li>
-              <Link
-                to="profile"
-                className={`sidebar-link ${
-                  location.pathname.includes("/admin/profile") ? "isActive" : ""
-                }`}
-                onClick={isMobile ? toggleSidebar : undefined}
-              >
-                <FaUser />
-                <span>Admin Profile</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="users"
-                className={`sidebar-link ${
-                  location.pathname.includes("/admin/users") ? "isActive" : ""
-                }`}
-                onClick={isMobile ? toggleSidebar : undefined}
-              >
-                <FaUsers />
-                <span>Manage Users</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="blogs"
-                className={`sidebar-link ${
-                  location.pathname.includes("/admin/blogs") ? "isActive" : ""
-                }`}
-                onClick={isMobile ? toggleSidebar : undefined}
-              >
-                <FaFileAlt />
-                <span>Manage Blogs</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="connections"
-                className={`sidebar-link ${
-                  location.pathname.includes("/admin/connections")
-                    ? "isActive"
-                    : ""
-                }`}
-                onClick={isMobile ? toggleSidebar : undefined}
-              >
-                <FaLink />
-                <span>Manage Connections</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="reports"
-                className={`sidebar-link ${
-                  location.pathname.includes("/admin/reports") ? "isActive" : ""
-                }`}
-                onClick={isMobile ? toggleSidebar : undefined}
-              >
-                <FaChartLine />
-                <span>Reports</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="events"
-                className={`sidebar-link ${
-                  location.pathname.includes("/admin/events") ? "isActive" : ""
-                }`}
-                onClick={isMobile ? toggleSidebar : undefined}
-              >
-                <FaCalendarAlt />
-                <span>Events</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="settings"
-                className={`sidebar-link ${
-                  location.pathname.includes("/admin/settings")
-                    ? "isActive"
-                    : ""
-                }`}
-                onClick={isMobile ? toggleSidebar : undefined}
-              >
-                <FaCog />
-                <span>Admin Settings</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="support"
-                className={`sidebar-link ${
-                  location.pathname.includes("/admin/support") ? "isActive" : ""
-                }`}
-                onClick={isMobile ? toggleSidebar : undefined}
-              >
-                <FaLifeRing />
-                <span>Support</span>
-              </Link>
-            </li>
-          </ul>
+          <div className="sidebar-content">
+            <h2 className="sidebar-heading">
+              <span className="sidebar-text">Admin Navigation</span>
+            </h2>
+            <ul className="sidebar-menu">
+              <li>
+                <Link
+                  to="profile"
+                  className={`sidebar-link ${
+                    location.pathname.includes("/admin/profile")
+                      ? "isActive"
+                      : ""
+                  }`}
+                  onClick={isMobile ? toggleSidebar : undefined}
+                >
+                  <FaUser className="sidebar-icon" />
+                  <span className="sidebar-text">Admin Profile</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="users"
+                  className={`sidebar-link ${
+                    location.pathname.includes("/admin/users") ? "isActive" : ""
+                  }`}
+                  onClick={isMobile ? toggleSidebar : undefined}
+                >
+                  <FaUsers className="sidebar-icon" />
+                  <span className="sidebar-text">Manage Users</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="blogs"
+                  className={`sidebar-link ${
+                    location.pathname.includes("/admin/blogs") ? "isActive" : ""
+                  }`}
+                  onClick={isMobile ? toggleSidebar : undefined}
+                >
+                  <FaFileAlt className="sidebar-icon" />
+                  <span className="sidebar-text">Manage Blogs</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="connections"
+                  className={`sidebar-link ${
+                    location.pathname.includes("/admin/connections")
+                      ? "isActive"
+                      : ""
+                  }`}
+                  onClick={isMobile ? toggleSidebar : undefined}
+                >
+                  <FaLink className="sidebar-icon" />
+                  <span className="sidebar-text">Manage Connections</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="reports"
+                  className={`sidebar-link ${
+                    location.pathname.includes("/admin/reports")
+                      ? "isActive"
+                      : ""
+                  }`}
+                  onClick={isMobile ? toggleSidebar : undefined}
+                >
+                  <FaChartLine className="sidebar-icon" />
+                  <span className="sidebar-text">Reports</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="events"
+                  className={`sidebar-link ${
+                    location.pathname.includes("/admin/events")
+                      ? "isActive"
+                      : ""
+                  }`}
+                  onClick={isMobile ? toggleSidebar : undefined}
+                >
+                  <FaCalendarAlt className="sidebar-icon" />
+                  <span className="sidebar-text">Events</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="settings"
+                  className={`sidebar-link ${
+                    location.pathname.includes("/admin/settings")
+                      ? "isActive"
+                      : ""
+                  }`}
+                  onClick={isMobile ? toggleSidebar : undefined}
+                >
+                  <FaCog className="sidebar-icon" />
+                  <span className="sidebar-text">Admin Settings</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="support"
+                  className={`sidebar-link ${
+                    location.pathname.includes("/admin/support")
+                      ? "isActive"
+                      : ""
+                  }`}
+                  onClick={isMobile ? toggleSidebar : undefined}
+                >
+                  <FaLifeRing className="sidebar-icon" />
+                  <span className="sidebar-text">Support</span>
+                </Link>
+              </li>
+            </ul>
+          </div>
 
           <div className="sidebar-footer">
             <button className="logout-button" onClick={logout}>
-              <FaSignOutAlt />
-              <span>Logout</span>
+              <FaSignOutAlt className="sidebar-icon" />
+              <span className="sidebar-text">Logout</span>
             </button>
             <Link
               to="/"
               className="dashboard-home-link"
               onClick={isMobile ? toggleSidebar : undefined}
             >
-              <FaHome />
-              <span>Go to Home</span>
+              <FaHome className="sidebar-icon" />
+              <span className="sidebar-text">Go to Home</span>
             </Link>
           </div>
         </div>

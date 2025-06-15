@@ -264,3 +264,20 @@ export const uploadProfilePic = async (req, res) => {
       .json({ message: "Server error during profile picture upload." });
   }
 };
+
+export const getAdminProfile = async (req, res) => {
+  try {
+    const admin = await User.findById(req.user._id).select("-password -__v");
+
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    res.status(200).json(admin);
+  } catch (error) {
+    console.error("Error fetching admin profile:", error);
+    res
+      .status(500)
+      .json({ error: "Server error while fetching admin profile" });
+  }
+};

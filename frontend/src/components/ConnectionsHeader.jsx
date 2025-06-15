@@ -13,7 +13,7 @@ import {
   FaSearch,
 } from "react-icons/fa";
 
-import "../styles/UniqueConnectionsHeader.css"; // Ensure this path is correct
+import "../styles/UniqueConnectionsHeader.css";
 
 function ConnectionsHeader() {
   const { user, logout } = useAuth();
@@ -202,7 +202,9 @@ function ConnectionsHeader() {
           <NavLink
             to="/settings"
             className={({ isActive }) =>
-              isActive ? "settings-icon-link mobile-only active" : "settings-icon-link mobile-only"
+              isActive
+                ? "settings-icon-link mobile-only active"
+                : "settings-icon-link mobile-only"
             }
             title="Settings"
             onClick={() => setIsMenuOpen(false)}
@@ -214,7 +216,6 @@ function ConnectionsHeader() {
           <button onClick={logout} className="logout-action-button mobile-only">
             Logout
           </button>
-
         </nav>
       </div>
 
@@ -275,7 +276,9 @@ function ConnectionsHeader() {
         <NavLink
           to="/settings"
           className={({ isActive }) =>
-            isActive ? "settings-icon-link desktop-only active" : "settings-icon-link desktop-only"
+            isActive
+              ? "settings-icon-link desktop-only active"
+              : "settings-icon-link desktop-only"
           }
           title="Settings"
           onClick={() => setIsMenuOpen(false)}
