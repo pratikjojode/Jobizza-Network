@@ -32,6 +32,7 @@ import ManageEvents from "./pages/ManageEvents";
 import CreateEvents from "./pages/CreateEvents";
 import ViewAllEvents from "./pages/ViewAllEvents";
 import EventDetail from "./pages/EventDetail";
+import AdminData from "./components/AdminData";
 
 function App() {
   return (
@@ -94,11 +95,7 @@ function App() {
               index
               element={
                 <>
-                  <h2>Welcome to the Admin Panel!</h2>
-                  <p>
-                    Please select an option from the sidebar to manage your
-                    application.
-                  </p>
+                  <AdminData />
                 </>
               }
             />
@@ -111,6 +108,7 @@ function App() {
 
           <Route
             path="/connections"
+            s
             element={
               <PrivateRoute allowedRoles={["CEO", "CFO", "CTO", "CHRO", "CXO"]}>
                 <ConnectionsPage />

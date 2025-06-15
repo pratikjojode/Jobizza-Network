@@ -1,0 +1,107 @@
+:root {
+  --primary-color: #4f46e5;
+  --danger-color: #ef4444;
+  --text-color: #1f2937;
+  --bg-color: #f9fafb;
+  --border-color: #e5e7eb;
+  --card-bg: #ffffff;
+}
+
+.admin-profile-container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 24px;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-color);
+}
+
+.admin-profile-container h2 {
+  text-align: center;
+  color: var(--primary-color);
+  margin-bottom: 24px;
+}
+
+.admin-profile-image {
+  display: block;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0 auto 24px auto;
+  border: 3px solid var(--primary-color);
+}
+
+.admin-profile-container p {
+  margin: 10px 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.admin-profile-container strong {
+  color: #111827;
+}
+
+.admin-profile-container a {
+  color: var(--primary-color);
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.admin-profile-container a:hover {
+  text-decoration: underline;
+}
+
+.admin-profile-container ul {
+  margin: 10px 0 20px 20px;
+  padding-left: 16px;
+  list-style-type: disc;
+}
+
+.profile-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  gap: 10px;
+}
+
+.profile-buttons button {
+  flex: 1;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.profile-buttons button:first-child {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+.profile-buttons button:first-child:hover {
+  background-color: #4338ca;
+}
+
+.profile-buttons button:last-child {
+  background-color: var(--danger-color);
+  color: #fff;
+}
+
+.profile-buttons button:last-child:hover {
+  background-color: #dc2626;
+}
+
+@media (max-width: 500px) {
+  .admin-profile-container {
+    padding: 16px;
+  }
+
+  .profile-buttons {
+    flex-direction: column;
+  }
+}

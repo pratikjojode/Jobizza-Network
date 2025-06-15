@@ -175,3 +175,22 @@ export const getUserProfile = async (req, res) => {
     });
   }
 };
+
+export const getAllUsersForDash = async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.status(200).json({
+      success: true,
+      message: "Users fetched successfully",
+      users,
+      count: users.length,
+    });
+  } catch (error) {
+    console.error("Error fetching users:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch users",
+      error: error.message,
+    });
+  }
+};

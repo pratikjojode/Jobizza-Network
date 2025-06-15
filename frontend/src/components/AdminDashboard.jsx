@@ -21,18 +21,21 @@ import {
 import "../styles/AdminDashboard.css";
 
 function AdminDashboard() {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const location = useLocation();
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev);
+  const isLinkActive = (path) => {
+    if (path === "") {
+      return location.pathname === "/admin/dashboard";
+    }
+    return location.pathname.includes(`/admin/dashboard/${path}`);
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev);
+  const toggleSidebar = () => {
+    setIsSidebarOpen((prev) => !prev);
   };
 
   const closeDropdown = () => {
@@ -49,7 +52,7 @@ function AdminDashboard() {
     };
 
     const handleClickOutside = (event) => {
-      if (!event.target.closest(".user-dropdown")) {
+      if (isDropdownOpen && !event.target.closest(".user-dropdown")) {
         setIsDropdownOpen(false);
       }
     };
@@ -61,11 +64,10 @@ function AdminDashboard() {
       window.removeEventListener("resize", handleResize);
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [isSidebarOpen]);
+  }, [isSidebarOpen, isDropdownOpen]);
 
   return (
     <div className="admin-dashboard-layout">
-      {/* Header */}
       <header className="admin-header">
         <div className="header-left">
           <button className="sidebar-toggle-btn" onClick={toggleSidebar}>
@@ -87,13 +89,17 @@ function AdminDashboard() {
           <button className="header-icon-btn">
             <FaEnvelope />
           </button>
-          <button className="header-icon-btn">
+          <Link to="/admin/dashboard" className="header-icon-btn">
             <FaChartLine />
-          </button>
+          </Link>
           <button className="header-icon-btn">
             <FaCog />
           </button>
-          <div className="user-dropdown">
+          <div
+            className="user-dropdown"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          >
+            <FaUser className="user-avatar-icon" />
             <div className={`dropdown-content ${isDropdownOpen ? "show" : ""}`}>
               <Link
                 to="profile"
@@ -119,20 +125,18 @@ function AdminDashboard() {
                   closeDropdown();
                 }}
               >
-                Logout
+                <FaSignOutAlt className="dropdown-icon" /> Logout
               </button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Main Container */}
       <div
         className={`admin-main-container ${
           !isSidebarOpen ? "sidebar-collapsed" : ""
         }`}
       >
-        {/* Sidebar */}
         <div
           className={`admin-sidebar ${!isSidebarOpen ? "collapsed" : ""} ${
             isMobile && isSidebarOpen ? "mobile-open" : ""
@@ -145,11 +149,21 @@ function AdminDashboard() {
             <ul className="sidebar-menu">
               <li>
                 <Link
+                  to="/admin/dashboard"
+                  className={`sidebar-link ${
+                    isLinkActive("") ? "isActive" : ""
+                  }`}
+                  onClick={isMobile ? toggleSidebar : undefined}
+                >
+                  <FaChartLine className="sidebar-icon" />
+                  <span className="sidebar-text">Dashboard</span>
+                </Link>
+              </li>
+              <li>
+                <Link
                   to="profile"
                   className={`sidebar-link ${
-                    location.pathname.includes("/admin/profile")
-                      ? "isActive"
-                      : ""
+                    isLinkActive("profile") ? "isActive" : ""
                   }`}
                   onClick={isMobile ? toggleSidebar : undefined}
                 >
@@ -161,7 +175,7 @@ function AdminDashboard() {
                 <Link
                   to="users"
                   className={`sidebar-link ${
-                    location.pathname.includes("/admin/users") ? "isActive" : ""
+                    isLinkActive("users") ? "isActive" : ""
                   }`}
                   onClick={isMobile ? toggleSidebar : undefined}
                 >
@@ -173,7 +187,7 @@ function AdminDashboard() {
                 <Link
                   to="blogs"
                   className={`sidebar-link ${
-                    location.pathname.includes("/admin/blogs") ? "isActive" : ""
+                    isLinkActive("blogs") ? "isActive" : ""
                   }`}
                   onClick={isMobile ? toggleSidebar : undefined}
                 >
@@ -181,13 +195,12 @@ function AdminDashboard() {
                   <span className="sidebar-text">Manage Blogs</span>
                 </Link>
               </li>
+
               <li>
                 <Link
                   to="connections"
                   className={`sidebar-link ${
-                    location.pathname.includes("/admin/connections")
-                      ? "isActive"
-                      : ""
+                    isLinkActive("connections") ? "isActive" : ""
                   }`}
                   onClick={isMobile ? toggleSidebar : undefined}
                 >
@@ -195,27 +208,12 @@ function AdminDashboard() {
                   <span className="sidebar-text">Manage Connections</span>
                 </Link>
               </li>
-              <li>
-                <Link
-                  to="reports"
-                  className={`sidebar-link ${
-                    location.pathname.includes("/admin/reports")
-                      ? "isActive"
-                      : ""
-                  }`}
-                  onClick={isMobile ? toggleSidebar : undefined}
-                >
-                  <FaChartLine className="sidebar-icon" />
-                  <span className="sidebar-text">Reports</span>
-                </Link>
-              </li>
+
               <li>
                 <Link
                   to="events"
                   className={`sidebar-link ${
-                    location.pathname.includes("/admin/events")
-                      ? "isActive"
-                      : ""
+                    isLinkActive("events") ? "isActive" : ""
                   }`}
                   onClick={isMobile ? toggleSidebar : undefined}
                 >
@@ -223,27 +221,12 @@ function AdminDashboard() {
                   <span className="sidebar-text">Events</span>
                 </Link>
               </li>
-              <li>
-                <Link
-                  to="settings"
-                  className={`sidebar-link ${
-                    location.pathname.includes("/admin/settings")
-                      ? "isActive"
-                      : ""
-                  }`}
-                  onClick={isMobile ? toggleSidebar : undefined}
-                >
-                  <FaCog className="sidebar-icon" />
-                  <span className="sidebar-text">Admin Settings</span>
-                </Link>
-              </li>
+
               <li>
                 <Link
                   to="support"
                   className={`sidebar-link ${
-                    location.pathname.includes("/admin/support")
-                      ? "isActive"
-                      : ""
+                    isLinkActive("support") ? "isActive" : ""
                   }`}
                   onClick={isMobile ? toggleSidebar : undefined}
                 >
@@ -270,7 +253,6 @@ function AdminDashboard() {
           </div>
         </div>
 
-        {/* Page Content */}
         <div className="admin-content">
           <Outlet />
         </div>

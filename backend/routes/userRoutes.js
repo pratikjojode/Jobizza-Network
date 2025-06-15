@@ -2,6 +2,7 @@ import express from "express";
 
 import { protect } from "../middlewares/authMiddleware.js";
 import {
+  getAllUsersForDash,
   getOwnConnectionProfile,
   getUserProfile,
   getUserProfileById,
@@ -13,6 +14,8 @@ import { getUserBlogs } from "../controllers/blogController.js";
 const router = express.Router();
 
 router.get("/profile", protect, getUserProfileById);
+
+router.get("/all-users-dash", getAllUsersForDash);
 router.get("/:userId/blogs", getUserBlogs);
 router.put(
   "/updateProfile",

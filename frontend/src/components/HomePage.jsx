@@ -7,6 +7,7 @@ import "../styles/Homepage.css";
 
 function HomePage() {
   const { user } = useAuth();
+  const token = localStorage.getItem("token");
 
   return (
     <>
@@ -20,7 +21,7 @@ function HomePage() {
             Connect, collaborate, and grow with the most influential executives
             in your industry
           </p>
-          {!user && (
+          {!token && (
             <div className="cta-buttons">
               <Link to="/register" className="cta-button primary">
                 Join Now
@@ -53,7 +54,6 @@ function HomePage() {
                 private, high-trust environment.
               </p>
             </div>
-
             <div className="benefit-card">
               <div className="benefit-icon">
                 <svg viewBox="0 0 24 24">
@@ -66,7 +66,6 @@ function HomePage() {
                 tailored to your expertise.
               </p>
             </div>
-
             <div className="benefit-card">
               <div className="benefit-icon">
                 <svg viewBox="0 0 24 24">
@@ -79,7 +78,6 @@ function HomePage() {
                 won't find elsewhere.
               </p>
             </div>
-
             <div className="benefit-card">
               <div className="benefit-icon">
                 <svg viewBox="0 0 24 24">
@@ -92,7 +90,6 @@ function HomePage() {
                 connections.
               </p>
             </div>
-
             <div className="benefit-card">
               <div className="benefit-icon">
                 <svg viewBox="0 0 24 24">
@@ -105,7 +102,6 @@ function HomePage() {
                 sessions.
               </p>
             </div>
-
             <div className="benefit-card">
               <div className="benefit-icon">
                 <svg viewBox="0 0 24 24">
