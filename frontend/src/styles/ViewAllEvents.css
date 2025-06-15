@@ -105,6 +105,7 @@
   flex-grow: 1; /* Allows description to push other content down */
   display: -webkit-box;
   -webkit-line-clamp: 3; /* Limit description to 3 lines */
+  line-clamp: 3; /* Standard property for compatibility */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
