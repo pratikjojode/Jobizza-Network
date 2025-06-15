@@ -17,49 +17,32 @@
 
 /* Main Container for the Create Event Page */
 .create-event-page-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; /* Align to top for longer forms */
-  min-height: calc(100vh - 140px); /* Adjust for header and footer */
-  background-color: var(--light-blue); /* Light blue page background */
   padding: 2.5rem 1.5rem;
-  box-sizing: border-box;
-  margin: 100px auto 40px; /* Top margin for header, bottom for footer */
+  max-width: 1200px;
+  margin: 100px auto 40px; /* Adjust top margin for header, bottom for footer */
   font-family: "Inter", Arial, sans-serif;
   color: var(--text-dark);
+  background-color: var(--light-blue); /* Light blue page background */
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-}
-
-/* Card-like container for the form */
-.create-event-card {
-  background-color: var(--white);
-  border-radius: 16px;
-  box-shadow: 0 10px 30px var(--shadow-medium); /* Deeper shadow */
-  padding: 2.5rem;
-  width: 100%;
-  max-width: 700px; /* Max width for the form card */
   box-sizing: border-box;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content horizontally */
 }
 
-.create-event-card:hover {
-  transform: translateY(-5px); /* Subtle lift on hover */
-  box-shadow: 0 15px 45px var(--shadow-strong);
-}
-
-/* Title Styling */
-.create-event-title {
-  font-size: 2.5rem; /* Larger title */
+/* Page Title and Subtitle */
+.page-title {
+  font-size: 2.8rem; /* Larger title */
   font-weight: 700;
   color: var(--primary-blue);
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 0.8rem; /* Reduced margin */
   position: relative;
   padding-bottom: 10px;
 }
 
-.create-event-title::after {
+.page-title::after {
   content: '';
   position: absolute;
   left: 50%;
@@ -71,9 +54,40 @@
   border-radius: 2px;
 }
 
+.page-subtitle {
+  font-size: 1.2rem;
+  color: var(--text-medium);
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+/* Grid Container for Form and Tips */
+.create-event-grid-container {
+  display: flex; /* Use flexbox for layout */
+  gap: 2rem; /* Space between columns */
+  width: 100%;
+  align-items: flex-start; /* Align items to the top */
+}
+
+/* Card-like container for the form */
+.create-event-card {
+  background-color: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px var(--shadow-light); /* Adjusted shadow for consistency */
+  padding: 2.5rem;
+  flex: 2; /* Takes 2 parts of the available space */
+  box-sizing: border-box;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.create-event-card:hover {
+  transform: translateY(-5px); /* Subtle lift on hover */
+  box-shadow: 0 12px 30px var(--shadow-medium); /* Adjusted shadow on hover */
+}
+
 /* Form Group Styling */
 .create-event-form .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.8rem; /* Increased margin for spacing */
 }
 
 .create-event-form label {
@@ -82,6 +96,11 @@
   font-weight: 600;
   color: var(--text-dark);
   margin-bottom: 0.6rem; /* Space between label and input */
+}
+
+.create-event-form .required {
+  color: #dc3545; /* Red for required fields */
+  font-size: 0.9em;
 }
 
 /* Input and Textarea Base Styles */
@@ -107,35 +126,75 @@
 
 .create-event-form .form-textarea {
   resize: vertical; /* Allow vertical resizing */
-  min-height: 100px; /* Minimum height for textarea */
+  min-height: 120px; /* Increased minimum height for textarea */
 }
 
-/* File Input Styling (Basic) */
-.create-event-form .form-file-input {
-  display: block;
-  width: 100%;
-  padding: 0.8rem 0; /* Adjust padding for file input */
-  font-size: 1rem;
-  color: var(--text-dark);
+.char-count {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  text-align: right;
+  margin-top: 0.4rem;
+}
+
+/* File Input Styling (Custom Look) */
+.hidden-file-input {
+  display: none; /* Hide the default file input */
+}
+
+.custom-file-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #a7d9f7; /* Light blue dashed border */
+  background-color: #f8fbfc; /* Light background */
+  border-radius: 12px;
+  padding: 2rem; /* Generous padding */
   cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  min-height: 150px;
+  text-align: center;
 }
 
-/* Image Preview */
-.image-preview {
+.custom-file-upload:hover {
+  background-color: #eaf6ff; /* Lighter blue on hover */
+  border-color: var(--accent-blue);
+}
+
+.upload-icon {
+  font-size: 3.5rem;
+  color: var(--secondary-blue);
+  margin-bottom: 0.5rem;
+}
+
+.custom-file-upload p {
+  margin: 0.2rem 0;
+  color: var(--text-medium);
+  font-size: 1rem;
+}
+
+.file-type-info {
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.uploaded-image-preview {
   max-width: 100%;
-  height: auto;
+  max-height: 200px; /* Limit height of preview image */
+  object-fit: contain; /* Ensure entire image is visible */
   border-radius: 8px;
-  margin-top: 1rem;
   border: 1px solid #e0e0e0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-top: 0.5rem; /* Space from other elements if they were there */
 }
 
+
 /* Submit Button Styling */
-.create-event-form .submit-button {
+.submit-button {
   display: block;
   width: 100%;
   padding: 1rem 1.5rem;
-  background-color: var(--primary-blue); /* Dark blue button */
+  background-color: var(--secondary-blue); /* Matching primary button blue */
   color: var(--white);
   border: none;
   border-radius: 10px;
@@ -143,24 +202,84 @@
   font-weight: 700;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
-  box-shadow: 0 5px 15px rgba(0, 51, 102, 0.2); /* Shadow matching primary blue */
+  box-shadow: 0 5px 15px rgba(0, 102, 153, 0.2); /* Shadow matching secondary blue */
 }
 
-.create-event-form .submit-button:hover:not(:disabled) {
-  background-color: #002244; /* Darker blue on hover */
+.submit-button:hover:not(:disabled) {
+  background-color: var(--primary-blue); /* Darker blue on hover */
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 51, 102, 0.3);
+  box-shadow: 0 8px 20px rgba(0, 102, 153, 0.3);
 }
 
-.create-event-form .submit-button:active:not(:disabled) {
+.submit-button:active:not(:disabled) {
   transform: translateY(0);
 }
 
-.create-event-form .submit-button:disabled {
+.submit-button:disabled {
   background-color: #b0bec5; /* Grey out disabled button */
   cursor: not-allowed;
   opacity: 0.8;
   box-shadow: none;
+}
+
+
+/* Tips Section Styling */
+.tips-section {
+  flex: 1; /* Takes 1 part of the available space */
+  background-color: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px var(--shadow-light); /* Matching form card shadow */
+  padding: 2rem; /* Consistent padding */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tips-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px var(--shadow-medium);
+}
+
+.tips-title {
+  font-size: 1.8rem; /* Consistent title size */
+  font-weight: 700;
+  color: var(--primary-blue);
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 2px solid var(--accent-blue); /* Accent line */
+  padding-bottom: 8px;
+}
+
+.tips-lightbulb-icon {
+  font-size: 2rem;
+  color: var(--accent-blue);
+}
+
+.tips-section ul {
+  list-style: none; /* Remove default list bullets */
+  padding: 0;
+  margin: 0;
+}
+
+.tip-item {
+  display: flex;
+  align-items: flex-start; /* Align text to top of icon */
+  gap: 10px;
+  margin-bottom: 1rem; /* Space between tips */
+  font-size: 1rem;
+  color: var(--text-medium);
+  line-height: 1.5;
+}
+
+.tip-icon {
+  color: #28a745; /* Green checkmark */
+  font-size: 1.2rem;
+  flex-shrink: 0; /* Prevent icon from shrinking */
+  margin-top: 0.2rem; /* Adjust vertical alignment with text */
 }
 
 
@@ -171,22 +290,32 @@
   .create-event-page-container {
     padding: 2rem 1rem;
     margin: 80px auto 30px;
-    min-height: calc(100vh - 110px);
   }
 
-  .create-event-card {
+  .page-title {
+    font-size: 2.4rem;
+    margin-bottom: 0.6rem;
+  }
+  .page-subtitle {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+
+  .create-event-grid-container {
+    flex-direction: column; /* Stack columns */
+    gap: 1.5rem;
+  }
+
+  .create-event-card,
+  .tips-section {
+    flex: none; /* Remove flex sizing */
+    width: 100%; /* Take full width */
     padding: 2rem;
     border-radius: 14px;
   }
 
-  .create-event-title {
-    font-size: 2.2rem;
-    margin-bottom: 2rem;
-  }
-
-  .create-event-title::after {
-    width: 70px;
-    height: 3px;
+  .create-event-form .form-group {
+    margin-bottom: 1.5rem;
   }
 
   .create-event-form label {
@@ -200,10 +329,54 @@
     font-size: 0.95rem;
     border-radius: 6px;
   }
+  .create-event-form .form-textarea {
+    min-height: 100px; /* Adjust min height for tablets */
+  }
 
-  .create-event-form .submit-button {
+  .char-count {
+    font-size: 0.8rem;
+  }
+
+  .custom-file-upload {
+    padding: 1.5rem;
+    min-height: 120px;
+  }
+  .upload-icon {
+    font-size: 3rem;
+  }
+  .custom-file-upload p {
+    font-size: 0.95rem;
+  }
+  .file-type-info {
+    font-size: 0.85rem;
+  }
+
+  .uploaded-image-preview {
+    max-height: 180px;
+  }
+
+  .submit-button {
     padding: 0.9rem 1.2rem;
     font-size: 1.05rem;
+  }
+
+  .tips-title {
+    font-size: 1.6rem;
+    margin-bottom: 1.2rem;
+    gap: 8px;
+    padding-bottom: 6px;
+  }
+  .tips-lightbulb-icon {
+    font-size: 1.8rem;
+  }
+  .tip-item {
+    font-size: 0.95rem;
+    gap: 8px;
+    margin-bottom: 0.8rem;
+  }
+  .tip-icon {
+    font-size: 1.1rem;
+    margin-top: 0.15rem;
   }
 }
 
@@ -212,22 +385,25 @@
   .create-event-page-container {
     padding: 1.5rem 0.8rem;
     margin: 70px auto 20px;
-    min-height: calc(100vh - 90px);
   }
 
-  .create-event-card {
-    padding: 1.5rem;
-    border-radius: 12px;
+  .page-title {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
   }
-
-  .create-event-title {
-    font-size: 1.8rem;
+  .page-subtitle {
+    font-size: 1rem;
     margin-bottom: 1.5rem;
   }
 
-  .create-event-title::after {
-    width: 60px;
-    height: 2px;
+  .create-event-grid-container {
+    gap: 1.2rem;
+  }
+
+  .create-event-card,
+  .tips-section {
+    padding: 1.5rem;
+    border-radius: 12px;
   }
 
   .create-event-form .form-group {
@@ -245,10 +421,53 @@
     font-size: 0.9rem;
     border-radius: 5px;
   }
+  .create-event-form .form-textarea {
+    min-height: 80px;
+  }
 
-  .create-event-form .submit-button {
+  .char-count {
+    font-size: 0.75rem;
+  }
+
+  .custom-file-upload {
+    padding: 1rem;
+    min-height: 100px;
+  }
+  .upload-icon {
+    font-size: 2.5rem;
+  }
+  .custom-file-upload p {
+    font-size: 0.9rem;
+  }
+  .file-type-info {
+    font-size: 0.8rem;
+  }
+  .uploaded-image-preview {
+    max-height: 150px;
+  }
+
+  .submit-button {
     padding: 0.8rem 1rem;
     font-size: 1rem;
+  }
+
+  .tips-title {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    gap: 6px;
+    padding-bottom: 4px;
+  }
+  .tips-lightbulb-icon {
+    font-size: 1.6rem;
+  }
+  .tip-item {
+    font-size: 0.9rem;
+    gap: 6px;
+    margin-bottom: 0.7rem;
+  }
+  .tip-icon {
+    font-size: 1rem;
+    margin-top: 0.1rem;
   }
 }
 
@@ -257,20 +476,24 @@
   .create-event-page-container {
     padding: 1rem 0.5rem;
     margin: 60px auto 15px;
-    min-height: calc(100vh - 75px);
   }
 
-  .create-event-card {
-    padding: 1rem;
+  .page-title {
+    font-size: 1.8rem;
+    margin-bottom: 0.4rem;
   }
-
-  .create-event-title {
-    font-size: 1.6rem;
+  .page-subtitle {
+    font-size: 0.9rem;
     margin-bottom: 1rem;
   }
 
-  .create-event-title::after {
-    width: 50px;
+  .create-event-grid-container {
+    gap: 1rem;
+  }
+
+  .create-event-card,
+  .tips-section {
+    padding: 1rem;
   }
 
   .create-event-form .form-group {
@@ -279,6 +502,7 @@
 
   .create-event-form label {
     font-size: 0.9rem;
+    margin-bottom: 0.3rem;
   }
 
   .create-event-form .form-input,
@@ -286,9 +510,52 @@
     padding: 0.5rem 0.7rem;
     font-size: 0.85rem;
   }
+  .create-event-form .form-textarea {
+    min-height: 70px;
+  }
 
-  .create-event-form .submit-button {
+  .char-count {
+    font-size: 0.7rem;
+  }
+
+  .custom-file-upload {
+    padding: 0.8rem;
+    min-height: 80px;
+  }
+  .upload-icon {
+    font-size: 2rem;
+  }
+  .custom-file-upload p {
+    font-size: 0.85rem;
+  }
+  .file-type-info {
+    font-size: 0.75rem;
+  }
+  .uploaded-image-preview {
+    max-height: 120px;
+  }
+
+  .submit-button {
     padding: 0.7rem 0.9rem;
     font-size: 0.95rem;
+  }
+
+  .tips-title {
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+    gap: 5px;
+    padding-bottom: 3px;
+  }
+  .tips-lightbulb-icon {
+    font-size: 1.4rem;
+  }
+  .tip-item {
+    font-size: 0.85rem;
+    gap: 5px;
+    margin-bottom: 0.6rem;
+  }
+  .tip-icon {
+    font-size: 0.9rem;
+    margin-top: 0.05rem;
   }
 }

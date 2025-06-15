@@ -85,6 +85,8 @@ main {
   padding: 0 1.5rem;
   z-index: var(--z-header);
   backdrop-filter: blur(10px);
+  max-width: 1400px; /* Constrain max width for desktop */
+  margin: 0 auto; /* Center the header */
 }
 
 /* ============================================================
@@ -94,8 +96,8 @@ main {
 .header-left-content-area {
   display: flex;
   align-items: center;
-  gap: 2rem;
-  flex: 1;
+  gap: 1rem; /* Reduced gap for more overall space */
+  flex: 1; /* Allows this section to grow */
 }
 
 /* Brand Logo */
@@ -106,6 +108,7 @@ main {
   text-decoration: none;
   transition: var(--transition-fast);
   letter-spacing: -0.025em;
+  flex-shrink: 0; /* Prevent logo from shrinking */
 }
 
 .app-brand-logo-link:hover {
@@ -124,6 +127,7 @@ main {
   transition: var(--transition-fast);
   background: transparent;
   border: none;
+  flex-shrink: 0; /* Prevent icon from shrinking */
 }
 
 .hamburger-menu-icon:hover {
@@ -138,22 +142,27 @@ main {
 .header-navigation-menu {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.15rem; /* Further reduced gap between nav items */
+  flex-shrink: 1; /* Allow nav menu to shrink */
+  min-width: 0; /* Allow content to shrink below intrinsic width */
 }
 
 /* Navigation Links */
 .nav-item-icon-link {
   display: flex;
+  flex-direction: column; /* Stack icon and text */
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1rem;
+  gap: 0.3rem; /* Reduced gap between icon and text */
+  padding: 0.5rem 0.6rem; /* Adjusted padding */
   color: var(--text-secondary);
   text-decoration: none;
   border-radius: var(--radius-md);
   font-weight: 500;
-  font-size: 0.875rem;
+  font-size: 0.75rem; /* Further smaller font size */
   transition: var(--transition-fast);
   border: 1px solid transparent;
+  white-space: nowrap; /* Prevent text wrapping */
+  flex-shrink: 0; /* Prevent individual nav items from shrinking */
 }
 
 .nav-item-icon-link:hover {
@@ -169,7 +178,7 @@ main {
 }
 
 .nav-item-icon-link svg {
-  font-size: 1rem;
+  font-size: 0.9rem; /* Adjusted icon size */
 }
 
 .nav-item-text {
@@ -183,12 +192,15 @@ main {
 .header-search-form {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.1rem; /* Further reduced gap within search form */
   background: var(--bg-secondary);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
-  padding: 0.5rem;
+  padding: 0.15rem; /* Further reduced padding for compact look */
   transition: var(--transition-fast);
+  flex-shrink: 1; /* Allow search form to shrink */
+  max-width: 200px; /* Further reduced max-width for the search bar */
+  min-width: 120px; /* Adjusted min-width */
 }
 
 .header-search-form:focus-within {
@@ -200,11 +212,11 @@ main {
   border: none;
   outline: none;
   background: transparent;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+  padding: 0.2rem 0.3rem; /* Reduced padding */
+  font-size: 0.8rem; /* Adjusted font size */
   color: var(--text-primary);
   flex: 1;
-  min-width: 180px;
+  min-width: 30px; /* Reduced min-width to allow more shrinking */
 }
 
 .search-input::placeholder {
@@ -216,24 +228,26 @@ main {
   outline: none;
   background: var(--bg-primary);
   color: var(--text-secondary);
-  padding: 0.25rem 0.5rem;
+  padding: 0.2rem 0.25rem; /* Adjusted padding */
   border-radius: var(--radius-sm);
-  font-size: 0.75rem;
+  font-size: 0.65rem; /* Adjusted font size */
   cursor: pointer;
   border: 1px solid var(--border-light);
+  flex-shrink: 0; /* Prevent shrinking */
 }
 
 .search-button {
   background: var(--primary-color);
   color: var(--text-white);
   border: none;
-  padding: 0.5rem;
+  padding: 0.25rem; /* Reduced padding */
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0; /* Prevent shrinking */
 }
 
 .search-button:hover {
@@ -241,7 +255,7 @@ main {
 }
 
 .search-button svg {
-  font-size: 0.875rem;
+  font-size: 0.75rem; /* Adjusted icon size */
 }
 
 /* Desktop vs Mobile Search */
@@ -260,21 +274,24 @@ main {
 .header-right-user-actions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.3rem; /* Further reduced gap for right-side elements */
+  flex-shrink: 0; /* Prevent this entire section from shrinking */
 }
 
 /* User Profile Link */
 .user-profile-display-link {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
+  gap: 0.1rem; /* Reduced gap between avatar/name */
+  padding: 0.3rem 0.4rem; /* Reduced padding */
   background: var(--bg-light);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
   text-decoration: none;
   color: var(--text-primary);
   transition: var(--transition-fast);
+  white-space: nowrap; /* Ensure text is not cut off */
+  flex-shrink: 0; /* Critical: Prevent this element from shrinking */
 }
 
 .user-profile-display-link:hover {
@@ -289,29 +306,29 @@ main {
 }
 
 .user-profile-avatar-img {
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 1.4rem; /* Smaller avatar */
+  height: 1.4rem;
   border-radius: 50%;
   object-fit: cover;
   border: 1px solid var(--border-light);
 }
 
 .user-profile-avatar-placeholder-div {
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 1.4rem;
+  height: 1.4rem;
   border-radius: 50%;
   background: var(--primary-color);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: 0.6rem; /* Adjusted font size */
   color: var(--text-white);
 }
 
 .user-profile-name-text {
   font-weight: 500;
-  font-size: 0.875rem;
+  font-size: 0.75rem; /* Slightly smaller font size for profile name */
   color: inherit;
 }
 
@@ -320,13 +337,15 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.625rem;
+  padding: 0.3rem; /* Reduced padding */
   background: var(--bg-light);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
   color: var(--text-secondary);
   text-decoration: none;
   transition: var(--transition-fast);
+  white-space: nowrap; /* Ensure text is not cut off if it gains text content */
+  flex-shrink: 0; /* Critical: Prevent this element from shrinking */
 }
 
 .settings-icon-link:hover {
@@ -342,7 +361,7 @@ main {
 }
 
 .settings-icon-link svg {
-  font-size: 1rem;
+  font-size: 0.8rem; /* Slightly smaller icon */
 }
 
 /* Logout Button */
@@ -350,12 +369,14 @@ main {
   background: var(--danger-color);
   color: var(--text-white);
   border: none;
-  padding: 0.625rem 1rem;
+  padding: 0.3rem 0.6rem; /* Reduced padding */
   border-radius: var(--radius-md);
   font-weight: 500;
-  font-size: 0.875rem;
+  font-size: 0.75rem; /* Slightly smaller font size */
   cursor: pointer;
   transition: var(--transition-fast);
+  white-space: nowrap; /* Ensure text is not cut off */
+  flex-shrink: 0; /* Critical: Prevent this element from shrinking */
 }
 
 .logout-action-button:hover {
@@ -381,23 +402,52 @@ main {
   }
 
   .header-left-content-area {
-    gap: 1rem;
+    gap: 0.8rem;
   }
 
   .search-input {
-    min-width: 120px;
+    min-width: 50px; /* Adjust min-width for tablets */
   }
 
+  /* Keep nav items compact */
   .nav-item-text {
     display: none;
   }
-
   .nav-item-icon-link {
-    padding: 0.625rem;
+    padding: 0.3rem;
+    gap: 0;
+  }
+  .nav-item-icon-link svg {
+    margin-bottom: 0; /* Remove margin if text is hidden */
   }
 
+  /* Right actions even more compact */
+  .header-right-user-actions {
+    gap: 0.15rem; /* Further reduced gap for more visibility on tablets */
+  }
   .user-profile-name-text {
-    display: none;
+    display: none; /* Hide text for profile on tablet desktop view */
+  }
+  .user-profile-display-link {
+    padding: 0.25rem; /* Adjust padding for profile link */
+    gap: 0; /* Remove gap if text is hidden */
+  }
+  .user-profile-avatar-img,
+  .user-profile-avatar-placeholder-div {
+    width: 1.3rem; /* Even smaller avatar */
+    height: 1.3rem;
+  }
+  .user-profile-avatar-placeholder-div {
+    font-size: 0.5rem;
+  }
+
+  .settings-icon-link {
+    padding: 0.25rem; /* Adjust padding for settings link */
+  }
+
+  .logout-action-button {
+    padding: 0.25rem 0.4rem; /* Adjust padding for logout button */
+    font-size: 0.65rem; /* Smaller font for logout button */
   }
 }
 
@@ -416,37 +466,53 @@ main {
 
   .connect-page-main-header {
     padding: 0 1rem;
+    justify-content: space-between; /* Ensure space-between for logo and right actions */
   }
 
   .hamburger-menu-icon {
-    display: flex;
+    display: flex; /* Show hamburger on mobile */
     align-items: center;
     justify-content: center;
+    order: 1; /* Ensure it's the last item in the header-right-user-actions, pushing it to the far right */
+    margin-left: auto; /* Pushes it to the far right */
   }
 
-  .header-navigation-menu {
-    position: fixed;
-    top: var(--header-height);
+  /* Hide desktop elements on mobile */
+  .desktop-nav-links, /* Hide desktop navigation */
+  .desktop-search,
+  .desktop-only {
+    display: none;
+  }
+
+  /* Show mobile menu drawer */
+  .mobile-menu-drawer {
+    display: none; /* Controlled by JS based on menu-open class */
+    position: fixed; /* Ensure it's fixed relative to viewport */
+    top: var(--header-height); /* Starts below the header */
     left: 0;
     right: 0;
+    width: 100%; /* Take full width of screen */
+    height: calc(100vh - var(--header-height)); /* Fill remaining height */
     background: var(--bg-primary);
     flex-direction: column;
     align-items: stretch;
     gap: 0;
     padding: 1rem;
-    transform: translateY(-100%);
+    transform: translateY(-100%); /* Start hidden above */
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
     z-index: var(--z-dropdown);
     border-bottom: 1px solid var(--border-light);
     box-shadow: var(--shadow-lg);
+    overflow-y: auto; /* Enable scrolling for long menus */
   }
 
-  .header-navigation-menu.menu-open {
-    transform: translateY(0);
+  .mobile-menu-drawer.menu-open {
+    transform: translateY(0); /* Slide into view */
     opacity: 1;
     visibility: visible;
+    display: flex; /* Ensure it's flex when open */
   }
 
   .nav-item-icon-link {
@@ -519,6 +585,10 @@ main {
 
   .header-right-user-actions {
     gap: 0.5rem;
+    /* Ensure other desktop items are hidden */
+    & > :not(.hamburger-menu-icon) {
+      display: none;
+    }
   }
 }
 

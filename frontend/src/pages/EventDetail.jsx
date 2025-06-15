@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import ConnectionsHeader from "../components/ConnectionsHeader"; // Adjusted path
-import Footer from "../components/Footer"; // Adjusted path
+import ConnectionsHeader from "../components/ConnectionsHeader";
+import Footer from "../components/Footer";
 import {
   FaCalendarAlt,
   FaMapMarkerAlt,
@@ -13,9 +13,9 @@ import {
   FaLinkedin,
   FaCheckCircle,
   FaTimesCircle,
-  FaInfoCircle, // For about/description section
-} from "react-icons/fa"; // Adjusted path for react-icons/fa
-import "../styles/EventDetail.css"; // Adjusted path
+  FaInfoCircle,
+} from "react-icons/fa";
+import "../styles/EventDetail.css";
 
 const EventDetail = () => {
   const { id } = useParams();
@@ -28,14 +28,12 @@ const EventDetail = () => {
     const fetchEventDetails = async () => {
       setLoading(true);
       setError(null);
-      setEvent(null); // Clear previous event data
+      setEvent(null);
       try {
         const response = await fetch(`/api/v1/events/${id}`);
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(
-            errorData.message || "Failed to fetch event details."
-          );
+          throw new Error(errorData.message || "Failed to fetch event details.");
         }
         const data = await response.json();
         setEvent(data);
@@ -95,13 +93,8 @@ const EventDetail = () => {
               🚫
             </div>
             <h3>Event Not Found</h3>
-            <p>
-              The event you are looking for does not exist or is unavailable.
-            </p>
-            <button
-              onClick={() => navigate("/events")}
-              className="btn btn-primary"
-            >
+            <p>The event you are looking for does not exist or is unavailable.</p>
+            <button onClick={() => navigate("/events")} className="btn btn-primary">
               View All Events
             </button>
           </div>
@@ -123,7 +116,7 @@ const EventDetail = () => {
               className="event-detail-image"
               onError={(e) => {
                 e.target.src =
-                  "https://placehold.co/800x450/e0e0e0/555555?text=No+Image";
+                  "https://placehold.co/700x400/e0e0e0/555555?text=No+Image";
               }}
             />
           )}
@@ -131,20 +124,17 @@ const EventDetail = () => {
           <div className="event-info-section">
             <h1 className="event-detail-title">{event.title}</h1>
             <p className="event-detail-item">
-              <FaCalendarAlt className="detail-icon" /> Date:{" "}
-              <span>{new Date(event.date).toLocaleDateString()}</span>
+              <FaCalendarAlt className="detail-icon" /> Date: <span>{new Date(event.date).toLocaleDateString()}</span>
             </p>
             <p className="event-detail-item">
-              <FaMapMarkerAlt className="detail-icon" /> Location:{" "}
-              <span>{event.location}</span>
+              <FaMapMarkerAlt className="detail-icon" /> Location: <span>{event.location}</span>
             </p>
             <p className="event-detail-item event-verified">
               {event.isVerified ? (
                 <FaCheckCircle className="detail-icon verified-icon" />
               ) : (
                 <FaTimesCircle className="detail-icon unverified-icon" />
-              )}{" "}
-              Verified: <span>{event.isVerified ? "Yes" : "No"}</span>
+              )} Verified: <span>{event.isVerified ? "Yes" : "No"}</span>
             </p>
           </div>
 
@@ -167,8 +157,7 @@ const EventDetail = () => {
                     alt="Organizer"
                     className="organizer-profile-pic"
                     onError={(e) => {
-                      e.target.src =
-                        "https://placehold.co/80x80/add8e6/003366?text=NP";
+                      e.target.src = "https://placehold.co/70x70/add8e6/003366?text=NP";
                     }}
                   />
                 ) : (
@@ -182,16 +171,11 @@ const EventDetail = () => {
                   </p>
                   {event.organizer.designation && event.organizer.company && (
                     <p className="organizer-job-title">
-                      <FaBriefcase className="organizer-icon" />{" "}
-                      {event.organizer.designation} at{" "}
-                      <FaBuilding className="organizer-icon" />{" "}
-                      {event.organizer.company}
+                      <FaBriefcase className="organizer-icon" /> {event.organizer.designation} at <FaBuilding className="organizer-icon" /> {event.organizer.company}
                     </p>
                   )}
                   {event.organizer.role && (
-                    <p className="organizer-role">
-                      Role: {event.organizer.role}
-                    </p>
+                    <p className="organizer-role">Role: {event.organizer.role}</p>
                   )}
                   {event.organizer.linkedin && (
                     <p className="organizer-linkedin-wrapper">
@@ -201,8 +185,7 @@ const EventDetail = () => {
                         rel="noopener noreferrer"
                         className="organizer-linkedin-link"
                       >
-                        <FaLinkedin className="organizer-icon" /> View LinkedIn
-                        Profile
+                        <FaLinkedin className="organizer-icon" /> View LinkedIn Profile
                       </a>
                     </p>
                   )}
@@ -212,17 +195,11 @@ const EventDetail = () => {
           )}
 
           <div className="event-actions-footer">
-            <button
-              onClick={() => navigate("/events")}
-              className="btn btn-secondary"
-            >
+            <button onClick={() => navigate("/events")} className="btn btn-secondary">
               Back to All Events
             </button>
-            {/* Add more event-specific actions here, e.g., "Register", "Add to Calendar" */}
             <button
-              onClick={() =>
-                toast.info("Registration functionality coming soon!")
-              }
+              onClick={() => toast.info("Registration functionality coming soon!")}
               className="btn btn-primary"
             >
               Register for Event

@@ -15,9 +15,11 @@
   right: 0;
   z-index: 1000; /* Ensure header stays on top */
   border-bottom: 1px solid #e0e0e0;
+  max-width: 1400px; /* Constrain max width for desktop */
+  margin: 0 auto; /* Center the header */
 }
 
-/* Left Content Area (Logo, Hamburger, Navigation) */
+/* Left Content Area (Logo, Navigation) */
 .header-left-content-area {
   display: flex;
   align-items: center;
@@ -43,10 +45,11 @@
   color: #333333;
   cursor: pointer;
   z-index: 1001; /* Above mobile menu */
+  /* This will be shown on mobile and positioned by flexbox in header-right-user-actions */
 }
 
-/* Navigation Menu */
-.header-navigation-menu {
+/* Desktop Navigation Menu */
+.desktop-nav-links {
   display: flex;
   align-items: center;
   gap: 25px; /* Space between navigation items */
@@ -126,17 +129,17 @@
 
 .search-input {
   border: none;
-  padding: 10px 15px;
+  padding: 10px 12px; /* Slightly reduced horizontal padding */
   font-size: 0.95rem;
   background-color: transparent;
-  width: 180px; /* Default width for search input */
+  width: 120px; /* Further reduced width for search input to make space */
   outline: none;
   color: #333333;
 }
 
 .search-filter-select {
   border: none;
-  padding: 10px 10px;
+  padding: 10px 8px; /* Slightly reduced padding */
   font-size: 0.95rem;
   background-color: transparent;
   outline: none;
@@ -146,7 +149,7 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666' width='18px' height='18px'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E"); /* Custom arrow */
   background-repeat: no-repeat;
   background-position: right 8px center;
-  padding-right: 30px; /* Space for custom arrow */
+  padding-right: 25px; /* Reduced space for custom arrow */
 }
 
 .search-button {
@@ -168,7 +171,7 @@
 .header-right-user-actions {
   display: flex;
   align-items: center;
-  gap: 20px; /* Space between user action items */
+  gap: 10px; /* Reduced space between user action items to prevent cutoff */
 }
 
 .user-profile-display-link {
@@ -179,6 +182,7 @@
   font-weight: 600;
   font-size: 0.95rem;
   transition: color 0.3s ease, transform 0.2s ease;
+  white-space: nowrap; /* Ensure text doesn't wrap */
 }
 
 .user-profile-display-link:hover {
@@ -218,6 +222,7 @@
   transition: color 0.3s ease, transform 0.2s ease;
   padding: 5px; /* Add padding for easier clicking */
   border-radius: 50%;
+  white-space: nowrap; /* Ensure text doesn't wrap */
 }
 
 .settings-icon-link:hover {
@@ -237,6 +242,7 @@
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+  white-space: nowrap; /* Ensure text doesn't wrap */
 }
 
 .logout-action-button:hover {
@@ -250,8 +256,32 @@
 .mobile-only {
     display: none; /* Hidden by default */
 }
-.desktop-only {
-    display: flex; /* Visible by default */
+/* desktop-only class is handled by specific rules below for desktop */
+
+
+/* Mobile Menu Drawer */
+.mobile-menu-drawer {
+  position: fixed;
+  top: 0;
+  right: -100%; /* Hidden off-screen to the right */
+  width: 280px; /* Width of the mobile menu */
+  height: 100vh;
+  background-color: #ffffff;
+  flex-direction: column; /* Stack items vertically */
+  justify-content: flex-start; /* Align items to the top */
+  padding: 80px 15px 20px; /* Adjusted horizontal padding for menu content */
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+  transition: right 0.3s ease-in-out;
+  z-index: 999; /* Below hamburger icon */
+  align-items: flex-start; /* Align text to left */
+  gap: 15px; /* Spacing for vertical menu items */
+  overflow-y: auto; /* Enable scrolling for long menus */
+  display: none; /* Hidden by default on desktop, controlled by JS */
+}
+
+.mobile-menu-drawer.menu-open {
+  right: 0; /* Slide menu into view */
+  display: flex; /* Show the menu drawer when open */
 }
 
 /* Media Queries for Responsiveness */
@@ -260,94 +290,66 @@
   .header-left-content-area {
     gap: 15px;
   }
-  .header-navigation-menu {
+  .desktop-nav-links { /* Apply adjustments to desktop nav links */
     gap: 15px;
   }
   .search-input {
-    width: 150px; /* Slightly smaller search input */
+    width: 100px; /* Further reduced search input width for more space on tablets */
+    padding: 10px 10px; /* Adjusted padding */
+  }
+  .search-filter-select {
+    padding: 10px 5px; /* Adjusted padding */
   }
   .header-right-user-actions {
-    gap: 15px;
+    gap: 8px; /* Further reduced gap for more visibility on tablets */
   }
   .nav-item-icon-link {
     font-size: 0.85rem;
+  }
+  .user-profile-display-link {
+    font-size: 0.9rem; /* Slightly smaller font for profile link */
+  }
+  .logout-action-button {
+    font-size: 0.9rem; /* Slightly smaller font for logout button */
+    padding: 10px 15px; /* Adjusted padding */
   }
 }
 
 @media (max-width: 768px) {
   .connect-page-main-header {
     padding: 10px 20px;
+    max-width: none; /* Remove max-width on mobile/tablet */
   }
 
   .app-brand-logo-link {
     font-size: 1.4rem;
   }
 
+  /* Hamburger icon display and order */
   .hamburger-menu-icon {
     display: block; /* Show hamburger on mobile */
+    order: 1; /* Ensure it's the last item in the header-right-user-actions, pushing it to the far right */
+    margin-left: auto; /* Push it to the far right if other items are present */
   }
 
-  .header-navigation-menu {
-    position: fixed;
-    top: 0; /* Will be adjusted by JS, but visually start from top */
-    right: -100%; /* Hide menu off-screen to the right */
-    width: 280px; /* Width of the mobile menu */
-    height: 100vh;
-    background-color: #ffffff;
-    flex-direction: column; /* Stack items vertically */
-    justify-content: flex-start; /* Align items to the top */
-    padding: 80px 15px 20px; /* Adjusted horizontal padding for menu content */
-    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
-    transition: right 0.3s ease-in-out;
-    z-index: 999; /* Below hamburger icon */
-    align-items: flex-start; /* Align text to left */
-    gap: 15px; /* Spacing for vertical menu items */
-    overflow-y: auto; /* Enable scrolling for long menus */
-  }
-
-  .header-navigation-menu.menu-open {
-    right: 0; /* Slide menu into view */
-  }
-
-  .nav-item-icon-link {
-    width: 100%; /* Full width for menu items */
-    flex-direction: row; /* Icon and text side-by-side */
-    justify-content: flex-start;
-    padding: 12px 10px;
-    font-size: 1rem;
-    color: #333333;
-    border-radius: 8px;
-  }
-
-  .nav-item-icon-link:hover {
-      background-color: #f0f8ff;
-      transform: none; /* Remove transform on mobile menu hover */
-  }
-  .nav-item-icon-link.active {
-      background-color: #e0f0ff; /* Lighter blue for active state in menu */
-  }
-  .nav-item-icon-link.active::after {
-      content: none; /* Remove underline on mobile menu */
-  }
-
-
-  .nav-item-icon-link svg {
-    margin-bottom: 0;
-    margin-right: 10px; /* Space between icon and text */
-    font-size: 1.6rem; /* Larger icons in menu */
-  }
-
-  .nav-item-text {
-    display: block; /* Always show text in mobile menu */
-  }
-
-  /* Hide desktop elements */
+  /* Hide desktop elements on mobile */
+  .desktop-nav-links, /* Hide desktop navigation */
   .desktop-search,
   .desktop-only {
     display: none;
   }
 
-  /* Show mobile elements */
+  /* Show mobile menu drawer */
+  .mobile-menu-drawer {
+    display: none; /* Controlled by JS based on menu-open class */
+  }
+
+  .mobile-menu-drawer.menu-open {
+    display: flex; /* Show the menu drawer when open */
+  }
+
+
+  /* Mobile Search Form (within drawer) */
   .mobile-search {
     display: flex; /* Ensure mobile search is displayed */
     width: 100%; /* Take full width of the padded menu content area */
@@ -383,21 +385,46 @@
       border-radius: 0 25px 25px 0; /* Apply border-radius only to the right side */
   }
 
+  /* Mobile only navigation items (within drawer) */
+  .mobile-menu-drawer .nav-item-icon-link,
+  .mobile-menu-drawer .user-profile-display-link.mobile-only,
+  .mobile-menu-drawer .settings-icon-link.mobile-only,
+  .mobile-menu-drawer .logout-action-button.mobile-only {
+    display: flex; /* Ensure these are shown in the mobile menu */
+    width: 100%; /* Full width for menu items */
+    flex-direction: row; /* Icon and text side-by-side */
+    justify-content: flex-start;
+    padding: 12px 10px;
+    font-size: 1rem;
+    color: #333333;
+    border-radius: 8px;
+  }
 
-  .mobile-only {
-      display: flex; /* Show mobile-only profile/settings/logout */
-      width: 100%;
-      justify-content: flex-start;
-      padding: 12px 10px;
-      font-size: 1rem;
-      color: #333333;
-      border-radius: 8px;
-  }
-  .mobile-only:hover {
+  .mobile-menu-drawer .nav-item-icon-link:hover,
+  .mobile-menu-drawer .mobile-only:hover {
       background-color: #f0f8ff;
-      transform: none;
+      transform: none; /* Remove transform on mobile menu hover */
   }
-  .logout-action-button.mobile-only {
+  .mobile-menu-drawer .nav-item-icon-link.active {
+      background-color: #e0f0ff; /* Lighter blue for active state in menu */
+  }
+  .mobile-menu-drawer .nav-item-icon-link.active::after {
+      content: none; /* Remove underline on mobile menu */
+  }
+
+  .mobile-menu-drawer .nav-item-icon-link svg,
+  .mobile-menu-drawer .settings-icon-link.mobile-only svg {
+    margin-bottom: 0;
+    margin-right: 10px; /* Space between icon and text */
+    font-size: 1.6rem; /* Larger icons in menu */
+  }
+  .mobile-menu-drawer .user-profile-display-link.mobile-only .user-profile-avatar-img,
+  .mobile-menu-drawer .user-profile-display-link.mobile-only .user-profile-avatar-placeholder-div {
+      width: 32px;
+      height: 32px;
+      margin-right: 10px;
+  }
+  .mobile-menu-drawer .logout-action-button.mobile-only {
       background-color: #f8f9fa;
       color: #dc3545; /* Red for logout */
       border: 1px solid #dc3545;
@@ -407,20 +434,9 @@
       width: 100%;
       justify-content: center;
   }
-  .logout-action-button.mobile-only:hover {
+  .mobile-menu-drawer .logout-action-button.mobile-only:hover {
       background-color: #dc3545;
       color: white;
-  }
-
-  .user-profile-display-link.mobile-only .user-profile-avatar-img,
-  .user-profile-display-link.mobile-only .user-profile-avatar-placeholder-div {
-      width: 32px;
-      height: 32px;
-      margin-right: 10px;
-  }
-  .settings-icon-link.mobile-only svg {
-      font-size: 1.6rem;
-      margin-right: 10px;
   }
 }
 
@@ -434,7 +450,7 @@
   .hamburger-menu-icon {
     font-size: 1.6rem;
   }
-  .header-navigation-menu {
+  .mobile-menu-drawer {
     width: 250px; /* Slightly narrower menu for smaller screens */
     padding: 70px 15px 15px;
   }

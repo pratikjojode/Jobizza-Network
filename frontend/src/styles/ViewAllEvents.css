@@ -17,7 +17,7 @@
 
 /* Main Container for All Events Page */
 .events-container {
-  padding: 2.5rem 1.5rem;
+  padding: 2.5rem rem;
   max-width: 1200px;
   margin: 100px auto 40px; /* Adjust top margin for header, bottom for footer */
   font-family: "Inter", Arial, sans-serif;
@@ -50,15 +50,15 @@
   border-radius: 2px;
 }
 
-/* Events Grid (similar to network grid) */
+/* Events Grid - Mimics the network tab's grid layout */
 .events-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Min card width */
-  gap: 2rem; /* Increased gap between cards */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Smaller min-width for more cards */
+  gap: 1.5rem; /* Reduced gap */
   justify-content: center;
 }
 
-/* Event Card (similar to connection card) */
+/* Event Card - Mimics the network tab's card styling */
 .event-card {
   background-color: var(--white);
   border-radius: 16px;
@@ -66,8 +66,10 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  align-items: center; /* Center content horizontally */
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  text-align: left; /* Align text left within card */
+  text-align: center; /* Center text within card */
+  padding: 1.5rem; /* Padding inside the card */
 }
 
 .event-card:hover {
@@ -75,118 +77,98 @@
   box-shadow: 0 16px 40px var(--shadow-strong);
 }
 
+/* Event Image - Kept for compatibility, but hidden by default to match network card look */
 .event-image {
-  width: 100%;
-  height: 200px; /* Fixed height for event images */
+  display: none; /* Hide event image to match network card styling */
+  width: 100px; /* Example size if ever needed, but it's hidden */
+  height: 100px;
   object-fit: cover;
-  border-bottom: 1px solid #eee;
+  border-radius: 50%; /* Circular image if shown */
+  margin-bottom: 1rem;
 }
 
 .event-card-content {
-  padding: 1.5rem;
+  padding: 0; /* Remove internal padding as it's on the card now */
   display: flex;
   flex-direction: column;
-  flex-grow: 1; /* Allow content to take available space */
+  align-items: center; /* Center content */
+  width: 100%;
 }
 
 .event-title {
-  font-size: 1.8rem;
+  font-size: 1.4rem; /* Smaller title */
   font-weight: 700;
   color: var(--primary-blue);
   margin-top: 0;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.5rem; /* Reduced margin */
   line-height: 1.3;
 }
 
+/* Hide event description to match the network card's simplicity */
 .event-description {
-  font-size: 1rem;
-  color: var(--text-medium);
-  margin-bottom: 1rem;
-  flex-grow: 1; /* Allows description to push other content down */
-  display: -webkit-box;
-  -webkit-line-clamp: 3; /* Limit description to 3 lines */
-  line-clamp: 3; /* Standard property for compatibility */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: none; /* Hide description */
 }
 
 .event-detail {
-  font-size: 0.95rem;
+  font-size: 0.9rem; /* Smaller text for details */
   color: var(--text-medium);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem; /* Reduced margin */
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px; /* Reduced gap */
 }
 
 .event-icon {
   color: var(--secondary-blue);
-  font-size: 1.1rem;
+  font-size: 1rem; /* Smaller icons */
 }
 
 .event-verified .verified-icon { color: #28a745; } /* Green for verified */
 .event-verified .unverified-icon { color: #dc3545; } /* Red for unverified */
 
-/* Organizer Details */
-.organizer-details {
-  background-color: #f8fbfc; /* Light background for organizer section */
-  border-radius: 12px;
-  padding: 1rem;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-  border: 1px solid #eef6ff;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
+/* Organizer Details - Styled to be the main "profile" area like in network tab */
+.organizer-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center align items */
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
 }
 
-.organizer-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--primary-blue);
-  margin-top: 0;
-  margin-bottom: 0.8rem;
-  border-bottom: 1px solid #e0e0e0;
-  padding-bottom: 0.5rem;
+.organizer-profile {
+  display: flex;
+  flex-direction: column; /* Stack avatar and name */
+  align-items: center;
+  margin-bottom: 0.5rem;
 }
 
-.organizer-info-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.organizer-pic {
-  width: 40px;
-  height: 40px;
+.organizer-avatar {
+  width: 80px; /* Larger avatar */
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--accent-blue);
-  flex-shrink: 0; /* Prevent shrinking */
+  border: 3px solid var(--accent-blue); /* Accent border */
+  margin-bottom: 0.5rem; /* Space between avatar and name */
 }
 
-.organizer-pic-placeholder {
-    width: 40px;
-    height: 40px;
+.organizer-avatar-placeholder {
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     background-color: #add8e6;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.4rem;
+    font-size: 2.2rem; /* Larger font for initial */
     font-weight: bold;
     color: var(--primary-blue);
-    border: 2px solid var(--accent-blue);
-    flex-shrink: 0;
-}
-
-.organizer-text-details {
-    display: flex;
-    flex-direction: column;
-    font-size: 0.9rem;
-    color: var(--text-medium);
+    border: 3px solid var(--accent-blue);
+    margin-bottom: 0.5rem;
 }
 
 .organizer-name {
+    font-size: 1.1rem; /* Slightly larger name */
     font-weight: 600;
     color: var(--text-dark);
     margin-bottom: 0.2rem;
@@ -196,32 +178,22 @@
 }
 
 .organizer-job {
-    margin-bottom: 0.2rem;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+    font-size: 0.95rem; /* Job description below name */
+    color: var(--text-medium);
+    margin-bottom: 0.5rem;
+    text-align: center;
 }
 
+/* Hide LinkedIn link as it's not present in the network card example */
 .organizer-linkedin-link {
-  color: var(--secondary-blue);
-  text-decoration: none;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: color 0.2s ease;
-}
-
-.organizer-linkedin-link:hover {
-  color: var(--primary-blue);
-  text-decoration: underline;
+  display: none;
 }
 
 /* Button Styling (consistent with network page) */
 .btn {
-  padding: 0.8rem 1.5rem;
-  border-radius: 10px;
-  font-size: 1.05rem;
+  padding: 0.6rem 1.2rem; /* Adjusted padding */
+  border-radius: 8px; /* Slightly smaller border radius */
+  font-size: 0.95rem; /* Smaller font size */
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
@@ -231,6 +203,7 @@
   align-items: center;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   border: 1px solid transparent;
+  margin-top: 1rem; /* Margin to separate from content above */
 }
 
 .btn:active {
@@ -250,8 +223,8 @@
 }
 
 .view-event-button {
-  width: 100%; /* Full width button in card */
-  margin-top: auto; /* Push button to the bottom */
+  width: 80%; /* Smaller width for button */
+  max-width: 200px; /* Max width for button */
 }
 
 
@@ -357,56 +330,41 @@
   }
 
   .events-grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
   }
 
   .event-card {
     border-radius: 14px;
-  }
-
-  .event-image {
-    height: 180px;
-  }
-
-  .event-card-content {
     padding: 1.2rem;
   }
 
   .event-title {
-    font-size: 1.6rem;
-  }
-
-  .event-description {
-    font-size: 0.95rem;
+    font-size: 1.3rem;
   }
 
   .event-detail {
-    font-size: 0.9rem;
-    gap: 6px;
+    font-size: 0.85rem;
+    gap: 5px;
   }
 
-  .organizer-details {
-    padding: 0.8rem;
+  .organizer-avatar, .organizer-avatar-placeholder {
+    width: 70px;
+    height: 70px;
+    font-size: 2rem;
   }
 
-  .organizer-title {
+  .organizer-name {
     font-size: 1rem;
   }
 
-  .organizer-pic, .organizer-pic-placeholder {
-    width: 35px;
-    height: 35px;
-    font-size: 1.2rem;
-  }
-
-  .organizer-text-details {
-    font-size: 0.85rem;
+  .organizer-job {
+    font-size: 0.9rem;
   }
 
   .btn {
-    padding: 0.7rem 1.2rem;
-    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -428,65 +386,43 @@
 
   .events-grid {
     grid-template-columns: 1fr; /* Single column for mobile */
-    gap: 1.2rem;
+    gap: 1rem;
   }
 
   .event-card {
     border-radius: 12px;
-  }
-
-  .event-image {
-    height: 160px;
-  }
-
-  .event-card-content {
     padding: 1rem;
   }
 
   .event-title {
-    font-size: 1.4rem;
-  }
-
-  .event-description {
-    font-size: 0.9rem;
-    -webkit-line-clamp: 4; /* Allow more lines for description on small screens */
+    font-size: 1.2rem;
   }
 
   .event-detail {
-    font-size: 0.85rem;
-    gap: 5px;
+    font-size: 0.8rem;
+    gap: 4px;
   }
   .event-icon {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
-  .organizer-details {
-    padding: 0.7rem;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+  .organizer-avatar, .organizer-avatar-placeholder {
+    width: 60px;
+    height: 60px;
+    font-size: 1.8rem;
   }
 
-  .organizer-title {
+  .organizer-name {
     font-size: 0.95rem;
   }
 
-  .organizer-pic, .organizer-pic-placeholder {
-    width: 30px;
-    height: 30px;
-    font-size: 1.1rem;
-  }
-
-  .organizer-text-details {
-    font-size: 0.8rem;
-  }
-
-  .organizer-linkedin-link {
+  .organizer-job {
     font-size: 0.85rem;
   }
 
   .btn {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
   }
   .status-state.empty-state,
   .status-state .error-message {
@@ -519,50 +455,36 @@
   }
 
   .event-card {
-    padding-bottom: 0.8rem; /* Less padding at bottom if button is outside content */
-  }
-
-  .event-image {
-    height: 140px;
-  }
-
-  .event-card-content {
     padding: 0.8rem;
   }
 
   .event-title {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .event-description {
-    font-size: 0.85rem;
-    margin-bottom: 0.8rem;
-    -webkit-line-clamp: 5;
-  }
-
-  .event-detail {
-    font-size: 0.8rem;
+    font-size: 1rem;
     margin-bottom: 0.4rem;
   }
 
-  .organizer-details {
-    padding: 0.6rem;
-    margin-top: 0.8rem;
-    margin-bottom: 0.8rem;
+  .event-detail {
+    font-size: 0.75rem;
+    margin-bottom: 0.3rem;
   }
 
-  .organizer-title {
+  .organizer-avatar, .organizer-avatar-placeholder {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+
+  .organizer-name {
     font-size: 0.9rem;
   }
 
-  .organizer-text-details {
-    font-size: 0.75rem;
+  .organizer-job {
+    font-size: 0.8rem;
   }
 
   .btn {
-    padding: 0.5rem 0.8rem;
-    font-size: 0.85rem;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
   }
   .status-state.empty-state,
   .status-state .error-message {

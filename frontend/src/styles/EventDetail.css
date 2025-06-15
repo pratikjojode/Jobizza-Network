@@ -35,10 +35,10 @@
 .event-detail-card {
   background-color: var(--white);
   border-radius: 16px;
-  box-shadow: 0 10px 30px var(--shadow-medium); /* Deeper shadow */
-  padding: 2.5rem;
+  box-shadow: 0 8px 24px var(--shadow-light); /* Adjusted shadow for consistency */
+  padding: 2rem; /* Slightly reduced padding */
   width: 100%;
-  max-width: 900px; /* Wider card for event details */
+  max-width: 800px; /* Reduced max-width for a smaller card */
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -49,44 +49,44 @@
 
 .event-detail-card:hover {
   transform: translateY(-5px); /* Subtle lift on hover */
-  box-shadow: 0 15px 45px var(--shadow-strong);
+  box-shadow: 0 12px 30px var(--shadow-medium); /* Adjusted shadow on hover */
 }
 
 .event-detail-image {
   width: 100%;
-  max-height: 450px; /* Max height for large image */
+  max-height: 400px; /* Reduced max height for image */
   object-fit: cover;
   border-radius: 12px;
-  margin-bottom: 2rem;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem; /* Reduced margin */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Lighter shadow for image */
 }
 
 /* Event Info Section (Title, Date, Location, Verified) */
 .event-info-section {
   width: 100%;
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem; /* Reduced margin */
+  padding-bottom: 1rem; /* Reduced padding */
   border-bottom: 1px solid #e0e0e0;
-  text-align: center; /* Center title */
+  text-align: center; /* Center title and details */
 }
 
 .event-detail-title {
-  font-size: 3rem; /* Very large title */
+  font-size: 2.5rem; /* Slightly smaller title */
   font-weight: 700;
   color: var(--primary-blue);
   margin-top: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem; /* Reduced margin */
   line-height: 1.2;
 }
 
 .event-detail-item {
-  font-size: 1.2rem;
+  font-size: 1.1rem; /* Slightly smaller text */
   color: var(--text-medium);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem; /* Reduced margin */
   display: flex;
   align-items: center;
   justify-content: center; /* Center align details */
-  gap: 10px;
+  gap: 8px; /* Reduced gap */
 }
 .event-detail-item span {
     font-weight: 600; /* Make value text bold */
@@ -95,7 +95,7 @@
 
 .detail-icon {
   color: var(--secondary-blue);
-  font-size: 1.3rem;
+  font-size: 1.2rem; /* Slightly smaller icon */
 }
 
 .event-verified .verified-icon { color: #28a745; }
@@ -104,74 +104,74 @@
 /* Event Description Section */
 .event-description-section {
   width: 100%;
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px dashed #e0e0e0; /* Dashed line for separation */
+  margin-bottom: 1.5rem; /* Reduced margin */
+  padding-bottom: 1rem; /* Reduced padding */
+  border-bottom: 1px dashed #e0e0e0;
 }
 
 .section-title {
-  font-size: 2rem; /* Larger section titles */
+  font-size: 1.8rem; /* Slightly smaller section titles */
   font-weight: 600;
   color: var(--primary-blue);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem; /* Reduced margin */
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px; /* Reduced gap */
   border-bottom: 2px solid var(--accent-blue);
-  padding-bottom: 8px;
+  padding-bottom: 6px; /* Reduced padding */
   margin-top: 0;
 }
 
 .section-icon {
-  font-size: 1.8rem;
+  font-size: 1.6rem; /* Slightly smaller icon */
   color: var(--accent-blue);
 }
 
 .event-description-text {
-  font-size: 1.15rem;
-  line-height: 1.8;
+  font-size: 1.05rem; /* Slightly smaller text */
+  line-height: 1.7; /* Slightly reduced line height */
   color: var(--text-medium);
 }
 
 /* Organizer Section */
 .organizer-section {
   width: 100%;
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem; /* Reduced margin */
+  padding-bottom: 1rem; /* Reduced padding */
   border-bottom: 1px dashed #e0e0e0;
 }
 
 .organizer-content {
   display: flex;
   align-items: center;
-  gap: 20px; /* Space between pic and details */
+  gap: 15px; /* Reduced space between pic and details */
   background-color: #f8fbfc; /* Light background for organizer block */
   border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 1.2rem; /* Reduced padding */
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04); /* Lighter shadow */
 }
 
 .organizer-profile-pic {
-  width: 80px;
-  height: 80px;
+  width: 70px; /* Slightly smaller pic */
+  height: 70px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid var(--accent-blue);
+  border: 3px solid var(--accent-blue); /* Slightly thinner border */
   flex-shrink: 0;
 }
 
 .organizer-profile-pic-placeholder {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     background-color: #add8e6;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 2.5rem;
+    font-size: 2.2rem; /* Slightly smaller font */
     font-weight: bold;
     color: var(--primary-blue);
-    border: 4px solid var(--accent-blue);
+    border: 3px solid var(--accent-blue);
     flex-shrink: 0;
 }
 
@@ -181,26 +181,26 @@
 }
 
 .organizer-name {
-  font-size: 1.5rem;
+  font-size: 1.3rem; /* Slightly smaller name */
   font-weight: 700;
   color: var(--text-dark);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.2rem; /* Reduced margin */
 }
 
 .organizer-job-title,
 .organizer-role,
 .organizer-linkedin-wrapper {
-  font-size: 1rem;
+  font-size: 0.95rem; /* Slightly smaller text */
   color: var(--text-medium);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.2rem; /* Reduced margin */
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px; /* Reduced gap */
 }
 
 .organizer-icon {
   color: var(--secondary-blue);
-  font-size: 1.1rem;
+  font-size: 1rem; /* Slightly smaller icon */
 }
 
 .organizer-linkedin-link {
@@ -220,17 +220,17 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  gap: 1.5rem;
+  gap: 1.2rem; /* Reduced gap */
   margin-top: 1rem;
-  padding-top: 20px;
+  padding-top: 15px; /* Reduced padding */
   border-top: 1px solid #eee;
 }
 
 /* Button Styling (consistent with other components) */
 .btn {
-  padding: 0.8rem 1.8rem;
-  border-radius: 10px;
-  font-size: 1.05rem;
+  padding: 0.7rem 1.5rem; /* Reduced padding */
+  border-radius: 8px; /* Slightly smaller border radius */
+  font-size: 1rem; /* Slightly smaller font size */
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
@@ -290,12 +290,12 @@
 .event-detail-container .loading-spinner,
 .event-detail-container .error-message,
 .event-detail-container .empty-state {
-  max-width: 550px;
+  max-width: 500px; /* Reduced max width for status messages */
   width: 90%;
   margin: 0 auto;
   background-color: var(--white);
   border-radius: 12px;
-  padding: 2.5rem;
+  padding: 2rem; /* Reduced padding */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   margin-top: 2rem; /* Add margin to separate from header */
 }
@@ -307,36 +307,36 @@
   height: 50px;
 }
 .event-detail-container .loading-spinner p {
-  font-size: 1.2rem;
+  font-size: 1.1rem; /* Slightly smaller font */
   color: var(--text-medium);
 }
 
 .event-detail-container .error-message h2 {
   color: #dc3545;
-  font-size: 2rem;
-  margin-bottom: 1rem;
+  font-size: 1.8rem; /* Slightly smaller font */
+  margin-bottom: 0.8rem; /* Reduced margin */
 }
 
 .event-detail-container .error-message p {
-  font-size: 1.1rem;
+  font-size: 1rem; /* Slightly smaller font */
   line-height: 1.5;
   color: var(--text-medium);
 }
 
 .event-detail-container .empty-icon {
-  font-size: 5rem;
-  margin-bottom: 1.2rem;
+  font-size: 4.5rem; /* Slightly smaller icon */
+  margin-bottom: 1rem; /* Reduced margin */
   color: #b0bec5;
 }
 
 .event-detail-container .empty-state h3 {
   color: var(--text-dark);
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
+  font-size: 1.6rem; /* Slightly smaller font */
+  margin-bottom: 0.8rem; /* Reduced margin */
 }
 
 .event-detail-container .empty-state p {
-  font-size: 1.1rem;
+  font-size: 1.0rem; /* Slightly smaller font */
   line-height: 1.5;
   color: var(--text-medium);
 }
@@ -352,76 +352,77 @@
   }
 
   .event-detail-card {
-    padding: 2rem;
+    padding: 1.8rem; /* Further reduced padding */
+    max-width: 700px; /* Further reduced max-width */
   }
 
   .event-detail-image {
-    max-height: 350px;
-    margin-bottom: 1.5rem;
+    max-height: 300px; /* Further reduced max height */
+    margin-bottom: 1.2rem;
   }
 
   .event-info-section {
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
   }
 
   .event-detail-title {
-    font-size: 2.5rem;
-    margin-bottom: 0.8rem;
+    font-size: 2.2rem;
+    margin-bottom: 0.7rem;
   }
 
   .event-detail-item {
-    font-size: 1.1rem;
-    gap: 8px;
+    font-size: 1rem;
+    gap: 7px;
   }
   .detail-icon {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 
   .event-description-section,
   .organizer-section {
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
   }
 
   .section-title {
-    font-size: 1.8rem;
-    margin-bottom: 1.2rem;
-    gap: 10px;
-    padding-bottom: 6px;
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    gap: 8px;
+    padding-bottom: 5px;
   }
   .section-icon {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
   }
 
   .event-description-text {
-    font-size: 1.05rem;
+    font-size: 1.0rem;
   }
 
   .organizer-content {
-    gap: 15px;
-    padding: 1.2rem;
+    gap: 12px;
+    padding: 1rem;
   }
 
   .organizer-profile-pic,
   .organizer-profile-pic-placeholder {
-    width: 70px;
-    height: 70px;
-    font-size: 2.2rem;
+    width: 60px; /* Further reduced size */
+    height: 60px;
+    font-size: 2rem;
   }
 
   .organizer-name {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
 
   .organizer-job-title,
   .organizer-role,
   .organizer-linkedin-wrapper {
-    font-size: 0.95rem;
-    gap: 6px;
+    font-size: 0.9rem;
+    gap: 5px;
   }
   .organizer-icon {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .event-actions-footer {
@@ -438,115 +439,115 @@
   }
 
   .event-detail-card {
-    padding: 1.5rem;
-    border-radius: 12px;
+    padding: 1.2rem; /* Further reduced padding */
+    border-radius: 10px;
   }
 
   .event-detail-image {
-    max-height: 250px;
-    margin-bottom: 1.2rem;
+    max-height: 220px; /* Further reduced max height */
+    margin-bottom: 1rem;
   }
 
   .event-info-section {
-    margin-bottom: 1.2rem;
-    padding-bottom: 0.8rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.7rem;
   }
 
   .event-detail-title {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.8rem;
+    margin-bottom: 0.4rem;
   }
 
   .event-detail-item {
-    font-size: 1rem;
+    font-size: 0.9rem;
     flex-direction: column; /* Stack date/location/verified vertically */
     align-items: center;
-    gap: 4px;
+    gap: 3px; /* Reduced gap */
   }
   .event-detail-item span {
       display: block; /* Ensure value takes new line if needed */
       text-align: center;
   }
   .detail-icon {
-    font-size: 1.1rem;
-    margin-bottom: 2px; /* Small margin below icon when stacked */
+    font-size: 1rem;
+    margin-bottom: 1px; /* Small margin below icon when stacked */
   }
 
   .event-description-section,
   .organizer-section {
-    margin-bottom: 1.2rem;
-    padding-bottom: 0.8rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.7rem;
   }
 
   .section-title {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    gap: 8px;
-    padding-bottom: 5px;
+    font-size: 1.4rem;
+    margin-bottom: 0.9rem;
+    gap: 6px;
+    padding-bottom: 4px;
   }
   .section-icon {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
 
   .event-description-text {
-    font-size: 1rem;
-    line-height: 1.7;
+    font-size: 0.95rem;
+    line-height: 1.6;
   }
 
   .organizer-content {
     flex-direction: column; /* Stack organizer pic and details */
-    gap: 15px;
-    padding: 1rem;
+    gap: 10px; /* Reduced gap */
+    padding: 0.8rem; /* Further reduced padding */
     text-align: center; /* Center align text in stacked layout */
   }
 
   .organizer-profile-pic,
   .organizer-profile-pic-placeholder {
-    width: 60px;
-    height: 60px;
-    font-size: 2rem;
+    width: 50px; /* Further reduced size */
+    height: 50px;
+    font-size: 1.6rem;
   }
 
   .organizer-name {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 
   .organizer-job-title,
   .organizer-role,
   .organizer-linkedin-wrapper {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     flex-direction: column; /* Stack job title parts */
-    gap: 4px;
+    gap: 3px;
   }
   .organizer-job-title .organizer-icon,
   .organizer-linkedin-wrapper .organizer-icon {
-    margin-bottom: 2px;
+    margin-bottom: 1px;
   }
 
   .event-actions-footer {
     flex-direction: column; /* Stack buttons vertically */
-    gap: 0.8rem;
+    gap: 0.6rem;
   }
 
   .btn {
     width: 100%; /* Full width buttons */
-    padding: 0.8rem 1rem;
-    font-size: 0.95rem;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.9rem;
   }
 
   .event-detail-container .loading-spinner,
   .event-detail-container .error-message,
   .event-detail-container .empty-state {
-      padding: 1.5rem;
+      padding: 1.2rem;
   }
   .event-detail-container .empty-icon {
-      font-size: 4rem;
+      font-size: 3.5rem;
   }
   .event-detail-container .empty-state h3 {
-      font-size: 1.6rem;
+      font-size: 1.4rem;
   }
   .event-detail-container .empty-state p {
-      font-size: 1rem;
+      font-size: 0.95rem;
   }
 }
 
@@ -559,80 +560,80 @@
   }
 
   .event-detail-card {
-    padding: 1rem;
+    padding: 0.8rem;
   }
 
   .event-detail-image {
-    max-height: 200px;
-    margin-bottom: 1rem;
+    max-height: 180px;
+    margin-bottom: 0.8rem;
   }
 
   .event-detail-title {
-    font-size: 1.8rem;
-    margin-bottom: 0.4rem;
+    font-size: 1.6rem;
+    margin-bottom: 0.3rem;
   }
 
   .event-detail-item {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   .section-title {
-    font-size: 1.3rem;
-    margin-bottom: 0.8rem;
-    gap: 6px;
-    padding-bottom: 4px;
+    font-size: 1.2rem;
+    margin-bottom: 0.7rem;
+    gap: 5px;
+    padding-bottom: 3px;
   }
   .section-icon {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 
   .event-description-text {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   .organizer-content {
-    padding: 0.8rem;
-    gap: 10px;
+    padding: 0.7rem;
+    gap: 8px;
   }
 
   .organizer-profile-pic,
   .organizer-profile-pic-placeholder {
-    width: 50px;
-    height: 50px;
-    font-size: 1.8rem;
+    width: 45px;
+    height: 45px;
+    font-size: 1.4rem;
   }
 
   .organizer-name {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
   .organizer-job-title,
   .organizer-role,
   .organizer-linkedin-wrapper {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
 
   .event-actions-footer {
-    gap: 0.6rem;
+    gap: 0.5rem;
   }
 
   .btn {
-    padding: 0.7rem 0.9rem;
-    font-size: 0.9rem;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
   }
 
   .event-detail-container .loading-spinner,
   .event-detail-container .error-message,
   .event-detail-container .empty-state {
-      padding: 1rem;
+      padding: 0.8rem;
   }
   .event-detail-container .empty-icon {
       font-size: 3rem;
   }
   .event-detail-container .empty-state h3 {
-      font-size: 1.4rem;
+      font-size: 1.2rem;
   }
   .event-detail-container .empty-state p {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
   }
 }
